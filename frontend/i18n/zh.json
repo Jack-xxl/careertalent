@@ -1,0 +1,27 @@
+{
+  "title": "TalentAI 天赋测试",
+  "subtitle": "8分钟发现你的优势与兴趣（中英文版）。",
+  "start": "开始测试",
+  "viewSample": "查看示例报告",
+  "next": "下一题",
+  "prev": "上一题",
+  "submit": "提交",
+  "miTitle": "多元智能 36 题",
+  "riaTitle": "霍兰德兴趣测验",
+  "resultTitle": "你的测试结果（免费版）",
+  "radarTitle_MI": "你的智能雷达",
+  "radarTitle_RIASEC": "你的兴趣雷达",
+  "topCareers": "职业推荐 Top 3",
+  "redcard_title": "⚠️ 风险提醒",
+  "redcard_logic_low": "你的逻辑思维能力偏低。这意味着：",
+  "redcard_logic_bullets": [
+    "容易相信虚假信息或谣言",
+    "在学习和工作中更难做出正确判断",
+    "在生活中更容易被欺骗或诈骗"
+  ],
+  "whyImportant": "👉 为什么重要",
+  "whyImportant_text": "逻辑思维是保护自己、避免被骗的第一道防线，也是未来学习和工作的核心能力。",
+  "upgrade_hint": "仅显示 1 张红卡。升级完整版解锁 5 张红卡 + 7 天行动建议与 AI 职业匹配。",
+  "like": "喜欢",
+  "dislike": "不喜欢"
+}

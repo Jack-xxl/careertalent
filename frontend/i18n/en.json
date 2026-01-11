@@ -1,0 +1,27 @@
+{
+  "title": "TalentAI Aptitude Test",
+  "subtitle": "Find your strengths & interests in 8 minutes (EN/中文).",
+  "start": "Start Test",
+  "viewSample": "View Sample Report",
+  "next": "Next",
+  "prev": "Back",
+  "submit": "Submit",
+  "miTitle": "Multiple Intelligences (36)",
+  "riaTitle": "Holland RIASEC Interests",
+  "resultTitle": "Your Results (Free)",
+  "radarTitle_MI": "Intelligence Radar",
+  "radarTitle_RIASEC": "RIASEC Radar",
+  "topCareers": "Top 3 Careers",
+  "redcard_title": "⚠️ Risk Alert",
+  "redcard_logic_low": "Your logical reasoning seems low. That means:",
+  "redcard_logic_bullets": [
+    "More likely to believe misinformation",
+    "Harder to make sound academic/work decisions",
+    "Higher risk of being scammed in daily life"
+  ],
+  "whyImportant": "👉 Why it matters",
+  "whyImportant_text": "Logic is your first line of defense against scams and essential for learning and work.",
+  "upgrade_hint": "Free shows 1 red card only. Upgrade to unlock 5 red cards + 7-day action plan & AI career match.",
+  "like": "Like",
+  "dislike": "Dislike"
+}

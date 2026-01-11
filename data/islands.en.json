@@ -1,0 +1,8 @@
+{
+  "R": { "code": "R", "name": "Realistic Island", "summary": "Hands-on, practical, outdoor/technical.", "traditionalCareers": ["Carpenter","Electrician","Technician"], "modernCareers": ["Robotics Tech","Renewables O&M"] },
+  "I": { "code": "I", "name": "Investigative Island", "summary": "Analytical, research, evidence-based.", "traditionalCareers": ["Lab Tech","Engineer"], "modernCareers": ["Data Analyst","ML Engineer"] },
+  "A": { "code": "A", "name": "Artistic Island", "summary": "Creative and expressive.", "traditionalCareers": ["Illustrator","Photographer"], "modernCareers": ["UI/UX","Motion Design"] },
+  "S": { "code": "S", "name": "Social Island", "summary": "Helping and educating.", "traditionalCareers": ["Teacher","Counselor"], "modernCareers": ["Community Ops","Customer Success"] },
+  "E": { "code": "E", "name": "Enterprising Island", "summary": "Persuasive, business & leadership.", "traditionalCareers": ["Sales","PR"], "modernCareers": ["Growth Ops","E-commerce Ops"] },
+  "C": { "code": "C", "name": "Conventional Island", "summary": "Order, details, procedures.", "traditionalCareers": ["Accounting","Admin"], "modernCareers": ["Data Governance","Compliance"] }
+}

@@ -1,0 +1,1938 @@
+{
+  "CC": [
+    {
+      "type": "job",
+      "title": {
+        "zh": "AI视觉设计师",
+        "en": "AI Visual Designer"
+      },
+      "category": {
+        "zh": "设计与创意",
+        "en": "Design & Creativity"
+      },
+      "trendScore": 92,
+      "aiTrend": {
+        "zh": "生成式AI重塑视觉岗位，2025–2030年预计年均增长20%+。",
+        "en": "Generative AI reshapes visual roles; 20%+ CAGR expected 2025–2030."
+      },
+      "skills": {
+        "zh": [
+          "AI设计工具",
+          "创意思维",
+          "视觉叙事"
+        ],
+        "en": [
+          "AI design tools",
+          "creative thinking",
+          "visual storytelling"
+        ]
+      }
+    },
+    {
+      "type": "job",
+      "title": {
+        "zh": "XR体验设计师",
+        "en": "XR Experience Designer"
+      },
+      "category": {
+        "zh": "沉浸式体验",
+        "en": "Immersive Experience"
+      },
+      "trendScore": 88,
+      "aiTrend": {
+        "zh": "XR在教育/文旅/培训渗透加深，人才缺口扩大。",
+        "en": "XR penetration deepens in education/culture/training; talent gap widening."
+      },
+      "skills": {
+        "zh": [
+          "Unity/Unreal",
+          "交互设计",
+          "3D建模"
+        ],
+        "en": [
+          "Unity/Unreal",
+          "interaction design",
+          "3D modeling"
+        ]
+      }
+    },
+    {
+      "type": "job",
+      "title": {
+        "zh": "数字艺术家",
+        "en": "Digital Artist"
+      },
+      "category": {
+        "zh": "创意内容",
+        "en": "Creative Content"
+      },
+      "trendScore": 85,
+      "aiTrend": {
+        "zh": "品牌与平台对数字艺术需求增加，AI工具提升产能。",
+        "en": "Brands/platforms increase demand for digital art; AI tools boost productivity."
+      },
+      "skills": {
+        "zh": [
+          "AI绘画",
+          "合成",
+          "审美"
+        ],
+        "en": [
+          "AI imaging",
+          "compositing",
+          "aesthetics"
+        ]
+      }
+    },
+    {
+      "type": "job",
+      "title": {
+        "zh": "虚拟品牌设计师",
+        "en": "Virtual Brand Designer"
+      },
+      "category": {
+        "zh": "品牌与IP",
+        "en": "Brand & IP"
+      },
+      "trendScore": 84,
+      "aiTrend": {
+        "zh": "虚拟人/数字IP加速商业化，沉浸式互动成标配。",
+        "en": "Virtual humans/digital IP accelerate monetization; immersive engagement becomes standard."
+      },
+      "skills": {
+        "zh": [
+          "品牌叙事",
+          "视觉系统",
+          "平台运营"
+        ],
+        "en": [
+          "brand storytelling",
+          "visual systems",
+          "platform ops"
+        ]
+      }
+    },
+    {
+      "type": "job",
+      "title": {
+        "zh": "内容策划师",
+        "en": "Content Strategist"
+      },
+      "category": {
+        "zh": "内容与增长",
+        "en": "Content & Growth"
+      },
+      "trendScore": 80,
+      "aiTrend": {
+        "zh": "短视频与社媒增长驱动策略岗位稳定扩张。",
+        "en": "Short-video and social growth steadily expand strategy roles."
+      },
+      "skills": {
+        "zh": [
+          "脚本",
+          "数据分析",
+          "增长实验"
+        ],
+        "en": [
+          "scripting",
+          "analytics",
+          "growth experiments"
+        ]
+      }
+    },
+    {
+      "type": "job",
+      "title": {
+        "zh": "多模态创意工程师",
+        "en": "Multimodal Creative Engineer"
+      },
+      "category": {
+        "zh": "创意工程",
+        "en": "Creative Engineering"
+      },
+      "trendScore": 87,
+      "aiTrend": {
+        "zh": "AIGC跨图像/音频/视频/3D融合需复合型人才。",
+        "en": "AIGC across image/audio/video/3D needs hybrid talent."
+      },
+      "skills": {
+        "zh": [
+          "提示工程",
+          "脚本自动化",
+          "API调用"
+        ],
+        "en": [
+          "prompting",
+          "scripting",
+          "API usage"
+        ]
+      }
+    },
+    {
+      "type": "startup",
+      "title": {
+        "zh": "AI内容工作室",
+        "en": "AI Content Studio"
+      },
+      "trendScore": 90,
+      "aiTrend": {
+        "zh": "企业/教育/文旅对AI内容外包需求激增。",
+        "en": "Rising demand for outsourced AI content in enterprise/education/culture."
+      },
+      "skills": {
+        "zh": [
+          "商业化",
+          "交付能力",
+          "团队管理"
+        ],
+        "en": [
+          "commercialization",
+          "delivery",
+          "team leadership"
+        ]
+      }
+    },
+    {
+      "type": "startup",
+      "title": {
+        "zh": "沉浸式教育体验馆",
+        "en": "Immersive Education Lab"
+      },
+      "trendScore": 82,
+      "aiTrend": {
+        "zh": "STEAM与职业体验类场景付费意愿提升。",
+        "en": "Higher willingness to pay for STEAM and vocational experiences."
+      },
+      "skills": {
+        "zh": [
+          "课程开发",
+          "XR实现",
+          "运营"
+        ],
+        "en": [
+          "curriculum",
+          "XR implementation",
+          "operations"
+        ]
+      }
+    },
+    {
+      "type": "startup",
+      "title": {
+        "zh": "文化IP孵化",
+        "en": "Cultural IP Incubation"
+      },
+      "trendScore": 78,
+      "aiTrend": {
+        "zh": "细分人群垂直内容与IP具长尾潜力。",
+        "en": "Niche content/IP shows long-tail monetization potential."
+      },
+      "skills": {
+        "zh": [
+          "品牌",
+          "社群",
+          "商业模型"
+        ],
+        "en": [
+          "branding",
+          "community",
+          "business model"
+        ]
+      }
+    }
+  ],
+  "EL": [
+    {
+      "type": "job",
+      "title": {
+        "zh": "产品经理",
+        "en": "Product Manager"
+      },
+      "category": {
+        "zh": "产品与创新",
+        "en": "Product & Innovation"
+      },
+      "trendScore": 86,
+      "aiTrend": {
+        "zh": "AI赋能产品工作流，复合型PM更受欢迎。",
+        "en": "AI-empowered workflows favor hybrid PMs."
+      },
+      "skills": {
+        "zh": [
+          "需求洞察",
+          "数据驱动",
+          "A/B测试"
+        ],
+        "en": [
+          "customer insight",
+          "data-driven",
+          "A/B testing"
+        ]
+      }
+    },
+    {
+      "type": "job",
+      "title": {
+        "zh": "创新战略分析师",
+        "en": "Innovation Strategist"
+      },
+      "category": {
+        "zh": "战略与增长",
+        "en": "Strategy & Growth"
+      },
+      "trendScore": 90,
+      "aiTrend": {
+        "zh": "企业数字化转型加速，创新岗位持续增加。",
+        "en": "Digital transformation accelerates; innovation roles grow."
+      },
+      "skills": {
+        "zh": [
+          "战略分析",
+          "行业研究",
+          "沟通"
+        ],
+        "en": [
+          "strategy",
+          "industry research",
+          "communication"
+        ]
+      }
+    },
+    {
+      "type": "job",
+      "title": {
+        "zh": "AI增长顾问",
+        "en": "AI Growth Consultant"
+      },
+      "category": {
+        "zh": "增长",
+        "en": "Growth"
+      },
+      "trendScore": 88,
+      "aiTrend": {
+        "zh": "AI自动化叠加增长需求，ROI导向强。",
+        "en": "AI automation plus growth needs with strong ROI focus."
+      },
+      "skills": {
+        "zh": [
+          "营销自动化",
+          "数据分析",
+          "实验设计"
+        ],
+        "en": [
+          "marketing automation",
+          "analytics",
+          "experiment design"
+        ]
+      }
+    },
+    {
+      "type": "job",
+      "title": {
+        "zh": "品牌增长经理",
+        "en": "Brand Growth Manager"
+      },
+      "category": {
+        "zh": "品牌",
+        "en": "Brand"
+      },
+      "trendScore": 82,
+      "aiTrend": {
+        "zh": "DTC与私域增长趋势稳定。",
+        "en": "Steady trend in DTC and private-domain growth."
+      },
+      "skills": {
+        "zh": [
+          "品牌策略",
+          "内容运营",
+          "数据洞察"
+        ],
+        "en": [
+          "brand strategy",
+          "content ops",
+          "data insights"
+        ]
+      }
+    },
+    {
+      "type": "job",
+      "title": {
+        "zh": "创业加速器项目官",
+        "en": "Accelerator Program Officer"
+      },
+      "category": {
+        "zh": "创业服务",
+        "en": "Startup Services"
+      },
+      "trendScore": 80,
+      "aiTrend": {
+        "zh": "产业基金/区域政策推动加速器生态。",
+        "en": "Industry funds/regional policies boost accelerator ecosystems."
+      },
+      "skills": {
+        "zh": [
+          "投融资基础",
+          "路演辅导",
+          "资源对接"
+        ],
+        "en": [
+          "VC basics",
+          "pitch coaching",
+          "resource brokering"
+        ]
+      }
+    },
+    {
+      "type": "job",
+      "title": {
+        "zh": "组织发展顾问",
+        "en": "Organization Development Consultant"
+      },
+      "category": {
+        "zh": "组织与人",
+        "en": "Organization & People"
+      },
+      "trendScore": 79,
+      "aiTrend": {
+        "zh": "组织敏捷转型带动OD需求。",
+        "en": "Agile transformation boosts OD demand."
+      },
+      "skills": {
+        "zh": [
+          "沟通",
+          "变革管理",
+          "教练技术"
+        ],
+        "en": [
+          "communication",
+          "change mgmt",
+          "coaching"
+        ]
+      }
+    },
+    {
+      "type": "startup",
+      "title": {
+        "zh": "AI教育平台",
+        "en": "AI Learning Platform"
+      },
+      "trendScore": 90,
+      "aiTrend": {
+        "zh": "个性化学习需求激增，ToC与ToB2C并行。",
+        "en": "Personalized learning surges; both B2C and B2B2C viable."
+      },
+      "skills": {
+        "zh": [
+          "产品",
+          "教学法",
+          "渠道"
+        ],
+        "en": [
+          "product",
+          "pedagogy",
+          "channels"
+        ]
+      }
+    },
+    {
+      "type": "startup",
+      "title": {
+        "zh": "创新咨询公司",
+        "en": "Innovation Consulting"
+      },
+      "trendScore": 84,
+      "aiTrend": {
+        "zh": "传统咨询向AI/创新细分延展。",
+        "en": "Traditional consulting extends to AI/innovation niches."
+      },
+      "skills": {
+        "zh": [
+          "研究",
+          "方案",
+          "交付"
+        ],
+        "en": [
+          "research",
+          "solutioning",
+          "delivery"
+        ]
+      }
+    },
+    {
+      "type": "startup",
+      "title": {
+        "zh": "企业数字化转型顾问",
+        "en": "Enterprise Digital Transformation"
+      },
+      "trendScore": 85,
+      "aiTrend": {
+        "zh": "制造/零售/教育等存在广泛数字化需求。",
+        "en": "Widespread digitization needs across industries."
+      },
+      "skills": {
+        "zh": [
+          "流程优化",
+          "自动化",
+          "变革管理"
+        ],
+        "en": [
+          "process optimization",
+          "automation",
+          "change mgmt"
+        ]
+      }
+    }
+  ],
+  "TP": [
+    {
+      "type": "job",
+      "title": {
+        "zh": "AI伦理顾问",
+        "en": "AI Ethics Consultant"
+      },
+      "category": {
+        "zh": "伦理与治理",
+        "en": "Ethics & Governance"
+      },
+      "trendScore": 88,
+      "aiTrend": {
+        "zh": "法规趋严与大模型应用扩大，伦理审查岗位上升。",
+        "en": "Tighter regulation and LLM adoption lift ethics roles."
+      },
+      "skills": {
+        "zh": [
+          "伦理框架",
+          "政策理解",
+          "沟通"
+        ],
+        "en": [
+          "ethics frameworks",
+          "policy literacy",
+          "communication"
+        ]
+      }
+    },
+    {
+      "type": "job",
+      "title": {
+        "zh": "认知科学研究员",
+        "en": "Cognitive Science Researcher"
+      },
+      "category": {
+        "zh": "研究",
+        "en": "Research"
+      },
+      "trendScore": 82,
+      "aiTrend": {
+        "zh": "脑科学/心理/AI交叉研究活跃。",
+        "en": "Active cross-disciplinary research across brain/psych/AI."
+      },
+      "skills": {
+        "zh": [
+          "实验设计",
+          "统计",
+          "写作"
+        ],
+        "en": [
+          "experiment design",
+          "statistics",
+          "writing"
+        ]
+      }
+    },
+    {
+      "type": "job",
+      "title": {
+        "zh": "知识管理师",
+        "en": "Knowledge Manager"
+      },
+      "category": {
+        "zh": "组织与知识",
+        "en": "Knowledge & Org"
+      },
+      "trendScore": 78,
+      "aiTrend": {
+        "zh": "企业对知识库与SOP沉淀需求提升。",
+        "en": "Rising need for knowledge bases and SOPs."
+      },
+      "skills": {
+        "zh": [
+          "结构化",
+          "写作",
+          "系统思维"
+        ],
+        "en": [
+          "structuring",
+          "writing",
+          "systems thinking"
+        ]
+      }
+    },
+    {
+      "type": "job",
+      "title": {
+        "zh": "未来学研究员",
+        "en": "Foresight Researcher"
+      },
+      "category": {
+        "zh": "趋势与战略",
+        "en": "Foresight & Strategy"
+      },
+      "trendScore": 80,
+      "aiTrend": {
+        "zh": "中长期趋势分析能力需求增强。",
+        "en": "Greater need for long-term foresight capability."
+      },
+      "skills": {
+        "zh": [
+          "趋势研判",
+          "情景规划",
+          "写作"
+        ],
+        "en": [
+          "trend analysis",
+          "scenario planning",
+          "writing"
+        ]
+      }
+    },
+    {
+      "type": "job",
+      "title": {
+        "zh": "学习体验设计师",
+        "en": "Learning Experience Designer"
+      },
+      "category": {
+        "zh": "教育",
+        "en": "Education"
+      },
+      "trendScore": 79,
+      "aiTrend": {
+        "zh": "学习平台与企业培训增长。",
+        "en": "Learning platforms and corporate L&D are growing."
+      },
+      "skills": {
+        "zh": [
+          "教学法",
+          "写作",
+          "产品协作"
+        ],
+        "en": [
+          "pedagogy",
+          "writing",
+          "product collaboration"
+        ]
+      }
+    },
+    {
+      "type": "job",
+      "title": {
+        "zh": "战略写作者",
+        "en": "Strategic Writer"
+      },
+      "category": {
+        "zh": "内容",
+        "en": "Content"
+      },
+      "trendScore": 77,
+      "aiTrend": {
+        "zh": "深度内容/思想产品需求提升。",
+        "en": "Rising demand for deep content and thought products."
+      },
+      "skills": {
+        "zh": [
+          "写作",
+          "结构化",
+          "调研"
+        ],
+        "en": [
+          "writing",
+          "structuring",
+          "research"
+        ]
+      }
+    },
+    {
+      "type": "startup",
+      "title": {
+        "zh": "元认知训练App",
+        "en": "Metacognition Training App"
+      },
+      "trendScore": 82,
+      "aiTrend": {
+        "zh": "青少年/职场对专注与自我管理训练需求大。",
+        "en": "High demand for focus and self-management training."
+      },
+      "skills": {
+        "zh": [
+          "内容设计",
+          "数据追踪",
+          "行为改变"
+        ],
+        "en": [
+          "content design",
+          "data tracking",
+          "behavior change"
+        ]
+      }
+    },
+    {
+      "type": "startup",
+      "title": {
+        "zh": "AI伦理合规咨询",
+        "en": "AI Ethics & Compliance Consulting"
+      },
+      "trendScore": 85,
+      "aiTrend": {
+        "zh": "大模型合规成为企业刚需。",
+        "en": "LLM compliance is a must-have for enterprises."
+      },
+      "skills": {
+        "zh": [
+          "政策理解",
+          "标准化",
+          "审计"
+        ],
+        "en": [
+          "policy",
+          "standardization",
+          "audit"
+        ]
+      }
+    },
+    {
+      "type": "startup",
+      "title": {
+        "zh": "知识产品工作室",
+        "en": "Knowledge Product Studio"
+      },
+      "trendScore": 78,
+      "aiTrend": {
+        "zh": "垂直知识产品变现模型成熟。",
+        "en": "Mature monetization for niche knowledge products."
+      },
+      "skills": {
+        "zh": [
+          "写作",
+          "发行",
+          "社区"
+        ],
+        "en": [
+          "writing",
+          "publishing",
+          "community"
+        ]
+      }
+    }
+  ],
+  "HL": [
+    {
+      "type": "job",
+      "title": {
+        "zh": "健康数据分析师",
+        "en": "Health Data Analyst"
+      },
+      "category": {
+        "zh": "健康科技",
+        "en": "Health Tech"
+      },
+      "trendScore": 86,
+      "aiTrend": {
+        "zh": "可穿戴与数字疗法普及带动数据岗位增长。",
+        "en": "Wearables and digital therapeutics drive data roles."
+      },
+      "skills": {
+        "zh": [
+          "统计",
+          "数据可视化",
+          "健康知识"
+        ],
+        "en": [
+          "statistics",
+          "data visualization",
+          "health literacy"
+        ]
+      }
+    },
+    {
+      "type": "job",
+      "title": {
+        "zh": "AI健身教练",
+        "en": "AI Fitness Coach"
+      },
+      "category": {
+        "zh": "健康服务",
+        "en": "Health Services"
+      },
+      "trendScore": 82,
+      "aiTrend": {
+        "zh": "居家与线上训练兴起，AI个性化指导普及。",
+        "en": "Home/online training rises; AI personalization spreads."
+      },
+      "skills": {
+        "zh": [
+          "运动处方",
+          "沟通",
+          "工具使用"
+        ],
+        "en": [
+          "exercise programming",
+          "communication",
+          "tooling"
+        ]
+      }
+    },
+    {
+      "type": "job",
+      "title": {
+        "zh": "行为疗法研究员",
+        "en": "Behavior Therapy Researcher"
+      },
+      "category": {
+        "zh": "研究",
+        "en": "Research"
+      },
+      "trendScore": 78,
+      "aiTrend": {
+        "zh": "青少年与职场心理需求提升。",
+        "en": "Psychological needs rising among youth and workforce."
+      },
+      "skills": {
+        "zh": [
+          "实验",
+          "评估量表",
+          "写作"
+        ],
+        "en": [
+          "experiments",
+          "measurement",
+          "writing"
+        ]
+      }
+    },
+    {
+      "type": "job",
+      "title": {
+        "zh": "营养与康复顾问",
+        "en": "Nutrition & Rehab Consultant"
+      },
+      "category": {
+        "zh": "健康管理",
+        "en": "Health Management"
+      },
+      "trendScore": 76,
+      "aiTrend": {
+        "zh": "慢病与运动损伤管理市场扩大。",
+        "en": "Chronic disease and injury management markets expand."
+      },
+      "skills": {
+        "zh": [
+          "营养",
+          "康复",
+          "方案制定"
+        ],
+        "en": [
+          "nutrition",
+          "rehab",
+          "program design"
+        ]
+      }
+    },
+    {
+      "type": "job",
+      "title": {
+        "zh": "教育心理顾问",
+        "en": "Educational Psychology Consultant"
+      },
+      "category": {
+        "zh": "教育与心理",
+        "en": "Education & Psychology"
+      },
+      "trendScore": 80,
+      "aiTrend": {
+        "zh": "家庭教育与校园心理服务成为刚需。",
+        "en": "Family and school psychology services are essential."
+      },
+      "skills": {
+        "zh": [
+          "评估",
+          "沟通",
+          "个案辅导"
+        ],
+        "en": [
+          "assessment",
+          "communication",
+          "counseling"
+        ]
+      }
+    },
+    {
+      "type": "job",
+      "title": {
+        "zh": "健康产品经理",
+        "en": "Health Product Manager"
+      },
+      "category": {
+        "zh": "产品",
+        "en": "Product"
+      },
+      "trendScore": 81,
+      "aiTrend": {
+        "zh": "健康App/设备迭代快，产品岗位稳定。",
+        "en": "Fast iteration in health apps/devices; stable PM demand."
+      },
+      "skills": {
+        "zh": [
+          "用户研究",
+          "数据分析",
+          "需求管理"
+        ],
+        "en": [
+          "UX research",
+          "analytics",
+          "requirements"
+        ]
+      }
+    },
+    {
+      "type": "startup",
+      "title": {
+        "zh": "AI健康管理平台",
+        "en": "AI Health Management Platform"
+      },
+      "trendScore": 88,
+      "aiTrend": {
+        "zh": "个性化慢病管理与运动处方空间巨大。",
+        "en": "Huge space in personalized chronic disease management and training."
+      },
+      "skills": {
+        "zh": [
+          "产品",
+          "医学合作",
+          "隐私合规"
+        ],
+        "en": [
+          "product",
+          "medical partnerships",
+          "privacy compliance"
+        ]
+      }
+    },
+    {
+      "type": "startup",
+      "title": {
+        "zh": "心理健康咨询中心",
+        "en": "Mental Wellness Center"
+      },
+      "trendScore": 82,
+      "aiTrend": {
+        "zh": "大众对心理服务接受度提升。",
+        "en": "Public acceptance of mental services increases."
+      },
+      "skills": {
+        "zh": [
+          "咨询",
+          "督导",
+          "运营"
+        ],
+        "en": [
+          "counseling",
+          "supervision",
+          "operations"
+        ]
+      }
+    },
+    {
+      "type": "startup",
+      "title": {
+        "zh": "运动与康复工作室",
+        "en": "Sports & Rehab Studio"
+      },
+      "trendScore": 78,
+      "aiTrend": {
+        "zh": "城市健康意识增强，小型专业工作室发展良好。",
+        "en": "Urban health awareness fuels boutique studio growth."
+      },
+      "skills": {
+        "zh": [
+          "运动处方",
+          "会员管理",
+          "服务"
+        ],
+        "en": [
+          "exercise programming",
+          "membership",
+          "service"
+        ]
+      }
+    }
+  ],
+  "SU": [
+    {
+      "type": "job",
+      "title": {
+        "zh": "碳排放分析师",
+        "en": "Carbon Emissions Analyst"
+      },
+      "category": {
+        "zh": "ESG",
+        "en": "ESG"
+      },
+      "trendScore": 87,
+      "aiTrend": {
+        "zh": "双碳目标推动碳核算成为刚需。",
+        "en": "Net-zero targets make carbon accounting essential."
+      },
+      "skills": {
+        "zh": [
+          "LCA",
+          "数据分析",
+          "法规理解"
+        ],
+        "en": [
+          "LCA",
+          "data analysis",
+          "regulations"
+        ]
+      }
+    },
+    {
+      "type": "job",
+      "title": {
+        "zh": "绿色建筑顾问",
+        "en": "Green Building Consultant"
+      },
+      "category": {
+        "zh": "建筑与城市",
+        "en": "Architecture & Urbanism"
+      },
+      "trendScore": 83,
+      "aiTrend": {
+        "zh": "绿色建筑认证与能耗建模渗透地产/园区。",
+        "en": "Green building certifications and energy modeling spread."
+      },
+      "skills": {
+        "zh": [
+          "建筑物理",
+          "能耗建模",
+          "标准认证"
+        ],
+        "en": [
+          "building physics",
+          "energy modeling",
+          "certification"
+        ]
+      }
+    },
+    {
+      "type": "job",
+      "title": {
+        "zh": "循环经济研究员",
+        "en": "Circular Economy Researcher"
+      },
+      "category": {
+        "zh": "产业与政策",
+        "en": "Industry & Policy"
+      },
+      "trendScore": 79,
+      "aiTrend": {
+        "zh": "制造/物流/消费品加速循环体系探索。",
+        "en": "Industries accelerate exploration of circular systems."
+      },
+      "skills": {
+        "zh": [
+          "系统思维",
+          "数据",
+          "文献"
+        ],
+        "en": [
+          "systems thinking",
+          "data",
+          "literature"
+        ]
+      }
+    },
+    {
+      "type": "job",
+      "title": {
+        "zh": "环境数据分析师",
+        "en": "Environmental Data Analyst"
+      },
+      "category": {
+        "zh": "数据",
+        "en": "Data"
+      },
+      "trendScore": 80,
+      "aiTrend": {
+        "zh": "遥感/物联网/碳管理平台带动数据岗位。",
+        "en": "Remote sensing/IoT/carbon platforms drive data roles."
+      },
+      "skills": {
+        "zh": [
+          "Python",
+          "GIS",
+          "可视化"
+        ],
+        "en": [
+          "Python",
+          "GIS",
+          "visualization"
+        ]
+      }
+    },
+    {
+      "type": "job",
+      "title": {
+        "zh": "ESG报告专家",
+        "en": "ESG Reporting Specialist"
+      },
+      "category": {
+        "zh": "合规",
+        "en": "Compliance"
+      },
+      "trendScore": 81,
+      "aiTrend": {
+        "zh": "ESG披露常态化，报告岗位持续需求。",
+        "en": "ESG disclosure normalizes; steady reporting demand."
+      },
+      "skills": {
+        "zh": [
+          "披露框架",
+          "数据整合",
+          "写作"
+        ],
+        "en": [
+          "disclosure frameworks",
+          "data integration",
+          "writing"
+        ]
+      }
+    },
+    {
+      "type": "job",
+      "title": {
+        "zh": "可持续供应链经理",
+        "en": "Sustainable Supply Chain Manager"
+      },
+      "category": {
+        "zh": "运营",
+        "en": "Operations"
+      },
+      "trendScore": 82,
+      "aiTrend": {
+        "zh": "采购/物流/供应商管理引入可持续要求。",
+        "en": "Sustainability requirements enter procurement/logistics."
+      },
+      "skills": {
+        "zh": [
+          "供应链",
+          "评估",
+          "谈判"
+        ],
+        "en": [
+          "supply chain",
+          "assessment",
+          "negotiation"
+        ]
+      }
+    },
+    {
+      "type": "startup",
+      "title": {
+        "zh": "绿色能源初创",
+        "en": "Green Energy Startup"
+      },
+      "trendScore": 86,
+      "aiTrend": {
+        "zh": "储能/分布式能源/微网具政策与市场双驱。",
+        "en": "Storage/distributed energy/microgrids have policy and market tailwinds."
+      },
+      "skills": {
+        "zh": [
+          "技术路线",
+          "融资",
+          "项目管理"
+        ],
+        "en": [
+          "tech roadmap",
+          "financing",
+          "project management"
+        ]
+      }
+    },
+    {
+      "type": "startup",
+      "title": {
+        "zh": "再生材料创新",
+        "en": "Recycled Materials Innovation"
+      },
+      "trendScore": 80,
+      "aiTrend": {
+        "zh": "材料循环与替代新材需求增长。",
+        "en": "Rising demand for circular and alternative materials."
+      },
+      "skills": {
+        "zh": [
+          "材料科学",
+          "供应链",
+          "合作"
+        ],
+        "en": [
+          "materials science",
+          "supply chain",
+          "partnerships"
+        ]
+      }
+    },
+    {
+      "type": "startup",
+      "title": {
+        "zh": "城市循环经济平台",
+        "en": "Urban Circular Economy Platform"
+      },
+      "trendScore": 82,
+      "aiTrend": {
+        "zh": "面向政府/园区的数据与服务平台前景佳。",
+        "en": "Promising for data/service platforms targeting gov/parks."
+      },
+      "skills": {
+        "zh": [
+          "平台产品",
+          "数据治理",
+          "政企合作"
+        ],
+        "en": [
+          "platform product",
+          "data governance",
+          "public-private partnership"
+        ]
+      }
+    }
+  ],
+  "FF": [
+    {
+      "type": "job",
+      "title": {
+        "zh": "区块链分析师",
+        "en": "Blockchain Analyst"
+      },
+      "category": {
+        "zh": "Web3",
+        "en": "Web3"
+      },
+      "trendScore": 85,
+      "aiTrend": {
+        "zh": "链上数据分析与合规并增，机构化进入加速。",
+        "en": "On-chain analytics and compliance rise; institutional adoption accelerates."
+      },
+      "skills": {
+        "zh": [
+          "链上数据",
+          "SQL",
+          "可视化"
+        ],
+        "en": [
+          "on-chain data",
+          "SQL",
+          "visualization"
+        ]
+      }
+    },
+    {
+      "type": "job",
+      "title": {
+        "zh": "量化交易员",
+        "en": "Quant Trader"
+      },
+      "category": {
+        "zh": "量化",
+        "en": "Quant"
+      },
+      "trendScore": 90,
+      "aiTrend": {
+        "zh": "多资产量化策略迭代加快，对复合人才需求高。",
+        "en": "Faster iteration of multi-asset quant strategies; high demand for hybrid talent."
+      },
+      "skills": {
+        "zh": [
+          "Python",
+          "统计",
+          "风控"
+        ],
+        "en": [
+          "Python",
+          "statistics",
+          "risk"
+        ]
+      }
+    },
+    {
+      "type": "job",
+      "title": {
+        "zh": "数字资产经理",
+        "en": "Digital Asset Manager"
+      },
+      "category": {
+        "zh": "资产管理",
+        "en": "Asset Management"
+      },
+      "trendScore": 82,
+      "aiTrend": {
+        "zh": "托管/合规/风控岗位增加，机构客户增长。",
+        "en": "Custody/compliance/risk roles grow with institutional clients."
+      },
+      "skills": {
+        "zh": [
+          "资产配置",
+          "合规",
+          "客户管理"
+        ],
+        "en": [
+          "asset allocation",
+          "compliance",
+          "client management"
+        ]
+      }
+    },
+    {
+      "type": "job",
+      "title": {
+        "zh": "稳定币架构师",
+        "en": "Stablecoin Architect"
+      },
+      "category": {
+        "zh": "加密金融",
+        "en": "Crypto Finance"
+      },
+      "trendScore": 84,
+      "aiTrend": {
+        "zh": "稳定币在跨境支付/清算中渗透加深。",
+        "en": "Stablecoins deepen in cross-border payment/settlement."
+      },
+      "skills": {
+        "zh": [
+          "机制设计",
+          "智能合约",
+          "风控"
+        ],
+        "en": [
+          "mechanism design",
+          "smart contracts",
+          "risk"
+        ]
+      }
+    },
+    {
+      "type": "job",
+      "title": {
+        "zh": "Web3产品经理",
+        "en": "Web3 Product Manager"
+      },
+      "category": {
+        "zh": "产品",
+        "en": "Product"
+      },
+      "trendScore": 80,
+      "aiTrend": {
+        "zh": "应用层与协议层并行发展，合规意识重要。",
+        "en": "Apps and protocol layers co-develop; compliance awareness matters."
+      },
+      "skills": {
+        "zh": [
+          "用户研究",
+          "代币经济",
+          "合规意识"
+        ],
+        "en": [
+          "UX research",
+          "tokenomics",
+          "compliance awareness"
+        ]
+      }
+    },
+    {
+      "type": "job",
+      "title": {
+        "zh": "加密风控工程师",
+        "en": "Crypto Risk Engineer"
+      },
+      "category": {
+        "zh": "风控",
+        "en": "Risk Control"
+      },
+      "trendScore": 81,
+      "aiTrend": {
+        "zh": "反洗钱/交易监测/合约审计稳步增长。",
+        "en": "AML/trade surveillance/contract auditing grow steadily."
+      },
+      "skills": {
+        "zh": [
+          "合规",
+          "监测",
+          "审计"
+        ],
+        "en": [
+          "compliance",
+          "monitoring",
+          "audit"
+        ]
+      }
+    },
+    {
+      "type": "startup",
+      "title": {
+        "zh": "加密基金",
+        "en": "Crypto Fund"
+      },
+      "trendScore": 84,
+      "aiTrend": {
+        "zh": "细分赛道与合规区域机会并存。",
+        "en": "Opportunities exist in niche sectors and compliant regions."
+      },
+      "skills": {
+        "zh": [
+          "投研",
+          "风控",
+          "募资"
+        ],
+        "en": [
+          "research",
+          "risk",
+          "fundraising"
+        ]
+      }
+    },
+    {
+      "type": "startup",
+      "title": {
+        "zh": "去中心化应用",
+        "en": "Decentralized App (dApp)"
+      },
+      "trendScore": 82,
+      "aiTrend": {
+        "zh": "围绕身份/支付/社交的应用空间扩大。",
+        "en": "Apps around identity/payments/social expand."
+      },
+      "skills": {
+        "zh": [
+          "产品",
+          "合约",
+          "社区"
+        ],
+        "en": [
+          "product",
+          "contracts",
+          "community"
+        ]
+      }
+    },
+    {
+      "type": "startup",
+      "title": {
+        "zh": "数字金融教育平台",
+        "en": "Digital Finance Education Platform"
+      },
+      "trendScore": 78,
+      "aiTrend": {
+        "zh": "大众与从业者培训缺口大，内容+工具并行。",
+        "en": "Large training gap for public/pros; content + tools approach."
+      },
+      "skills": {
+        "zh": [
+          "课程",
+          "内容",
+          "增长"
+        ],
+        "en": [
+          "curriculum",
+          "content",
+          "growth"
+        ]
+      }
+    }
+  ],
+  "FE": [
+    {
+      "type": "job",
+      "title": {
+        "zh": "AI研究工程师",
+        "en": "AI Research Engineer"
+      },
+      "category": {
+        "zh": "AI研究",
+        "en": "AI Research"
+      },
+      "trendScore": 92,
+      "aiTrend": {
+        "zh": "模型与Agent技术快速演进，高阶工程人才紧缺。",
+        "en": "Rapid evolution of models and agents; senior engineers scarce."
+      },
+      "skills": {
+        "zh": [
+          "Python",
+          "LLM",
+          "评测"
+        ],
+        "en": [
+          "Python",
+          "LLM",
+          "evaluation"
+        ]
+      }
+    },
+    {
+      "type": "job",
+      "title": {
+        "zh": "机器人系统架构师",
+        "en": "Robotics Systems Architect"
+      },
+      "category": {
+        "zh": "机器人",
+        "en": "Robotics"
+      },
+      "trendScore": 88,
+      "aiTrend": {
+        "zh": "工业/服务机器人扩张，系统整合岗位增长。",
+        "en": "Industrial/service robotics expand; systems roles grow."
+      },
+      "skills": {
+        "zh": [
+          "控制",
+          "感知",
+          "集成"
+        ],
+        "en": [
+          "control",
+          "perception",
+          "integration"
+        ]
+      }
+    },
+    {
+      "type": "job",
+      "title": {
+        "zh": "虚拟仿真设计师",
+        "en": "Virtual Simulation Designer"
+      },
+      "category": {
+        "zh": "仿真",
+        "en": "Simulation"
+      },
+      "trendScore": 84,
+      "aiTrend": {
+        "zh": "数字孪生/工业仿真/安全培训需求上扬。",
+        "en": "Rising demand in digital twin/industrial simulation/safety training."
+      },
+      "skills": {
+        "zh": [
+          "三维",
+          "物理建模",
+          "脚本"
+        ],
+        "en": [
+          "3D",
+          "physics modeling",
+          "scripting"
+        ]
+      }
+    },
+    {
+      "type": "job",
+      "title": {
+        "zh": "航天数据分析师",
+        "en": "Aerospace Data Analyst"
+      },
+      "category": {
+        "zh": "航天",
+        "en": "Aerospace"
+      },
+      "trendScore": 82,
+      "aiTrend": {
+        "zh": "商用航天发展带来数据与应用岗位增长。",
+        "en": "Commercial space drives data/application roles."
+      },
+      "skills": {
+        "zh": [
+          "遥感",
+          "轨道",
+          "数据"
+        ],
+        "en": [
+          "remote sensing",
+          "orbit",
+          "data"
+        ]
+      }
+    },
+    {
+      "type": "job",
+      "title": {
+        "zh": "脑机接口研究员",
+        "en": "Brain-Computer Interface Researcher"
+      },
+      "category": {
+        "zh": "神经科技",
+        "en": "Neurotech"
+      },
+      "trendScore": 86,
+      "aiTrend": {
+        "zh": "临床/康复/增强应用探索加深。",
+        "en": "Deeper exploration in clinical/rehab/augmentation applications."
+      },
+      "skills": {
+        "zh": [
+          "信号处理",
+          "实验",
+          "伦理"
+        ],
+        "en": [
+          "signal processing",
+          "experiments",
+          "ethics"
+        ]
+      }
+    },
+    {
+      "type": "job",
+      "title": {
+        "zh": "多模态提示工程师",
+        "en": "Multimodal Prompt Engineer"
+      },
+      "category": {
+        "zh": "提示工程",
+        "en": "Prompting"
+      },
+      "trendScore": 87,
+      "aiTrend": {
+        "zh": "跨文本/图像/音频与工具调用的岗位崛起。",
+        "en": "Hybrid roles across text/image/audio and tool use are emerging."
+      },
+      "skills": {
+        "zh": [
+          "提示工程",
+          "评测",
+          "工作流设计"
+        ],
+        "en": [
+          "prompting",
+          "evaluation",
+          "workflow design"
+        ]
+      }
+    },
+    {
+      "type": "startup",
+      "title": {
+        "zh": "AI创新实验室",
+        "en": "AI Innovation Lab"
+      },
+      "trendScore": 88,
+      "aiTrend": {
+        "zh": "垂直行业定制Agent/模型服务需求旺盛。",
+        "en": "High demand for vertical agents/models."
+      },
+      "skills": {
+        "zh": [
+          "产品",
+          "工程",
+          "交付"
+        ],
+        "en": [
+          "product",
+          "engineering",
+          "delivery"
+        ]
+      }
+    },
+    {
+      "type": "startup",
+      "title": {
+        "zh": "空间探索教育",
+        "en": "Space Exploration Education"
+      },
+      "trendScore": 80,
+      "aiTrend": {
+        "zh": "青少年航天/机器人课程具备复购潜力。",
+        "en": "Youth aerospace/robotics courses show strong retention potential."
+      },
+      "skills": {
+        "zh": [
+          "课程",
+          "硬件",
+          "赛事组织"
+        ],
+        "en": [
+          "curriculum",
+          "hardware",
+          "competitions"
+        ]
+      }
+    },
+    {
+      "type": "startup",
+      "title": {
+        "zh": "数字孪生体验公司",
+        "en": "Digital Twin Experience Studio"
+      },
+      "trendScore": 82,
+      "aiTrend": {
+        "zh": "工业/培训/文旅等场景需求扩展。",
+        "en": "Expanding demand in industrial/training/cultural scenarios."
+      },
+      "skills": {
+        "zh": [
+          "三维",
+          "仿真",
+          "项目管理"
+        ],
+        "en": [
+          "3D",
+          "simulation",
+          "project management"
+        ]
+      }
+    }
+  ],
+  "PG": [
+    {
+      "type": "job",
+      "title": {
+        "zh": "数据治理专家",
+        "en": "Data Governance Specialist"
+      },
+      "category": {
+        "zh": "治理",
+        "en": "Governance"
+      },
+      "trendScore": 84,
+      "aiTrend": {
+        "zh": "政府与企业对数据合规与共享提出更高要求。",
+        "en": "Higher requirements for data compliance and sharing."
+      },
+      "skills": {
+        "zh": [
+          "数据治理",
+          "隐私保护",
+          "标准化"
+        ],
+        "en": [
+          "data governance",
+          "privacy",
+          "standards"
+        ]
+      }
+    },
+    {
+      "type": "job",
+      "title": {
+        "zh": "公共创新经理",
+        "en": "Public Innovation Manager"
+      },
+      "category": {
+        "zh": "公共服务",
+        "en": "Public Services"
+      },
+      "trendScore": 80,
+      "aiTrend": {
+        "zh": "城市数字化升级带来服务创新岗位。",
+        "en": "Urban digitization brings service innovation roles."
+      },
+      "skills": {
+        "zh": [
+          "服务设计",
+          "跨部门协作",
+          "数据分析"
+        ],
+        "en": [
+          "service design",
+          "cross-department collaboration",
+          "analytics"
+        ]
+      }
+    },
+    {
+      "type": "job",
+      "title": {
+        "zh": "伦理AI审计官",
+        "en": "Ethical AI Auditor"
+      },
+      "category": {
+        "zh": "审计",
+        "en": "Audit"
+      },
+      "trendScore": 82,
+      "aiTrend": {
+        "zh": "AI审计制度化推进，岗位数量提升。",
+        "en": "Institutionalization of AI audits increases roles."
+      },
+      "skills": {
+        "zh": [
+          "伦理",
+          "合规",
+          "技术理解"
+        ],
+        "en": [
+          "ethics",
+          "compliance",
+          "tech literacy"
+        ]
+      }
+    },
+    {
+      "type": "job",
+      "title": {
+        "zh": "教育政策分析师",
+        "en": "Education Policy Analyst"
+      },
+      "category": {
+        "zh": "教育政策",
+        "en": "Education Policy"
+      },
+      "trendScore": 78,
+      "aiTrend": {
+        "zh": "教育数字化与个性化趋势推动政策研究。",
+        "en": "Education digitization and personalization drive policy research."
+      },
+      "skills": {
+        "zh": [
+          "数据",
+          "写作",
+          "访谈"
+        ],
+        "en": [
+          "data",
+          "writing",
+          "interviews"
+        ]
+      }
+    },
+    {
+      "type": "job",
+      "title": {
+        "zh": "政务数字化转型专家",
+        "en": "Gov Digital Transformation Expert"
+      },
+      "category": {
+        "zh": "数字化",
+        "en": "Digitalization"
+      },
+      "trendScore": 81,
+      "aiTrend": {
+        "zh": "政务云/AI助手等系统建设推进。",
+        "en": "Gov clouds and AI assistants roll out steadily."
+      },
+      "skills": {
+        "zh": [
+          "架构协同",
+          "安全合规",
+          "项目管理"
+        ],
+        "en": [
+          "architecture coordination",
+          "security & compliance",
+          "project management"
+        ]
+      }
+    },
+    {
+      "type": "job",
+      "title": {
+        "zh": "社会研究员",
+        "en": "Social Researcher"
+      },
+      "category": {
+        "zh": "研究",
+        "en": "Research"
+      },
+      "trendScore": 76,
+      "aiTrend": {
+        "zh": "公共议题研究与评估需求稳定。",
+        "en": "Stable demand for public issue research and evaluation."
+      },
+      "skills": {
+        "zh": [
+          "抽样",
+          "问卷",
+          "统计"
+        ],
+        "en": [
+          "sampling",
+          "survey",
+          "statistics"
+        ]
+      }
+    },
+    {
+      "type": "startup",
+      "title": {
+        "zh": "公民科技创新中心",
+        "en": "Civic Tech Innovation Center"
+      },
+      "trendScore": 82,
+      "aiTrend": {
+        "zh": "面向公共问题的科技创新与服务空间广阔。",
+        "en": "Broad space for tech innovation tackling public issues."
+      },
+      "skills": {
+        "zh": [
+          "产品",
+          "合作",
+          "影响评估"
+        ],
+        "en": [
+          "product",
+          "partnerships",
+          "impact evaluation"
+        ]
+      }
+    },
+    {
+      "type": "startup",
+      "title": {
+        "zh": "社会影响力组织",
+        "en": "Social Impact Organization"
+      },
+      "trendScore": 78,
+      "aiTrend": {
+        "zh": "基金会与CSR合作提供资源。",
+        "en": "Partnerships with foundations/CSR provide resources."
+      },
+      "skills": {
+        "zh": [
+          "项目设计",
+          "筹资",
+          "伙伴关系"
+        ],
+        "en": [
+          "program design",
+          "fundraising",
+          "partnerships"
+        ]
+      }
+    },
+    {
+      "type": "startup",
+      "title": {
+        "zh": "教育政策智库",
+        "en": "Education Policy Think Tank"
+      },
+      "trendScore": 76,
+      "aiTrend": {
+        "zh": "个性化教育与AI学习需要研究与建议。",
+        "en": "Personalized education and AI learning need research and advice."
+      },
+      "skills": {
+        "zh": [
+          "研究",
+          "出版",
+          "传播"
+        ],
+        "en": [
+          "research",
+          "publishing",
+          "communication"
+        ]
+      }
+    }
+  ]
+}

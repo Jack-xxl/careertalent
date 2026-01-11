@@ -1,0 +1,167 @@
+{
+  "version": "pro-1.0",
+  "lang": ["zh", "en"],
+  "scale": {
+    "type": "likert4",
+    "labels": {
+      "zh": ["非常符合", "比较符合", "不太符合", "完全不符合"],
+      "en": ["Strongly agree", "Agree", "Disagree", "Strongly disagree"]
+    },
+    "scores": [3, 2, 1, 0]
+  },
+
+  "modules": {
+    "metaIntelligence": {
+      "title": { "zh": "六大元智能", "en": "Six Meta-Intelligences" },
+      "dimensions": [
+        { "code": "CQ",  "name": { "zh": "创新智能",        "en": "Creativity Quotient" }},
+        { "code": "AQ",  "name": { "zh": "适应与任性智能",  "en": "adaptability & Grit Quotient" }},
+        { "code": "XQ",  "name": { "zh": "跨界整合智能",    "en": "Cross-domain Quotient" }},
+        { "code": "FQ",  "name": { "zh": "财商智能",        "en": "Financial Quotient" }},
+        { "code": "DQ",  "name": { "zh": "数字智能",        "en": "Digital Quotient" }},
+        { "code": "SEQ", "name": { "zh": "系统经济智能",    "en": "Systems & Economy Quotient" }}
+      ],
+      "items": [
+        { "id": "CQ-1",  "dim": "CQ",  "zh": "我经常把零散信息重新组合成新点子或新方案。", "en": "I often recombine scattered information into new ideas or solutions." },
+        { "id": "CQ-2",  "dim": "CQ",  "zh": "面对限制条件，我能想出多种可行的替代做法。", "en": "Under constraints, I can generate multiple workable alternatives." },
+        { "id": "CQ-3",  "dim": "CQ",  "zh": "我乐于把创意快速做成雏形并让他人体验。", "en": "I enjoy turning ideas into quick prototypes for others to try." },
+
+        { "id": "AQ-1",  "dim": "AQ",  "zh": "我能觉察到自己的情绪与注意力变化并及时调整。", "en": "I notice shifts in my emotions/attention and adjust promptly." },
+        { "id": "AQ-2",  "dim": "AQ",  "zh": "在压力下我能保持稳定并维持有效行动。",       "en": "I stay stable and effective under pressure." },
+        { "id": "AQ-3",  "dim": "AQ",  "zh": "我会定期复盘并升级自己的行动方式。",         "en": "I regularly review and upgrade how I act and work." },
+
+        { "id": "XQ-1",  "dim": "XQ",  "zh": "我善于把不同学科/行业的方法拼接成一体化方案。", "en": "I combine methods from different domains into integrated solutions." },
+        { "id": "XQ-2",  "dim": "XQ",  "zh": "我能在团队中充当“翻译”，让不同背景的人协同。", "en": "I act as a 'translator' enabling collaboration across backgrounds." },
+        { "id": "XQ-3",  "dim": "XQ",  "zh": "我愿意持续学习陌生领域并快速上手。",         "en": "I’m willing to learn new fields and ramp up quickly." },
+
+        { "id": "FQ-1",  "dim": "FQ",  "zh": "我理解价值、成本、风险与回报的基本关系。",   "en": "I understand basic relations among value, cost, risk and return." },
+        { "id": "FQ-2",  "dim": "FQ",  "zh": "我会用数据来验证商业或投资假设。",           "en": "I use data to validate business or investment hypotheses." },
+        { "id": "FQ-3",  "dim": "FQ",  "zh": "我关注数字经济/代币机制对产业的影响。",       "en": "I track how digital economy/token mechanisms impact industries." },
+
+        { "id": "DQ-1",  "dim": "DQ",  "zh": "我能熟练使用数字工具或AI辅助完成工作。",     "en": "I use digital tools or AI proficiently to get work done." },
+        { "id": "DQ-2",  "dim": "DQ",  "zh": "我愿意把流程数据化、可视化并自动化。",         "en": "I’m willing to digitize, visualize and automate workflows." },
+        { "id": "DQ-3",  "dim": "DQ",  "zh": "我能通过提示工程/参数配置提升AI输出质量。",   "en": "I improve AI outputs via prompt engineering or parameter tuning." },
+
+        { "id": "SEQ-1", "dim": "SEQ", "zh": "我习惯从系统视角分析多方要素与因果链。",     "en": "I analyze multi-factor causal chains from a systems view." },
+        { "id": "SEQ-2", "dim": "SEQ", "zh": "我能把目标拆解为规则、流程与可度量指标。",   "en": "I translate goals into rules, workflows and measurable metrics." },
+        { "id": "SEQ-3", "dim": "SEQ", "zh": "我关注政策/市场/技术变化对整体生态的影响。", "en": "I track how policy/market/tech shifts affect the whole ecosystem." }
+      ]
+    },
+
+    "interests8": {
+      "title": { "zh": "八大新兴趣岛", "en": "Eight New Interest Islands" },
+      "dimensions": [
+        { "code": "CC", "name": { "zh": "创意文化岛", "en": "Creative Culture" }},
+        { "code": "EL", "name": { "zh": "创业领导岛", "en": "Entrepreneurial Leadership" }},
+        { "code": "TP", "name": { "zh": "思想哲学岛", "en": "Thinking & Philosophy" }},
+        { "code": "HL", "name": { "zh": "健康生命岛", "en": "Health & Life" }},
+        { "code": "SU", "name": { "zh": "可持续岛",   "en": "Sustainability" }},
+        { "code": "FF", "name": { "zh": "金融未来岛", "en": "Finance of the Future" }},
+        { "code": "FE", "name": { "zh": "未来探索岛", "en": "Future Exploration" }},
+        { "code": "PG", "name": { "zh": "公共治理岛", "en": "Public Governance" }}
+      ],
+      "items": [
+        { "id": "CC-1", "dim": "CC", "zh": "我喜欢把抽象想法转成可观看/可互动的内容或作品。", "en": "I like turning abstract ideas into viewable or interactive works." },
+        { "id": "CC-2", "dim": "CC", "zh": "我愿意用AI/新技术进行图像、音乐、视频等创作。", "en": "I enjoy creating images/music/video with AI or new tech." },
+        { "id": "CC-3", "dim": "CC", "zh": "作品被传播、互动或共创会让我更有动力。",         "en": "Sharing and co-creation of my work motivates me." },
+
+        { "id": "EL-1", "dim": "EL", "zh": "我愿意整合资源、设目标并带领团队推进项目。",     "en": "I like gathering resources, setting goals and leading teams." },
+        { "id": "EL-2", "dim": "EL", "zh": "我乐于为增长负责，进行数据驱动的实验与迭代。", "en": "I take ownership of growth with data-driven experiments." },
+        { "id": "EL-3", "dim": "EL", "zh": "在不确定中我能果断决策、快速推进。",             "en": "I decide fast and move forward amid uncertainty." },
+
+        { "id": "TP-1", "dim": "TP", "zh": "我喜欢用第一性原理或本质思维理解问题。",         "en": "I enjoy understanding problems via first principles." },
+        { "id": "TP-2", "dim": "TP", "zh": "我会通过阅读/写作梳理并系统化自己的观点。",       "en": "I systemize my views via reading and writing." },
+        { "id": "TP-3", "dim": "TP", "zh": "我会主动质疑既有框架并寻找更优解释。",           "en": "I question existing frameworks and seek better explanations." },
+
+        { "id": "HL-1", "dim": "HL", "zh": "我关心身心健康并愿意帮助他人改善状态与习惯。",   "en": "I care about health and want to help others improve habits." },
+        { "id": "HL-2", "dim": "HL", "zh": "我喜欢把科学训练方法用于运动/康复/学习。",       "en": "I apply scientific methods to training, recovery or learning." },
+        { "id": "HL-3", "dim": "HL", "zh": "做教练/导师/助人角色让我很有意义感。",           "en": "Coaching and mentoring feels meaningful to me." },
+
+        { "id": "SU-1", "dim": "SU", "zh": "我希望参与建设更绿色高效的城市/社区/行业系统。", "en": "I want to build greener, more efficient systems." },
+        { "id": "SU-2", "dim": "SU", "zh": "我会分析复杂系统中要素的相互影响与优化路径。",   "en": "I analyze interactions in complex systems and optimize them." },
+        { "id": "SU-3", "dim": "SU", "zh": "我愿意把可持续理念转化为可执行的流程与标准。",   "en": "I turn sustainability concepts into executable standards." },
+
+        { "id": "FF-1", "dim": "FF", "zh": "我对数字经济、量化投资或风控机制很感兴趣。",     "en": "I'm interested in digital economy, quant investing, or risk control." },
+        { "id": "FF-2", "dim": "FF", "zh": "我愿用数据/模型验证商业或金融假设。",             "en": "I like validating business/finance hypotheses with data/models." },
+        { "id": "FF-3", "dim": "FF", "zh": "我关注代币经济/稳定币/积分体系对产业的影响。",   "en": "I watch how token economies/stablecoins affect industries." },
+
+        { "id": "FE-1", "dim": "FE", "zh": "我对前沿科技如机器人/空间/脑机等充满好奇。",     "en": "I'm curious about frontier tech like robotics/space/BCI." },
+        { "id": "FE-2", "dim": "FE", "zh": "我喜欢把“不可能”的想法做成原型或实验。",        "en": "I turn 'impossible' ideas into prototypes or experiments." },
+        { "id": "FE-3", "dim": "FE", "zh": "我愿在XR/元宇宙/数字孪生中创造新体验或产品。",   "en": "I want to create in XR/metaverse/digital twins." },
+
+        { "id": "PG-1", "dim": "PG", "zh": "我关注公共事务并愿用产品/数据改善公共体验。",   "en": "I care about public affairs and improve them via product/data." },
+        { "id": "PG-2", "dim": "PG", "zh": "我能在规则与伦理框架下推进创新（合规/安全）。", "en": "I drive innovation within rules and ethics (compliance/safety)." },
+        { "id": "PG-3", "dim": "PG", "zh": "我愿搭建机制连接政府、企业与社会组织协作。",     "en": "I build mechanisms connecting gov, business and NGOs to collaborate." }
+      ]
+    },
+
+    "personality": {
+      "title": { "zh": "人格模块（大五+九型+MBTI）", "en": "Personality (Big Five + Enneagram + MBTI)" },
+
+      "big5": {
+        "dimensions": [
+          { "code": "O", "name": { "zh": "开放性",   "en": "Openness" }},
+          { "code": "C", "name": { "zh": "尽责性",   "en": "Conscientiousness" }},
+          { "code": "E", "name": { "zh": "外向性",   "en": "Extraversion" }},
+          { "code": "A", "name": { "zh": "宜人性",   "en": "Agreeableness" }},
+          { "code": "N", "name": { "zh": "情绪稳定", "en": "Emotional Stability (low Neuroticism)" }}
+        ],
+        "items": [
+          { "id": "B5-O-1", "dim": "O", "zh": "我喜欢尝试新事物并拥抱变化。",                   "en": "I enjoy trying new things and embracing change." },
+          { "id": "B5-O-2", "dim": "O", "zh": "抽象/想象性的讨论对我很有吸引力。",             "en": "Abstract or imaginative discussions appeal to me." },
+
+          { "id": "B5-C-1", "dim": "C", "zh": "我会把事情计划好并按步骤完成。",               "en": "I plan tasks and complete them step by step." },
+          { "id": "B5-C-2", "dim": "C", "zh": "我对截止时间保持敏感并准时交付。",             "en": "I’m sensitive to deadlines and deliver on time." },
+
+          { "id": "B5-E-1", "dim": "E", "zh": "我从与人互动中获得能量。",                     "en": "I gain energy from interacting with people." },
+          { "id": "B5-E-2", "dim": "E", "zh": "在群体中我愿意主动发言并组织活动。",           "en": "I speak up and organize activities in groups." },
+
+          { "id": "B5-A-1", "dim": "A", "zh": "我乐于倾听他人并寻求双赢。",                   "en": "I listen to others and seek win–win outcomes." },
+          { "id": "B5-A-2", "dim": "A", "zh": "我愿意在团队中提供支持与协作。",               "en": "I offer support and collaboration in teams." },
+
+          { "id": "B5-N-1", "dim": "N", "zh": "面对压力我能保持情绪稳定。",                   "en": "I remain emotionally stable under stress." },
+          { "id": "B5-N-2", "dim": "N", "zh": "我能较快从挫折中恢复。",                       "en": "I recover quickly from setbacks." }
+        ]
+      },
+
+      "enneagram": {
+        "items": [
+          { "id": "E1", "type": 1, "zh": "我追求正确与改进，倾向较高标准与自律。", "en": "I seek correctness and improvement with high standards and self-discipline." },
+          { "id": "E2", "type": 2, "zh": "我关注他人需要并愿意提供帮助与支持。", "en": "I focus on others' needs and like to offer help and support." },
+          { "id": "E3", "type": 3, "zh": "我以目标与成就为导向，重视效率与结果。", "en": "I’m goal- and achievement-oriented, valuing efficiency and results." },
+          { "id": "E4", "type": 4, "zh": "我重视独特表达与情感深度。",         "en": "I value unique expression and emotional depth." },
+          { "id": "E5", "type": 5, "zh": "我喜欢独立研究并积累知识。",         "en": "I enjoy independent research and accumulating knowledge." },
+          { "id": "E6", "type": 6, "zh": "我重视安全与信任，会提前做风险评估。", "en": "I value safety and trust and assess risks in advance." },
+          { "id": "E7", "type": 7, "zh": "我追求多样体验，乐观并喜欢新鲜感。",   "en": "I seek variety, stay optimistic, and enjoy novelty." },
+          { "id": "E8", "type": 8, "zh": "我直面冲突，敢于担当并保护团队。",   "en": "I face conflicts, take charge, and protect the team." },
+          { "id": "E9", "type": 9, "zh": "我倾向维持和谐，避免激烈对立。",       "en": "I tend to maintain harmony and avoid sharp confrontation." },
+          { "id": "E10","type": 0, "zh": "在压力中我会回避或拖延，需外界推动。", "en": "Under stress I may avoid or delay, needing external push." }
+        ]
+      },
+
+      "mbti": {
+        "pairs": ["EI", "SN", "TF", "JP"],
+        "items": [
+          { "id": "M-EI-1", "dim": "EI", "pole": "E", "zh": "与人社交让我充电；独处太久会消耗能量。", "en": "Socializing recharges me; too much solitude drains me." },
+          { "id": "M-EI-2", "dim": "EI", "pole": "I", "zh": "我更喜欢深度一对一，而非多人社交。",     "en": "I prefer deep one-to-one over large-group socializing." },
+
+          { "id": "M-SN-1", "dim": "SN", "pole": "S", "zh": "我信任事实与细节胜过直觉与猜测。",       "en": "I trust facts and details over intuition and guesses." },
+          { "id": "M-SN-2", "dim": "SN", "pole": "N", "zh": "我更关注可能性与趋势而非当下细节。",     "en": "I focus on possibilities and trends rather than details." },
+
+          { "id": "M-TF-1", "dim": "TF", "pole": "T", "zh": "我以逻辑与原则来做决定。",               "en": "I make decisions using logic and principles." },
+          { "id": "M-TF-2", "dim": "TF", "pole": "F", "zh": "我更看重感受与关系对决策的影响。",       "en": "I value feelings and relationships in decisions." },
+
+          { "id": "M-JP-1", "dim": "JP", "pole": "J", "zh": "我偏好有计划与结论，而非开放式推进。",   "en": "I prefer plans and closure over open-ended progress." },
+          { "id": "M-JP-2", "dim": "JP", "pole": "P", "zh": "我喜欢保留弹性，随环境变化调整。",       "en": "I like flexibility and adapt as things change." }
+        ]
+      },
+
+      "composite": {
+        "items": [
+          { "id": "CP-1", "zh": "当信息相互矛盾时，我会暂停、查证再做决定。", "en": "When information conflicts, I pause, verify, then decide." },
+          { "id": "CP-2", "zh": "我能在理性分析与同理沟通之间找到平衡点。",   "en": "I balance rational analysis with empathetic communication." }
+        ]
+      }
+    }
+  }
+}

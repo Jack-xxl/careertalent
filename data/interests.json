@@ -1,0 +1,110 @@
+[
+  {
+    "id": 1,
+    "stem": {
+      "zh": "我喜欢修理或组装器械",
+      "en": "I like fixing or assembling things"
+    },
+    "type": "like",
+    "dimension": "R"
+  },
+  {
+    "id": 2,
+    "stem": {
+      "zh": "我喜欢在实验室或通过研究找答案",
+      "en": "I enjoy research/experiments to find answers"
+    },
+    "type": "like",
+    "dimension": "I"
+  },
+  {
+    "id": 3,
+    "stem": {
+      "zh": "我喜欢写作、绘画或表演",
+      "en": "I like writing, drawing or performing"
+    },
+    "type": "like",
+    "dimension": "A"
+  },
+  {
+    "id": 4,
+    "stem": {
+      "zh": "我喜欢帮助他人解决问题",
+      "en": "I enjoy helping people solve problems"
+    },
+    "type": "like",
+    "dimension": "S"
+  },
+  {
+    "id": 5,
+    "stem": {
+      "zh": "我喜欢带领团队、做决定",
+      "en": "I like leading teams and making decisions"
+    },
+    "type": "like",
+    "dimension": "E"
+  },
+  {
+    "id": 6,
+    "stem": {
+      "zh": "我喜欢处理数据、表格和细节",
+      "en": "I like working with data, tables and details"
+    },
+    "type": "like",
+    "dimension": "C"
+  },
+  {
+    "id": 7,
+    "stem": {
+      "zh": "我喜欢户外或动手的活动",
+      "en": "I enjoy outdoor or hands-on activities"
+    },
+    "type": "like",
+    "dimension": "R"
+  },
+  {
+    "id": 8,
+    "stem": {
+      "zh": "我喜欢分析现象并提出假设",
+      "en": "I enjoy analyzing phenomena and hypothesizing"
+    },
+    "type": "like",
+    "dimension": "I"
+  },
+  {
+    "id": 9,
+    "stem": {
+      "zh": "我常常有独特的点子和创意",
+      "en": "I often have unique ideas and creativity"
+    },
+    "type": "like",
+    "dimension": "A"
+  },
+  {
+    "id": 10,
+    "stem": {
+      "zh": "我擅长倾听并理解他人感受",
+      "en": "I listen well and understand others’ feelings"
+    },
+    "type": "like",
+    "dimension": "S"
+  },
+  {
+    "id": 11,
+    "stem": {
+      "zh": "我乐于说服他人、推进项目",
+      "en": "I like persuading others and driving projects"
+    },
+    "type": "like",
+    "dimension": "E"
+  },
+  {
+    "id": 12,
+    "stem": {
+      "zh": "我喜欢有规则与秩序的环境",
+      "en": "I like orderly, rule-based environments"
+    },
+    "type": "like",
+    "dimension": "C"
+  }
+]

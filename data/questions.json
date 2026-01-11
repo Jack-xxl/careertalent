@@ -1,0 +1,242 @@
+[
+  {
+    "id": 1,
+    "stem": { "zh": "在背诗或有韵律的词句时很出色", "en": "Good at reciting poems or rhythmic lines" },
+    "type": "boolean",
+    "dimension": "语言"
+  },
+  {
+    "id": 2,
+    "stem": { "zh": "能注意到他人的情绪变化", "en": "Notice others’ mood changes" },
+    "type": "boolean",
+    "dimension": "人际"
+  },
+
+  {
+    "id": 3,
+    "stem": {
+      "zh": "有一栋三层的小楼，住着小猫、小狗和小兔子。\n规则：\n- 小猫不住在第一层\n- 小狗必须爬楼梯才能去小猫家\n- 小兔子不住在顶层\n\n根据这些条件，可以确定：小狗住在第二层。对吗？",
+      "en": "Three animals live on three floors with constraints. Based on the rules, can we determine that the dog lives on the second floor?"
+    },
+    "type": "boolean",
+    "dimension": "逻辑",
+    "answer": true
+  },
+
+  {
+    "id": 4,
+    "stem": { "zh": "很少迷路", "en": "Rarely gets lost (good sense of direction)" },
+    "type": "boolean",
+    "dimension": "空间"
+  },
+  {
+    "id": 5,
+    "stem": { "zh": "随音乐律动的动作很优美", "en": "Moves gracefully to music" },
+    "type": "boolean",
+    "dimension": "肢体"
+  },
+  {
+    "id": 6,
+    "stem": { "zh": "唱歌时音准很好", "en": "Sings on pitch" },
+    "type": "boolean",
+    "dimension": "音乐"
+  },
+
+  {
+    "id": 7,
+    "stem": {
+      "zh": "已知规则：红色代表停止，绿色代表前进。\n现在把规则换成形状：圆形代表前进，三角形代表停止。\n\n如果看到三角形，就应该前进。对吗？",
+      "en": "If triangle means stop and circle means go, then seeing a triangle means you should go. Is this correct?"
+    },
+    "type": "boolean",
+    "dimension": "逻辑",
+    "answer": false
+  },
+
+  {
+    "id": 8,
+    "stem": { "zh": "别人用词不当你会纠正", "en": "Often corrects others’ word usage" },
+    "type": "boolean",
+    "dimension": "语言"
+  },
+  {
+    "id": 9,
+    "stem": { "zh": "很早会系鞋带或学会骑车", "en": "Learnt tying laces/cycling early" },
+    "type": "boolean",
+    "dimension": "肢体"
+  },
+  {
+    "id": 10,
+    "stem": { "zh": "特别喜欢扮演角色并编剧情", "en": "Likes role-playing/creating stories" },
+    "type": "boolean",
+    "dimension": "自知"
+  },
+  {
+    "id": 11,
+    "stem": { "zh": "旅行能记住沿途标记", "en": "Remembers landmarks when travelling" },
+    "type": "boolean",
+    "dimension": "空间"
+  },
+  {
+    "id": 12,
+    "stem": { "zh": "喜欢听各种乐器并能分辨", "en": "Enjoys instruments and can tell them apart" },
+    "type": "boolean",
+    "dimension": "音乐"
+  },
+  {
+    "id": 13,
+    "stem": { "zh": "画画对物体描绘清晰", "en": "Draws objects clearly" },
+    "type": "boolean",
+    "dimension": "空间"
+  },
+  {
+    "id": 14,
+    "stem": { "zh": "善于模仿肢体动作和表情", "en": "Imitates movements/expressions well" },
+    "type": "boolean",
+    "dimension": "肢体"
+  },
+
+  {
+    "id": 15,
+    "stem": {
+      "zh": "小明搭积木城堡：第一座1层，第二座3层，第三座6层，第四座10层。\n\n按照这个规律，第五座城堡应该比第四座多5层。对吗？",
+      "en": "Given the sequence 1, 3, 6, 10, the fifth tower should have 5 more floors than the fourth. Is this correct?"
+    },
+    "type": "boolean",
+    "dimension": "逻辑",
+    "answer": true
+  },
+
+  {
+    "id": 16,
+    "stem": { "zh": "会把动作与情感联系起来", "en": "Links actions with feelings" },
+    "type": "boolean",
+    "dimension": "自知"
+  },
+  {
+    "id": 17,
+    "stem": { "zh": "能精彩地讲故事", "en": "Tells stories vividly" },
+    "type": "boolean",
+    "dimension": "语言"
+  },
+  {
+    "id": 18,
+    "stem": { "zh": "能对不同的声音发表意见", "en": "Comments on different sounds/music" },
+    "type": "boolean",
+    "dimension": "音乐"
+  },
+  {
+    "id": 19,
+    "stem": { "zh": "常说“她使我想起了谁”", "en": "Often says “she reminds me of …”" },
+    "type": "boolean",
+    "dimension": "人际"
+  },
+  {
+    "id": 20,
+    "stem": { "zh": "能对别人完成的事作出准确评价", "en": "Gives accurate judgments on others’ work" },
+    "type": "boolean",
+    "dimension": "自知"
+  },
+  {
+    "id": 21,
+    "stem": { "zh": "看电影能很快看出坏蛋是谁", "en": "Spots the villain quickly in films" },
+    "type": "boolean",
+    "dimension": "人际"
+  },
+  {
+    "id": 22,
+    "stem": { "zh": "观察力强能发现细节", "en": "Strong observation for details" },
+    "type": "boolean",
+    "dimension": "空间"
+  },
+  {
+    "id": 23,
+    "stem": { "zh": "说话早，表达能力强", "en": "Early talker / expressive" },
+    "type": "boolean",
+    "dimension": "语言"
+  },
+  {
+    "id": 24,
+    "stem": { "zh": "喜欢下棋打牌", "en": "Likes chess/cards" },
+    "type": "boolean",
+    "dimension": "逻辑"
+  },
+  {
+    "id": 25,
+    "stem": { "zh": "学歌学得快", "en": "Learns songs quickly" },
+    "type": "boolean",
+    "dimension": "音乐"
+  },
+  {
+    "id": 26,
+    "stem": { "zh": "熟练掌握各种工具器械", "en": "Skilled with tools/equipment" },
+    "type": "boolean",
+    "dimension": "肢体"
+  },
+  {
+    "id": 27,
+    "stem": { "zh": "不卑不亢，有自信", "en": "Confident / self-assured" },
+    "type": "boolean",
+    "dimension": "自知"
+  },
+  {
+    "id": 28,
+    "stem": { "zh": "有“眼力劲”，能应付客人", "en": "Good social sense dealing with people" },
+    "type": "boolean",
+    "dimension": "人际"
+  },
+  {
+    "id": 29,
+    "stem": { "zh": "很少不知所措", "en": "Rarely at a loss" },
+    "type": "boolean",
+    "dimension": "空间"
+  },
+  {
+    "id": 30,
+    "stem": { "zh": "喜欢读书，毋需大人督促", "en": "Reads without being urged" },
+    "type": "boolean",
+    "dimension": "语言"
+  },
+
+  {
+    "id": 31,
+    "stem": {
+      "zh": "小明看到一条信息：“这个机会只有很少的人能得到，现在只剩下一个位置。如果你现在不决定，这个机会就会给别人。”\n\n因为名额很少、时间很急，就可以判断这是一个好机会。对吗？",
+      "en": "Because the opportunity is scarce and urgent, it can be judged as a good opportunity. Is this correct?"
+    },
+    "type": "boolean",
+    "dimension": "逻辑",
+    "answer": false
+  },
+
+  {
+    "id": 32,
+    "stem": { "zh": "从小爱摆弄乐器", "en": "Loved instruments from young" },
+    "type": "boolean",
+    "dimension": "音乐"
+  },
+  {
+    "id": 33,
+    "stem": { "zh": "拆装玩具折纸的能手", "en": "Good at assembling/disassembling, crafts" },
+    "type": "boolean",
+    "dimension": "肢体"
+  },
+  {
+    "id": 34,
+    "stem": { "zh": "知道如何计划自己的事情", "en": "Knows how to plan own tasks" },
+    "type": "boolean",
+    "dimension": "自知"
+  },
+  {
+    "id": 35,
+    "stem": { "zh": "喜欢养动植物", "en": "Likes animals/plants" },
+    "type": "boolean",
+    "dimension": "自然"
+  },
+  {
+    "id": 36,
+    "stem": { "zh": "能分不同动植物的品种", "en": "Can distinguish species" },
+    "type": "boolean",
+    "dimension": "自然"
+  }
+]

@@ -1,0 +1,440 @@
+{
+  "CC": {
+    "code": "CC",
+    "name": {
+      "zh": "创意文化岛",
+      "en": "Creative Culture Island"
+    },
+    "summary": {
+      "zh": "AI创意·内容创新·文化科技融合",
+      "en": "AI creativity, content innovation, and cultural tech integration."
+    },
+    "keywords": {
+      "zh": [
+        "设计",
+        "艺术",
+        "叙事",
+        "品牌",
+        "AI创作"
+      ],
+      "en": [
+        "design",
+        "art",
+        "storytelling",
+        "brand",
+        "AI creation"
+      ]
+    },
+    "traditionalCareers": {
+      "zh": [
+        "视觉设计师",
+        "品牌策划师",
+        "广告文案"
+      ],
+      "en": [
+        "Visual Designer",
+        "Brand Planner",
+        "Copywriter"
+      ]
+    },
+    "modernCareers": {
+      "zh": [
+        "AI视觉设计师",
+        "数字艺术家",
+        "XR体验设计师",
+        "虚拟品牌设计师",
+        "内容策划师",
+        "多模态创意工程师"
+      ],
+      "en": [
+        "AI Visual Designer",
+        "Digital Artist",
+        "XR Experience Designer",
+            "Virtual Brand Designer",
+        "Content Strategist",
+        "Multimodal Creative Engineer"
+      ]
+    }
+  },
+  "EL": {
+    "code": "EL",
+    "name": {
+      "zh": "创业领导岛",
+      "en": "Entrepreneurial Leadership Island"
+    },
+    "summary": {
+      "zh": "商业创新·组织领导·AI时代创业力",
+      "en": "Business innovation, organizational leadership, and AI-era entrepreneurship."
+    },
+    "keywords": {
+      "zh": [
+        "创业",
+        "领导力",
+        "增长",
+        "战略"
+      ],
+      "en": [
+        "entrepreneurship",
+        "leadership",
+        "growth",
+        "strategy"
+      ]
+    },
+    "traditionalCareers": {
+      "zh": [
+        "企业经理",
+        "项目负责人",
+        "销售主管"
+      ],
+      "en": [
+        "Corporate Manager",
+        "Project Lead",
+        "Sales Supervisor"
+      ]
+    },
+    "modernCareers": {
+      "zh": [
+        "产品经理",
+        "创新战略分析师",
+        "AI增长顾问",
+        "品牌增长经理",
+        "创业加速器项目官",
+        "组织发展顾问"
+      ],
+      "en": [
+        "Product Manager",
+        "Innovation Strategist",
+        "AI Growth Consultant",
+        "Brand Growth Manager",
+        "Accelerator Program Officer",
+        "Organization Development Consultant"
+      ]
+    }
+  },
+  "TP": {
+    "code": "TP",
+    "name": {
+      "zh": "思想哲学岛",
+      "en": "Thought & Philosophy Island"
+    },
+    "summary": {
+      "zh": "本质思考·研究与写作·科技伦理",
+      "en": "First-principles thinking, research & writing, and tech ethics."
+    },
+    "keywords": {
+      "zh": [
+        "思辨",
+        "写作",
+        "伦理",
+        "教育"
+      ],
+      "en": [
+        "critical thinking",
+        "writing",
+        "ethics",
+        "education"
+      ]
+    },
+    "traditionalCareers": {
+      "zh": [
+        "教师",
+        "编辑",
+        "研究员"
+      ],
+      "en": [
+        "Teacher",
+        "Editor",
+        "Researcher"
+      ]
+    },
+    "modernCareers": {
+      "zh": [
+        "AI伦理顾问",
+        "认知科学研究员",
+        "知识管理师",
+        "未来学研究员",
+        "学习体验设计师",
+        "战略写作者"
+      ],
+      "en": [
+        "AI Ethics Consultant",
+        "Cognitive Science Researcher",
+        "Knowledge Manager",
+        "Foresight Researcher",
+        "Learning Experience Designer",
+        "Strategic Writer"
+      ]
+    }
+  },
+  "HL": {
+    "code": "HL",
+    "name": {
+      "zh": "健康生命岛",
+      "en": "Health & Life Island"
+    },
+    "summary": {
+      "zh": "健康科技·心理成长·运动与生命科学",
+      "en": "Health tech, mental growth, sports, and life sciences."
+    },
+    "keywords": {
+      "zh": [
+        "健康",
+        "心理",
+        "运动",
+        "康复"
+      ],
+      "en": [
+        "health",
+        "psychology",
+        "sports",
+        "rehab"
+      ]
+    },
+    "traditionalCareers": {
+      "zh": [
+        "营养顾问",
+        "运动教练",
+        "护理师"
+      ],
+      "en": [
+        "Nutritionist",
+        "Coach",
+        "Nurse"
+      ]
+    },
+    "modernCareers": {
+      "zh": [
+        "健康数据分析师",
+        "AI健身教练",
+        "行为疗法研究员",
+        "营养与康复顾问",
+        "教育心理顾问",
+        "健康产品经理"
+      ],
+      "en": [
+        "Health Data Analyst",
+        "AI Fitness Coach",
+        "Behavior Therapy Researcher",
+        "Nutrition & Rehab Consultant",
+        "Educational Psychology Consultant",
+        "Health Product Manager"
+      ]
+    }
+  },
+  "SU": {
+    "code": "SU",
+    "name": {
+      "zh": "可持续岛",
+      "en": "Sustainability Island"
+    },
+    "summary": {
+      "zh": "ESG·碳中和·绿色科技与系统优化",
+      "en": "ESG, net-zero transition, green tech, and systems optimization."
+    },
+    "keywords": {
+      "zh": [
+        "ESG",
+        "碳中和",
+        "循环经济",
+        "城市更新"
+      ],
+      "en": [
+        "ESG",
+        "net zero",
+        "circular economy",
+        "urban renewal"
+      ]
+    },
+    "traditionalCareers": {
+      "zh": [
+        "环保工程师",
+        "城市规划师"
+      ],
+      "en": [
+        "Environmental Engineer",
+        "Urban Planner"
+      ]
+    },
+    "modernCareers": {
+      "zh": [
+        "碳排放分析师",
+        "绿色建筑顾问",
+        "循环经济研究员",
+        "环境数据分析师",
+        "ESG报告专家",
+        "可持续供应链经理"
+      ],
+      "en": [
+        "Carbon Emissions Analyst",
+        "Green Building Consultant",
+        "Circular Economy Researcher",
+        "Environmental Data Analyst",
+        "ESG Reporting Specialist",
+        "Sustainable Supply Chain Manager"
+      ]
+    }
+  },
+  "FF": {
+    "code": "FF",
+    "name": {
+      "zh": "金融未来岛",
+      "en": "Future Finance Island"
+    },
+    "summary": {
+      "zh": "数字经济·智能投研·Web3与去中心化金融",
+      "en": "Digital economy, intelligent investing, Web3, and decentralized finance."
+    },
+    "keywords": {
+      "zh": [
+        "区块链",
+        "量化",
+        "风控",
+        "资产配置"
+      ],
+      "en": [
+        "blockchain",
+        "quant",
+        "risk management",
+        "asset allocation"
+      ]
+    },
+    "traditionalCareers": {
+      "zh": [
+        "金融分析师",
+        "审计",
+        "会计"
+      ],
+      "en": [
+        "Financial Analyst",
+        "Auditor",
+        "Accountant"
+      ]
+    },
+    "modernCareers": {
+      "zh": [
+        "区块链分析师",
+        "量化交易员",
+        "数字资产经理",
+        "稳定币架构师",
+        "Web3产品经理",
+        "加密风控工程师"
+      ],
+      "en": [
+        "Blockchain Analyst",
+        "Quant Trader",
+        "Digital Asset Manager",
+        "Stablecoin Architect",
+        "Web3 Product Manager",
+        "Crypto Risk Engineer"
+      ]
+    }
+  },
+  "FE": {
+    "code": "FE",
+    "name": {
+      "zh": "未来探索岛",
+      "en": "Future Exploration Island"
+    },
+    "summary": {
+      "zh": "科技创新·前沿研究·太空·AI·元宇宙",
+      "en": "Technological innovation, frontier research, space, AI, and the metaverse."
+    },
+    "keywords": {
+      "zh": [
+        "AI",
+        "机器人",
+        "航天",
+        "XR",
+        "前沿科研"
+      ],
+      "en": [
+        "AI",
+        "robotics",
+        "space",
+        "XR",
+        "frontier research"
+      ]
+    },
+    "traditionalCareers": {
+      "zh": [
+        "工程师",
+        "科研助理"
+      ],
+      "en": [
+        "Engineer",
+        "Research Assistant"
+      ]
+    },
+    "modernCareers": {
+      "zh": [
+        "AI研究工程师",
+        "机器人系统架构师",
+        "虚拟仿真设计师",
+        "航天数据分析师",
+        "脑机接口研究员",
+        "多模态提示工程师"
+      ],
+      "en": [
+        "AI Research Engineer",
+        "Robotics Systems Architect",
+        "Virtual Simulation Designer",
+        "Aerospace Data Analyst",
+        "Brain-Computer Interface Researcher",
+        "Multimodal Prompt Engineer"
+      ]
+    }
+  },
+  "PG": {
+    "code": "PG",
+    "name": {
+      "zh": "公共治理岛",
+      "en": "Public Governance Island"
+    },
+    "summary": {
+      "zh": "公共服务·数据治理·隐私与社会创新",
+      "en": "Public services, data governance, privacy, and social innovation."
+    },
+    "keywords": {
+      "zh": [
+        "政策",
+        "治理",
+        "合规",
+        "隐私"
+      ],
+      "en": [
+        "policy",
+        "governance",
+        "compliance",
+        "privacy"
+      ]
+    },
+    "traditionalCareers": {
+      "zh": [
+        "政府事务专员",
+        "政策研究员"
+      ],
+      "en": [
+        "Public Affairs Specialist",
+        "Policy Researcher"
+      ]
+    },
+    "modernCareers": {
+      "zh": [
+        "数据治理专家",
+        "公共创新经理",
+        "伦理AI审计官",
+        "教育政策分析师",
+        "政务数字化转型专家",
+        "社会研究员"
+      ],
+      "en": [
+        "Data Governance Specialist",
+        "Public Innovation Manager",
+        "Ethical AI Auditor",
+        "Education Policy Analyst",
+        "Gov Digital Transformation Expert",
+        "Social Researcher"
+      ]
+    }
+  }
+}
