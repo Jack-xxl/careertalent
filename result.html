@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>T层测评结果 - TalentAI</title>
+
+  <!-- 结果页样式（你已有） -->
+  <link rel="stylesheet" href="css/result.css" />
+  <style>
+    .radar-container { animation: none !important; }
+    .locked-career-card .unlock-mosaic { transition: opacity 0.6s ease-in-out; }
+    .locked-career-card:hover .unlock-mosaic { opacity: 0; pointer-events: none; }
+  </style>
+  <!-- Chart.js：必须是纯URL -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+
+<body>
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <!-- 加载动画 -->
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div id="loading" class="loading-screen">
+    <div class="spinner"></div>
+    <p>正在生成您的专属天赋报告...</p>
+    <p id="loading-hint" style="opacity:.7;font-size:14px;margin-top:8px;">请稍候…</p>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <!-- 主内容 -->
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div id="main-content" class="container" style="display:none;">
+
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <!-- 页面顶部 - 欢迎区域 -->
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <section class="welcome-section">
+      <h1>🎉 恭喜完成T层天赋测评！</h1>
+      <p class="subtitle">你已经迈出了自我认知的第一步。下面是你的专属天赋DNA报告。</p>
+
+      <div class="metadata">
+        <span>⏱️ 完成时间：<strong id="completion-time">-</strong> 分钟</span>
+        <span>📊 答题完成度：<strong id="completion-count">40/40</strong> 题</span>
+        <span>🎯 报告生成时间：<strong id="report-time">-</strong></span>
+      </div>
+
+      <div class="talent-label-card">
+        <div class="label-icon">🏷️</div>
+        <div class="label-content">
+          <p class="label-title">你的天赋标签</p>
+          <h2 id="talent-label" class="talent-label">-</h2>
+          <p id="talent-nickname" style="margin:8px 0 0;opacity:.85;">“ - ”</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <!-- 第1部分：你的天赋雷达图 -->
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <section class="radar-section">
+      <h2>📊 你的8大智能全景图</h2>
+      <p class="section-desc">
+        这张雷达图展示了你在8个核心智能维度上的天赋水平。每个维度满分10分，得分越高代表天赋越突出。
+      </p>
+
+      <div class="radar-container">
+        <canvas id="radar-chart"></canvas>
+      </div>
+
+      <!-- 8大智能维度说明（保留原内容，不变：你可放回原文） -->
+      <div class="radar-tips">
+        <p>💡 <strong>理解你的雷达图</strong></p>
+        <ul>
+          <li>没有“完美”的雷达图，每个人都有独特的天赋组合</li>
+          <li>高分区域是你的天然优势，值得深度发展</li>
+          <li>中等区域通过刻意练习可以提升</li>
+          <li>低分区域不是缺陷，而是提示你寻找互补伙伴</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <!-- 第2部分：Top 3天赋详解（优化版） -->
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <section class="top3-section">
+      <h2>🏆 你最强的3项天赋</h2>
+      <p class="section-desc">
+        这是你的“天赋王牌”，在这些领域你可以用更少的努力获得更好的结果。发挥这些优势，是你职业成功的关键。
+      </p>
+
+      <div id="top3-talents" class="talents-grid">
+        <!-- result-generator.js 动态生成 -->
+      </div>
+
+      <div id="talent-combination" class="combination-card">
+        <!-- result-generator.js 动态生成 -->
+      </div>
+
+      <div id="conflict-warnings" class="conflict-card" style="display:none;">
+        <h3>⚠️ 结构冲突预警（初步）</h3>
+        <p>基于你当前天赋结构，我们发现：</p>
+        <ul id="conflict-list"></ul>
+        <div class="conflict-cta">
+          <p>👉 <strong>是否存在职业冲突？</strong></p>
+          <p>👉 <strong>是否存在性格磨损风险？</strong></p>
+          <p>👉 <strong>解锁完整5层分析查看详情</strong></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <!-- 第4部分：职业家族匹配 -->
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <section class="family-section">
+      <h2>🎭 你的8大职业家族匹配度</h2>
+      <p class="section-desc">
+        基于你的天赋组合，我们计算了你与8种职业家族的匹配度。每个家族代表一类核心工作特质。
+      </p>
+
+      <div class="formula-card">
+        <p><strong>匹配度计算公式：</strong></p>
+        <code>匹配度 = (天赋权重 × 0.35) + (家族核心能力匹配 × 0.25) + (能力结构相关度 × 0.40)</code>
+      </div>
+
+      <div id="career-families" class="family-grid">
+        <!-- result-generator.js 动态生成 -->
+      </div>
+    </section>
+
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <!-- 第5部分：Top 5职业推荐（优化版） -->
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <section class="careers-section">
+      <h2>🎯 基于你的天赋，推荐职业 Top 5</h2>
+
+      <div class="warning-box">
+        <p><strong>⚠️ 这只是基于天赋的初步推荐</strong></p>
+        <p>真正适合你的职业，还需要综合考虑：</p>
+        <ul>
+          <li>你的性格特质（P层）- 在这个职业里，你会感到快乐还是窒息？</li>
+          <li>你真正在乎什么（W层）- 什么能驱动你长期投入？</li>
+          <li>你的思维方式（M层）- 当AI每月更新一个版本时，你是被甩下车还是能稳坐副驾驶？</li>
+          <li>你的AI适配力（A层）- 你如何应对AI时代？</li>
+        </ul>
+      </div>
+
+      <div id="career-list" class="careers-grid">
+        <!-- result-generator.js 动态生成 -->
+      </div>
+
+      <div class="why-full-test">
+        <h3>🎯 同样的天赋，不同的路径</h3>
+        <p>这就是为什么需要完整测评。</p>
+
+        <div class="test-reasons">
+          <p>天赋只是基础（Can I do it?）</p>
+          <p>性格决定舒适度（Will I enjoy it?）</p>
+          <p>驱动决定持续性（Will I stick to it?）</p>
+          <p>思维决定成长性（Can I grow in it?）</p>
+        </div>
+      </div>
+
+      <!-- 案例区（你后续可替换成原来的完整案例HTML，这里给容器不丢结构） -->
+      <div id="case-section" class="case-section" style="margin-top:24px;">
+        <h3>为什么只是“初步推荐”？</h3>
+        <p>两个逻辑能力都是 8.5 的人，走向可能完全不同。</p>
+        <div id="case-cards"></div>
+      </div>
+    </section>
+
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <!-- 第6部分：付费墙（优化版） -->
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <section class="paywall-section" id="paywall">
+      <h2>🔓 立即解锁你的完整职业路径</h2>
+      <p class="paywall-subtitle">只需5分钟，看清真正适合你的职业</p>
+
+      <div class="cost-warning">
+        <h4>⚠️ 重大职业决策的试错成本</h4>
+        <p>根据统计，职业选择失误的平均成本：</p>
+        <ul>
+          <li>时间成本：1-3年</li>
+          <li>机会成本：学习曲线重置</li>
+          <li>心理成本：职业倦怠和转型焦虑</li>
+        </ul>
+        <p class="highlight">重大职业决策的平均试错成本远高于本测评价格。</p>
+      </div>
+
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <div class="card-header">
+            <h3>寻路者套餐</h3>
+            <div class="price">
+              <span class="currency">¥</span>
+              <span class="amount">49</span>
+            </div>
+          </div>
+
+          <div class="card-content">
+            <h4>【解锁内容】</h4>
+            <ul class="features">
+              <li>✓ T层 Top1 和 Top3 职业详解</li>
+              <li>✓ P层性格完整测评（30题）</li>
+              <li>✓ 性格与职业匹配分析</li>
+              <li>✓ 情绪磨损风险评估</li>
+            </ul>
+
+            <h4>【适合人群】</h4>
+            <p>想快速了解自己最适合的职业</p>
+
+            <button class="buy-btn" onclick="buyPackage('pathfinder')">立即购买</button>
+          </div>
+        </div>
+
+        <div class="pricing-card recommended">
+          <div class="recommend-badge">推荐</div>
+          <div class="card-header">
+            <h3>导航者套餐</h3>
+            <div class="price">
+              <span class="currency">¥</span>
+              <span class="amount">199</span>
+              <span class="original">原价 ¥299</span>
+            </div>
+          </div>
+
+          <div class="card-content">
+            <h4>【解锁内容】</h4>
+            <ul class="features">
+              <li>✓ T层完整报告（天赋DNA）</li>
+              <li>✓ P层完整报告（性格特质）</li>
+              <li>✓ W层完整报告（价值驱动）</li>
+              <li>✓ M层完整报告（思维方式）</li>
+              <li>✓ A层完整报告（AI适配力）</li>
+              <li>✓ Top 5职业完整解读</li>
+              <li>✓ AI替代风险详细分析</li>
+              <li>✓ 5年职业演化模拟</li>
+              <li>✓ 情绪磨损风险等级评估</li>
+              <li>✓ 3-5年职业路径规划</li>
+              <li>✓ 两年内再赠送一次免费测试</li>
+            </ul>
+
+            
+
+            <button class="buy-btn primary" onclick="buyPackage('navigator')">立即购买</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 对比表格容器（你后续可放原表格，这里给容器不丢结构） -->
+      <div id="pricing-compare" style="margin-top:24px;"></div>
+
+      <div class="guarantee-box">
+        <p>⏰ <strong>现在购买，立即解锁</strong> - 无需等待，支付后立即查看完整报告</p>
+        <p>🔒 <strong>隐私保证</strong> - 所有数据加密存储，仅你可见，绝不向第三方泄露</p>
+      </div>
+    </section>
+
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <!-- 第7部分：5层说明 -->
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <section class="layers-section">
+      <h2>🎯 完整测评：5层人才DNA解析</h2>
+      <p class="section-desc">
+        真正了解一个人的职业潜力，需要5个层面的综合分析。就像盖房子，每一层都不可或缺。
+      </p>
+
+      <div class="layers-grid">
+        <div class="layer-card completed">
+          <h3>T层 - 天赋基因层 ✅</h3>
+          <p class="layer-question">核心问题：你能做什么？</p>
+          <p>天赋决定了你“能”做什么，以及做起来是否轻松。</p>
+        </div>
+
+        <div class="layer-card">
+          <h3>P层 - 性格特质层</h3>
+          <p class="layer-question">在这个职业里，你会感到快乐还是窒息？</p>
+          <p>性格决定了你“愿意”做什么，以及做起来是否舒适。</p>
+        </div>
+
+        <div class="layer-card">
+          <h3>W层 - 价值驱动层</h3>
+          <p class="layer-question">什么能真正激励你？</p>
+          <p>驱动力决定了你能坚持做什么，以及做起来是否有意义。</p>
+        </div>
+
+        <div class="layer-card">
+          <h3>M层 - 思维方式层</h3>
+          <p class="layer-question">当AI每月更新一个版本时，你是被甩下车还是能稳坐副驾驶？</p>
+          <p>思维方式决定了你如何成长，以及能否持续进阶。</p>
+        </div>
+
+        <div class="layer-card">
+          <h3>A层 - AI适配力层</h3>
+          <p class="layer-question">你如何应对AI时代？</p>
+          <p>AI适配力决定你的职业“保质期”，以及未来竞争力。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 针对家长用户特别板块 -->
+    <section class="parent-section" style="margin-top:24px;">
+      <h2>📚 为什么家长需要了解孩子的天赋？</h2>
+      <p>12-18岁是价值观形成的关键期。过早的应试压力可能会压抑孩子天生的创造力。</p>
+      <div id="parent-roadmap"></div>
+    </section>
+
+    <!-- 页面底部 - 行动号召 -->
+    <footer class="footer">
+      <div class="footer-cta">
+        <h2>🎯 不要让迷茫再浪费你的时间</h2>
+        <p>你已经完成了第一步——了解你的天赋。</p>
+        <p>现在，只需要5分钟，你就能看到真正适合你的职业。</p>
+        <button class="cta-button" onclick="buyPackage('navigator')">立即解锁完整报告 ¥49起</button>
+
+        <div id="social-proof" style="margin-top:12px;opacity:.85;"></div>
+      </div>
+
+      <div class="footer-info">
+        <p>© 2026 TalentAI | <a href="#">隐私政策</a> | <a href="#">用户协议</a> | <a href="#">联系我们</a></p>
+        <p>客服时间：9:00-21:00</p>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <!-- ✅ 脚本加载顺序（非常关键） -->
+  <!-- 1) engine.js：结果计算引擎 -->
+  <!-- 2) result-generator.js：渲染拼装层 -->
+  <!-- 3) result.js：加载数据 + 调用 + 渲染 -->
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <script src="js/engine.js"></script>
+  <script src="js/result-generator.js"></script>
+  <script src="js/result.js"></script>
+</body>
+</html>

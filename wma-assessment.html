@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>深度测评 W+M+A - TalentAI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/main.css">
+  <style>
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    .option-card {
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+    .option-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+    }
+    .option-card.selected {
+      border-color: #667eea;
+      background: rgba(102, 126, 234, 0.12);
+      box-shadow: 0 0 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .cheer-emoji { animation: bounceIn 0.6s ease-out; }
+    @keyframes bounceIn {
+      0% { transform: scale(0.4); opacity: 0; }
+      70% { transform: scale(1.1); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .progress-fill { transition: width 1s ease; }
+
+    .calc-step { transition: all 0.4s; }
+    .calc-step.active { color: #a78bfa; border-color: rgba(167,139,250,0.4); animation: stepPulse 1s ease-in-out infinite; }
+    .calc-step.done { color: #34d399; border-color: rgba(52,211,153,0.3); }
+    @keyframes stepPulse {
+      0%,100% { background: rgba(255,255,255,0.03); }
+      50% { background: rgba(167,139,250,0.08); }
+    }
+
+    .qr-placeholder {
+      width: 160px; height: 160px;
+      border: 2px dashed rgba(234,179,8,0.4);
+      border-radius: 12px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 8px; color: #6b7280; font-size: 12px;
+    }
+
+    .force-badge {
+      display: inline-block;
+      padding: 3px 12px; border-radius: 20px;
+      font-size: 11px; font-weight: 700; letter-spacing: 1px;
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.3);
+      color: #f87171; margin-bottom: 12px;
+    }
+
+    #question-scenario {
+      background: rgba(102,126,234,0.06);
+      border: 1px solid rgba(102,126,234,0.2);
+      border-radius: 10px; padding: 12px 16px;
+      font-size: 14px; color: #9ca3af;
+      line-height: 1.8; white-space: pre-line;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+
+  <!-- Header -->
+  <header class="glass-card border-b border-gray-800 sticky top-0 z-50">
+    <div class="max-w-5xl mx-auto px-4 py-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-4">
+          <a href="index.html" class="text-2xl font-black gradient-text">TalentAI</a>
+          <span class="text-gray-400 text-sm" id="current-layer-badge">深度测评</span>
+        </div>
+        <div class="flex items-center gap-6">
+          <div class="text-right">
+            <div class="text-sm text-gray-400">进度</div>
+            <div class="text-lg font-bold" id="prog-text">0/68</div>
+          </div>
+          <div class="flex items-center gap-2">
+            <i class="fas fa-clock text-purple-400"></i>
+            <span id="timer-display" class="font-mono text-lg">00:00</span>
+          </div>
+        </div>
+      </div>
+      <div class="mt-4 bg-gray-800 rounded-full h-2 overflow-hidden">
+        <div id="prog-fill" class="h-full bg-gradient-to-r from-purple-600 to-pink-500 progress-fill" style="width:0%"></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto px-4 py-12">
+
+    <!-- ── 付费页 ── -->
+    <div id="payment-screen" class="screen active">
+      <div class="glass-card neon-border p-10 rounded-2xl text-center max-w-xl mx-auto">
+
+        <div class="inline-block px-4 py-1 rounded-full text-xs font-bold tracking-widest mb-6"
+             style="background:rgba(234,179,8,0.1);border:1px solid rgba(234,179,8,0.3);color:#fbbf24">
+          ✦ 完整版测评 · 五层职业生态报告
+        </div>
+
+        <div class="w-20 h-20 mx-auto mb-6 rounded-full flex items-center justify-center text-4xl"
+             style="background:rgba(234,179,8,0.08);border:1px solid rgba(234,179,8,0.25)">
+          🌊
+        </div>
+
+        <h1 class="text-3xl font-black mb-3">你已完成T+P两层测评</h1>
+        <p class="text-gray-400 mb-8 leading-relaxed">
+          再完成 <strong class="text-white">W · M · A 三层测评（68题）</strong><br>
+          生成你专属的AI时代五层职业生态导航报告
+        </p>
+
+        <div class="grid grid-cols-3 gap-4 mb-8 text-left">
+          <div class="glass-card p-4 rounded-xl">
+            <div class="text-2xl mb-2">🧭</div>
+            <div class="font-bold text-sm mb-1">W层·驱动价值</div>
+            <div class="text-xs text-gray-400">你真正在乎什么·24题</div>
+          </div>
+          <div class="glass-card p-4 rounded-xl">
+            <div class="text-2xl mb-2">🧠</div>
+            <div class="font-bold text-sm mb-1">M层·元智能</div>
+            <div class="text-xs text-gray-400">你的思维操作系统·20题</div>
+          </div>
+          <div class="glass-card p-4 rounded-xl">
+            <div class="text-2xl mb-2">🚀</div>
+            <div class="font-bold text-sm mb-1">A层·AI适配力</div>
+            <div class="text-xs text-gray-400">AI时代生存位置·20题</div>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-center gap-4 mb-8">
+          <span class="text-gray-500 line-through text-xl">¥299</span>
+          <span class="text-5xl font-black" style="color:#fbbf24">¥150</span>
+          <span class="text-gray-400 text-sm">已享¥49优惠</span>
+        </div>
+
+        <div class="glass-card p-6 rounded-xl mb-6">
+          <div class="qr-placeholder mx-auto mb-3">
+            <!-- 上线时替换为真实收款码：<img src="images/qr-pay.png" width="160"> -->
+            <span class="text-3xl">📱</span>
+            <span>支付二维码</span>
+            <span style="font-size:10px;color:#4b5563">此处替换为真实二维码图片</span>
+          </div>
+          <p class="text-sm text-gray-400 mb-3">扫码支付 · 支付成功后点击下方按钮继续</p>
+          <div class="flex justify-center gap-3">
+            <span class="text-xs px-3 py-1 rounded-full glass-card text-gray-400">💚 微信支付</span>
+            <span class="text-xs px-3 py-1 rounded-full glass-card text-gray-400">🔵 支付宝</span>
+          </div>
+        </div>
+
+        <button onclick="onPaySuccess()" class="neon-btn text-white w-full py-4 rounded-xl font-bold text-lg mb-3">
+          ✅ 我已支付，开始深度测评
+        </button>
+        <p class="text-xs text-gray-600">⚙️ 开发模式：点击直接进入（上线后替换为支付验证）</p>
+      </div>
+    </div>
+
+    <!-- ── 层间过渡鼓励卡 ── -->
+    <div id="transition-screen" class="screen">
+      <div class="glass-card neon-border p-10 rounded-2xl text-center max-w-xl mx-auto">
+
+        <div class="cheer-emoji text-7xl mb-6" id="trans-emoji">🎉</div>
+
+        <div class="inline-block px-4 py-1 rounded-full text-sm font-bold mb-4"
+             style="background:rgba(234,179,8,0.1);border:1px solid rgba(234,179,8,0.3);color:#fbbf24"
+             id="trans-cheer">太棒了！</div>
+
+        <h2 class="text-3xl font-black mb-3" id="trans-title"></h2>
+        <p class="text-gray-400 leading-relaxed mb-8" id="trans-desc"></p>
+
+        <div class="glass-card p-5 rounded-xl text-left mb-8">
+          <div class="text-xs tracking-widest text-purple-400 font-bold mb-3">下一层 →</div>
+          <div class="font-bold text-lg mb-1" id="trans-next-name"></div>
+          <div class="text-sm text-gray-400 mb-1" id="trans-next-desc"></div>
+          <div class="text-xs text-gray-500" id="trans-next-time"></div>
+        </div>
+
+        <div class="mb-8">
+          <div class="flex justify-between text-sm text-gray-400 mb-2">
+            <span id="trans-progress-label">总体进度</span>
+            <span id="trans-progress-pct">0%</span>
+          </div>
+          <div class="bg-gray-800 rounded-full h-2 overflow-hidden">
+            <div id="trans-progress-fill" class="h-full bg-gradient-to-r from-purple-600 to-pink-500 progress-fill" style="width:0%"></div>
+          </div>
+        </div>
+
+        <button onclick="startNextLayer()" class="neon-btn text-white px-12 py-4 rounded-xl font-bold text-lg">
+          继续测评 →
+        </button>
+      </div>
+    </div>
+
+    <!-- ── 答题页 ── -->
+    <div id="question-screen" class="screen">
+
+      <div class="mb-6 flex items-center justify-between">
+        <div class="glass-card px-5 py-2 rounded-full">
+          <span class="text-sm text-gray-400">当前层：</span>
+          <span id="current-layer-badge-q" class="font-bold text-purple-400 ml-1">W层</span>
+        </div>
+        <div class="text-sm text-gray-400" id="current-layer-q">第 1 / 24 题</div>
+      </div>
+
+      <div class="glass-card neon-border p-8 rounded-2xl mb-8">
+        <div class="text-sm text-gray-500 mb-2">
+          全局第 <span id="question-number-global">1</span> 题
+        </div>
+        <div id="force-choice-label" class="force-badge" style="display:none">
+          ⚡ 强迫二选一 · 只能选其中一个
+        </div>
+        <h2 id="question-text" class="text-2xl font-bold leading-relaxed mb-4">题目加载中...</h2>
+        <div id="question-scenario" style="display:none"></div>
+        <div id="options-container" class="space-y-4"></div>
+      </div>
+
+      <div class="flex items-center justify-between">
+        <button onclick="prevQuestion()" id="btn-prev"
+          class="glass-card px-6 py-3 rounded-lg font-semibold hover:bg-white/10 transition" disabled>
+          <i class="fas fa-arrow-left mr-2"></i>上一题
+        </button>
+        <button onclick="saveProgress()" class="text-gray-500 hover:text-white transition text-sm">
+          <i class="fas fa-pause-circle mr-1"></i>暂停保存
+        </button>
+        <button onclick="nextQuestion()" id="btn-next"
+          class="neon-btn px-6 py-3 rounded-lg font-semibold" disabled>
+          下一题<i class="fas fa-arrow-right ml-2"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- ── 计算动画 ── -->
+    <div id="loading-screen" class="screen">
+      <div class="glass-card neon-border p-12 rounded-2xl text-center max-w-lg mx-auto">
+        <div class="w-24 h-24 mx-auto mb-6">
+          <svg class="animate-spin" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="40" stroke="currentColor" stroke-width="8" fill="none" class="text-gray-700"/>
+            <circle cx="50" cy="50" r="40" stroke="currentColor" stroke-width="8" fill="none" class="text-purple-500"
+                    stroke-dasharray="251" stroke-dashoffset="125" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h2 class="text-2xl font-bold mb-2">正在生成你的专属报告</h2>
+        <p class="text-gray-400 mb-8">五层数据交叉分析中，请稍候……</p>
+        <div class="space-y-3 text-left">
+          <div id="cs0" class="calc-step glass-card border border-gray-700 p-4 rounded-xl flex items-center gap-4 text-gray-500">
+            <span class="cs-ic text-xl w-7 text-center">⚙️</span>
+            <div class="flex-1">W层驱动维度计算中<div id="db0" class="text-xs text-purple-400 mt-1"></div></div>
+          </div>
+          <div id="cs1" class="calc-step glass-card border border-gray-700 p-4 rounded-xl flex items-center gap-4 text-gray-500">
+            <span class="cs-ic text-xl w-7 text-center">⚙️</span>
+            <div class="flex-1">M层元智能维度分析中<div id="db1" class="text-xs text-purple-400 mt-1"></div></div>
+          </div>
+          <div id="cs2" class="calc-step glass-card border border-gray-700 p-4 rounded-xl flex items-center gap-4 text-gray-500">
+            <span class="cs-ic text-xl w-7 text-center">⚙️</span>
+            <div class="flex-1">A层AI适配力评估中<div id="db2" class="text-xs text-purple-400 mt-1"></div></div>
+          </div>
+          <div id="cs3" class="calc-step glass-card border border-gray-700 p-4 rounded-xl flex items-center gap-4 text-gray-500">
+            <span class="cs-ic text-xl w-7 text-center">⚙️</span>
+            <div class="flex-1">T×P×W×M×A 五层冲突检测<div id="db3" class="text-xs text-purple-400 mt-1"></div></div>
+          </div>
+          <div id="cs4" class="calc-step glass-card border border-gray-700 p-4 rounded-xl flex items-center gap-4 text-gray-500">
+            <span class="cs-ic text-xl w-7 text-center">⚙️</span>
+            <div class="flex-1">职业生态路径匹配中<div id="db4" class="text-xs text-purple-400 mt-1"></div></div>
+          </div>
+          <div id="cs5" class="calc-card glass-card border border-gray-700 p-4 rounded-xl flex items-center gap-4 text-gray-500">
+            <span class="cs-ic text-xl w-7 text-center">⚙️</span>
+            <div class="flex-1">生成专属深度报告<div id="db5" class="text-xs text-green-400 mt-1"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 完成页 ── -->
+    <div id="done-screen" class="screen">
+      <div class="glass-card neon-border p-12 rounded-2xl text-center max-w-lg mx-auto">
+        <div class="text-7xl mb-6">🎯</div>
+        <h2 class="text-3xl font-black mb-4">测评完成！</h2>
+        <p class="text-gray-400 mb-8 leading-relaxed">
+          你的五层深度报告已生成<br>正在为你跳转到完整报告……
+        </p>
+        <button onclick="window.location.href='wma-result.html'"
+          class="neon-btn text-white px-12 py-4 rounded-xl font-bold text-lg">
+          查看我的完整报告 →
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    (function(){
+      const nickname = localStorage.getItem('talentai_user_nickname') || '同学';
+      const badge = document.getElementById('current-layer-badge');
+      if (badge) badge.textContent = `你好 ${nickname}，开始你的五层测评`;
+    })();
+  </script>
+  <script src="js/wma-assessment.js"></script>
+</body>
+</html>
+

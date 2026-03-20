@@ -1,0 +1,37 @@
+{
+  "tracks": [
+    {
+      "track_id": "content_creation",
+      "track_name": "内容创作",
+      "family": "Creator",
+      "required_T": { "T1": 0.9, "T3": 0.7, "T7": 0.6, "T4": 0.5 },
+      "required_P": { "openness": 0.9, "conscientiousness": 0.5, "extraversion": 0.6 },
+      "ability_gates": { "T1": 55 }
+    },
+    {
+      "track_id": "visual_design",
+      "track_name": "视觉设计",
+      "family": "Creator",
+      "required_T": { "T3": 0.95, "T1": 0.6, "T4": 0.5, "T7": 0.5 },
+      "required_P": { "openness": 0.9, "conscientiousness": 0.6 },
+      "ability_gates": { "T3": 60 }
+    },
+    {
+      "track_id": "ai_engineering",
+      "track_name": "AI工程",
+      "family": "Solver",
+      "required_T": { "T2": 0.95, "T3": 0.8, "T7": 0.6, "T8": 0.4 },
+      "required_P": { "conscientiousness": 0.85, "openness": 0.6, "neuroticism": -0.6 },
+      "ability_gates": { "T2": 65, "T3": 55 }
+    },
+    {
+      "track_id": "education",
+      "track_name": "教育",
+      "family": "Helper",
+      "required_T": { "T1": 0.85, "T6": 0.8, "T7": 0.6, "T2": 0.5 },
+      "required_P": { "agreeableness": 0.8, "conscientiousness": 0.7, "extraversion": 0.5 },
+      "ability_gates": { "T1": 55, "T6": 55 }
+    }
+  ]
+}
+

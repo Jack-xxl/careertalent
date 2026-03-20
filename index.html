@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TalentAI - 五层测评 · AI时代职业生态匹配</title>
+  <style>
+    :root{
+      --bg:#0d1117;
+      --bg2:#0f172a;
+      --panel:rgba(255,255,255,0.05);
+      --panel2:rgba(255,255,255,0.035);
+      --border:rgba(255,255,255,0.09);
+      --text:#eef2ff;
+      --muted:rgba(238,242,255,0.72);
+      --muted2:rgba(238,242,255,0.48);
+      --primary1:#f59e0b;
+      --primary2:#fbbf24;
+      --purple:#8b5cf6;
+      --blue:#3b82f6;
+      --green:#10b981;
+      --radius:20px;
+      --shadow:0 14px 40px rgba(0,0,0,0.22);
+      --shadow2:0 10px 28px rgba(0,0,0,0.35);
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      min-height:100vh;
+      color:var(--text);
+      font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Segoe UI",sans-serif;
+      line-height:1.65;
+      background:linear-gradient(180deg, #0d1117 0%, #1a1f2e 100%);
+      overflow-x:hidden;
+    }
+    a{color:inherit;text-decoration:none}
+    button{font-family:inherit}
+
+    .container{max-width:1140px;margin:0 auto;padding:0 16px}
+
+    /* NAV */
+    .nav{
+      position:fixed;top:0;left:0;right:0;z-index:50;
+      background:rgba(13,17,23,0.72);
+      border-bottom:1px solid rgba(255,255,255,0.08);
+      backdrop-filter:blur(10px);
+    }
+    .nav-inner{
+      height:72px;display:flex;align-items:center;justify-content:space-between;gap:14px;
+    }
+    .brand{display:flex;align-items:center;gap:12px;font-weight:900;letter-spacing:0.2px}
+    .logoMark{
+      width:42px;height:42px;border-radius:14px;
+      background:linear-gradient(135deg, rgba(245,158,11,.25), rgba(139,92,246,.18));
+      border:1px solid rgba(245,158,11,.35);
+      box-shadow:0 0 0 6px rgba(245,158,11,.05) inset;
+      display:flex;align-items:center;justify-content:center;font-size:18px;
+    }
+    .brand .name{display:flex;flex-direction:column;gap:2px}
+    .brand .name b{font-size:20px}
+    .brand .name small{display:none}
+
+    .nav-actions{display:flex;align-items:center;gap:12px}
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:10px;
+      padding:11px 18px;border-radius:14px;cursor:pointer;
+      border:1px solid rgba(255,255,255,0.12);
+      background:rgba(255,255,255,0.03);color:var(--text);
+      font-weight:900;font-size:14px;white-space:nowrap;
+      transition:transform .15s ease, background .2s ease, border-color .2s ease;
+      user-select:none;
+    }
+    .btn:hover{transform:translateY(-1px)}
+    .btn:active{transform:translateY(0px)}
+    .btn-outline{background:transparent;border-color:rgba(148,163,184,0.35);color:rgba(238,242,255,0.92)}
+    .btn-outline:hover{border-color:rgba(245,158,11,0.65)}
+    .btn-primary{
+      border:none;
+      background:linear-gradient(135deg, var(--primary1) 0%, var(--primary2) 100%);
+      color:#1b1305;box-shadow:0 10px 28px rgba(245,158,11,0.18);
+    }
+    .btn-primary:hover{box-shadow:0 14px 36px rgba(245,158,11,0.24)}
+    .btn-large{padding:14px 22px;border-radius:16px;font-size:16px}
+    .hide-mobile{display:inline-flex}
+    .mobile-only{display:none}
+
+    /* Fade-in */
+    .reveal{opacity:0;transform:translateY(14px);transition:opacity .7s ease, transform .7s ease}
+    .reveal.in-view{opacity:1;transform:translateY(0)}
+
+    /* Sections */
+    .section{padding:92px 0}
+    .section:first-of-type{padding-top:110px}
+    .values-section{padding-top:140px}
+
+    /* Hero */
+    .hero{position:relative;padding-top:120px;padding-bottom:76px}
+    .hero-grid{
+      display:grid;grid-template-columns:1.25fr 0.75fr;gap:22px;align-items:center;
+    }
+    .hero-left{display:flex;flex-direction:column;gap:16px;text-align:center;align-items:center}
+    .hero h1{
+      font-size:48px;line-height:1.15;font-weight:1000;letter-spacing:-0.4px;
+    }
+    .hero h1 .grad{
+      background:linear-gradient(135deg, #fbbf24, #f59e0b, #8b5cf6);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    }
+    .hero p{max-width:720px;color:var(--muted);font-size:16px}
+    .hero-cta{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:8px}
+    .hero small{color:rgba(238,242,255,0.55);font-weight:900}
+
+    .hero-right{position:relative;min-height:260px;display:flex;align-items:center;justify-content:center}
+    .radar{width:min(420px, 90%);opacity:.95;filter:drop-shadow(0 18px 50px rgba(0,0,0,.28))}
+    .radar .ring{stroke:rgba(255,255,255,0.09);stroke-width:1;fill:none}
+    .radar .grid{stroke:rgba(245,158,11,0.24);stroke-width:1;fill:none}
+    .radar .blob{fill:rgba(245,158,11,0.10);stroke:rgba(245,158,11,0.60);stroke-width:2}
+
+    /* Titles */
+    .h2-title{font-size:30px;font-weight:1000;letter-spacing:-0.2px;margin-bottom:6px}
+    .section-desc{color:var(--muted);font-size:15px;margin-bottom:26px;max-width:780px}
+
+    /* Values */
+    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .card{
+      padding:18px;border-radius:18px;background:var(--panel);
+      border:1px solid rgba(255,255,255,0.08);box-shadow:var(--shadow);
+      backdrop-filter:blur(8px);min-height:210px;display:flex;flex-direction:column;gap:12px;
+    }
+    .card .icon{width:44px;height:44px;border-radius:16px;background:linear-gradient(135deg, rgba(245,158,11,0.12), rgba(139,92,246,0.08));border:1px solid rgba(245,158,11,0.25);display:flex;align-items:center;justify-content:center;font-size:20px}
+    .card h3{font-size:18px;font-weight:1000}
+    .card p{color:var(--muted);font-size:14.5px}
+
+    /* Process */
+    .timeline{display:flex;gap:14px;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+    .step{
+      flex:1 1 220px;min-width:220px;padding:18px;border-radius:18px;
+      background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);
+      position:relative;overflow:hidden;
+    }
+    .step::after{
+      content:"";position:absolute;inset:-1px;
+      background:radial-gradient(circle at top left, rgba(245,158,11,0.12), transparent 45%);
+      pointer-events:none;
+    }
+    .step b{display:block;font-size:15px;font-weight:1000;margin-bottom:6px;position:relative}
+    .step span{color:var(--muted);font-size:14px;position:relative}
+    .timeline-arrow{flex:0 0 28px;display:flex;align-items:center;justify-content:center;color:rgba(245,158,11,0.75);font-weight:1000;margin-top:18px}
+    .process-sub{color:rgba(238,242,255,0.72);font-weight:900;margin-top:10px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+    .process-sub .chip{padding:10px 14px;border-radius:999px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08)}
+
+    /* Reviews */
+    .reviews{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .review{
+      padding:18px;border-radius:18px;background:var(--panel);
+      border:1px solid rgba(255,255,255,0.08);box-shadow:var(--shadow);
+      display:flex;flex-direction:column;gap:12px;min-height:260px;
+    }
+    .review-top{display:flex;gap:12px;align-items:center}
+    .avatar{
+      width:44px;height:44px;border-radius:50%;
+      background:linear-gradient(135deg, rgba(245,158,11,0.20), rgba(59,130,246,0.12));
+      border:1px solid rgba(255,255,255,0.10);display:flex;align-items:center;justify-content:center;font-weight:1000;color:rgba(238,242,255,0.85)
+    }
+    .meta{display:flex;flex-direction:column;gap:3px}
+    .meta b{font-size:14px;font-weight:1000}
+    .meta small{font-size:12px;color:var(--muted2);font-weight:900}
+    .review p{color:var(--muted);font-size:14.5px}
+    .stars{color:#fbbf24;font-weight:1000;font-size:14px;letter-spacing:1px;margin-top:auto}
+    .reviews-mobile{display:none}
+
+    /* CTA + Footer */
+    .cta-bottom{padding:76px 0 66px;text-align:center}
+    .cta-bottom h2{font-size:34px;font-weight:1000;margin-bottom:18px}
+    .footer{padding:20px 0 30px;border-top:1px solid rgba(255,255,255,0.08);color:rgba(238,242,255,0.62);font-weight:900;font-size:13px}
+    .footer-inner{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+    .footer a{color:rgba(147,197,253,0.85)}
+
+    /* Sample modal removed: keep single login entry */
+
+    /* Login/Register section removed: keep single entry */
+
+    @media (max-width: 900px){
+      .hero-grid{grid-template-columns:1fr}
+      .reviews{grid-template-columns:1fr}
+      .timeline-arrow{display:none}
+    }
+
+    @media (max-width: 640px){
+      .hide-mobile{display:none}
+      .nav-actions .hide-mobile{display:none}
+      .nav-actions .mobile-only{display:inline-flex}
+      .hero{padding-top:106px}
+      .hero h1{font-size:29px}
+      .hero p{font-size:14.5px}
+      .section{padding:72px 0}
+      .grid-3{grid-template-columns:1fr}
+      .reviews{display:none}
+      .reviews-mobile{
+        display:flex;overflow-x:auto;gap:12px;padding-bottom:6px;
+        scroll-snap-type:x mandatory;
+      }
+      .reviews-mobile .review{flex:0 0 86%;scroll-snap-align:start}
+      /* sample modal removed */
+      .cta-bottom{padding:58px 0 46px}
+      .cta-bottom h2{font-size:26px}
+    }
+  </style>
+</head>
+
+<body>
+  <!-- 区块1：顶部导航栏（固定悬浮） -->
+  <nav class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="index.html" aria-label="TalentAI">
+        <div class="logoMark">TA</div>
+        <div class="name">
+          <b>TalentAI</b>
+        </div>
+      </a>
+    </div>
+  </nav>
+
+  <!-- 区块2：主视觉 Hero -->
+  <header class="section hero">
+    <div class="container hero-grid">
+      <div class="hero-left reveal" data-reveal>
+        <h1>
+          <span class="grad">发现你天生擅长的事</span><br/>
+          找到AI时代真正属于你的方向
+        </h1>
+        <p>
+          基于五层人格模型 · 动态职业生态匹配 ·
+          不是告诉你能做什么，而是告诉你最适合做什么
+        </p>
+        <div class="hero-cta">
+          <a class="btn btn-primary btn-large" href="login.html">登录 / 注册开始测评</a>
+        </div>
+      </div>
+
+      <div class="hero-right reveal" data-reveal>
+        <svg class="radar" viewBox="0 0 420 420" role="img" aria-label="雷达装饰">
+          <defs>
+            <linearGradient id="g1" x1="0" x2="1">
+              <stop offset="0" stop-color="rgba(245,158,11,0.95)"/>
+              <stop offset="1" stop-color="rgba(139,92,246,0.65)"/>
+            </linearGradient>
+          </defs>
+          <circle class="ring" cx="210" cy="210" r="70"/>
+          <circle class="ring" cx="210" cy="210" r="110"/>
+          <circle class="ring" cx="210" cy="210" r="150"/>
+          <circle class="ring" cx="210" cy="210" r="190"/>
+          <path class="grid" d="M210 20 L210 210 L380 210" />
+          <path class="grid" d="M210 20 L210 210 L210 380" />
+          <path class="grid" d="M210 20 L210 210 L40 210" />
+          <path class="grid" d="M210 20 L210 210 L210 40" />
+          <polygon class="blob"
+            points="210,60 285,105 315,190 250,310 150,290 105,205 140,115"/>
+          <circle cx="210" cy="210" r="4" fill="url(#g1)"/>
+        </svg>
+      </div>
+    </div>
+  </header>
+
+  <!-- 区块3：三个核心价值 -->
+  <section class="section values-section">
+    <div class="container reveal" data-reveal>
+      <div class="h2-title">为什么TalentAI不一样</div>
+      <div class="section-desc">更像一次“个性化解剖”，把你最真实的竞争力落到职业生态里。</div>
+      <div class="grid-3">
+        <div class="card">
+          <div class="icon">🧬</div>
+          <h3>五层深度分析</h3>
+          <p>
+            不只是性格测试，从天赋、性格、动机、元智能、AI适应力五个维度
+            立体描绘你是谁
+          </p>
+        </div>
+        <div class="card">
+          <div class="icon">🎯</div>
+          <h3>AI时代职业生态匹配</h3>
+          <p>
+            不推荐会被AI替代的岗位，只匹配你在AI时代真正有竞争力的方向
+          </p>
+        </div>
+        <div class="card">
+          <div class="icon">⚡</div>
+          <h3>动态个性化结果</h3>
+          <p>
+            每个人的推荐理由都不同，基于你的真实分数计算，不是模板，是专属于你的分析
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 区块4：测评流程说明 -->
+  <section class="section">
+    <div class="container reveal" data-reveal>
+      <div class="h2-title">两步找到你的方向</div>
+      <div class="section-desc">测评一次，终身有效。获得完整分析报告后，你就能直接制定行动计划。</div>
+      <div class="timeline" role="list">
+        <div class="step" role="listitem">
+          <b>第一步：完成五层测评</b>
+          <span>约 40 分钟</span>
+        </div>
+        <div class="timeline-arrow">→</div>
+        <div class="step" role="listitem">
+          <b>第二步：获得完整分析报告</b>
+          <span>职业生态匹配 · 动态推荐</span>
+        </div>
+      </div>
+      <div class="process-sub">
+        <span class="chip">测评一次，终身有效</span>
+        <span class="chip">随时可以重新查看你的报告</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 区块5：底部CTA + 页脚 -->
+  <section class="cta-bottom">
+    <div class="container reveal" data-reveal>
+      <h2>现在开始，找到你的方向</h2>
+      <a class="btn btn-primary btn-large" href="login.html">登录 / 注册开始测评</a>
+    </div>
+
+    <footer class="footer">
+      <div class="container footer-inner">
+        <div>TalentAI © 2026</div>
+        <div><a href="#">隐私政策</a> · <a href="#">使用条款</a></div>
+        <div>联系我们</div>
+      </div>
+    </footer>
+  </section>
+
+  <script>
+    // Fade-in
+    (function(){
+      var els = document.querySelectorAll('[data-reveal]');
+      if(!('IntersectionObserver' in window)){
+        els.forEach(function(el){ el.classList.add('in-view'); });
+        return;
+      }
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(e){
+          if(e.isIntersecting){
+            e.target.classList.add('in-view');
+            io.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.12 });
+      els.forEach(function(el){ io.observe(el); });
+    })();
+
+  </script>
+</body>
+</html>

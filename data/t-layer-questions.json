@@ -1,0 +1,1956 @@
+{
+ "metadata": {
+ "product_name": "TalentAI T-Layer Assessment",
+ "version": "1.0.0",
+ "last_updated": "2025-02-02",
+ "description": {
+ "en": "Talent DNA Assessment - 8 Intelligences + Cognitive Style Analysis",
+ "zh-CN": "天赋基因测评 - 八大智能 + 认知风格分析"
+ },
+ "total_questions": 40,
+ "estimated_time_minutes": 30,
+ "supported_languages": ["en", "zh-CN"],
+ "theoretical_basis": {
+ "en": "Gardner's Multiple Intelligence Theory + AI-Era Career Stratification",
+ "zh-CN": "加德纳多元智能理论 + AI时代职业分层"
+ }
+ },
+
+ "scoring_system": {
+ "intelligence_scores": {
+ "T1_language": {
+ "name": { "en": "Linguistic Intelligence", "zh-CN": "语言智能" },
+ "base_max": 10.0,
+ "time_bonus_max": 0.5,
+ "display_max": 10.0,
+ "note": "Display shows 0-10 only (no time bonus shown in radar)"
+ },
+ "T2_logic": {
+ "name": { "en": "Logical-Mathematical Intelligence", "zh-CN": "逻辑-数学智能" },
+ "base_max": 10.0,
+ "time_bonus_max": 1.5,
+ "display_max": 10.0
+ },
+ "T3_spatial": {
+ "name": { "en": "Spatial Intelligence", "zh-CN": "空间智能" },
+ "base_max": 10.0,
+ "time_bonus_max": 0.5,
+ "display_max": 10.0
+ },
+ "T4_music": {
+ "name": { "en": "Musical Intelligence", "zh-CN": "音乐智能" },
+ "base_max": 10.0,
+ "time_bonus_max": 0.0,
+ "display_max": 10.0,
+ "note": "No time bonus for audio questions"
+ },
+ "T5_bodily": {
+ "name": { "en": "Bodily-Kinesthetic Intelligence", "zh-CN": "身体-动觉智能" },
+ "base_max": 10.0,
+ "time_bonus_max": 0.0,
+ "display_max": 10.0,
+ "note": "Pure self-report, no ability questions"
+ },
+ "T6_interpersonal": {
+ "name": { "en": "Interpersonal Intelligence", "zh-CN": "人际智能" },
+ "base_max": 10.0,
+ "time_bonus_max": 0.0,
+ "display_max": 10.0
+ },
+ "T7_intrapersonal": {
+ "name": { "en": "Intrapersonal Intelligence", "zh-CN": "内省智能" },
+ "base_max": 10.0,
+ "time_bonus_max": 0.0,
+ "display_max": 10.0
+ },
+ "T8_naturalist": {
+ "name": { "en": "Naturalist Intelligence", "zh-CN": "自然观察智能" },
+ "base_max": 10.0,
+ "time_bonus_max": 0.8,
+ "display_max": 10.0
+ }
+ },
+
+ "cognitive_style_dimensions": {
+ "critical_thinking_speed": {
+ "name": { "en": "Critical Thinking Speed", "zh-CN": "批判性思维速度" },
+ "source": "T1_004 response time",
+ "star_rating": { "fast": 5, "normal": 4, "slow": 3 },
+ "thresholds": { "fast": 30, "normal": 60 }
+ },
+ "scientific_reasoning_speed": {
+ "name": { "en": "Scientific Reasoning Speed", "zh-CN": "科学推理速度" },
+ "source": "T2_003 response time",
+ "thresholds": { "fast": 25, "normal": 50 }
+ },
+ "planning_speed": {
+ "name": { "en": "Planning & Decision Speed", "zh-CN": "规划决策速度" },
+ "source": "T2_004 response time",
+ "thresholds": { "fast": 40, "normal": 80 }
+ },
+ "risk_detection_speed": {
+ "name": { "en": "Risk Detection Speed", "zh-CN": "风险识别速度" },
+ "source": "T2_005 response time",
+ "thresholds": { "fast": 20, "normal": 40 }
+ },
+ "spatial_reasoning_speed": {
+ "name": { "en": "Spatial Reasoning Speed", "zh-CN": "空间推理速度" },
+ "source": "T3_004 response time",
+ "thresholds": { "fast": 40, "normal": 80 }
+ },
+ "ecological_reasoning_speed": {
+ "name": { "en": "Ecological Reasoning Speed", "zh-CN": "生态推理速度" },
+ "source": "Average of T8_004 and T8_005 response time",
+ "thresholds": { "fast": 45, "normal": 85 }
+ }
+ },
+
+ "career_families": {
+ "creator": { "en": "Creator", "zh-CN": "创造者" },
+ "solver": { "en": "Problem Solver", "zh-CN": "解决者" },
+ "helper": { "en": "Helper", "zh-CN": "帮助者" },
+ "organizer": { "en": "Organizer", "zh-CN": "组织者" },
+ "influencer": { "en": "Influencer", "zh-CN": "影响者" },
+ "explorer": { "en": "Explorer", "zh-CN": "探索者" },
+ "guardian": { "en": "Guardian", "zh-CN": "守护者" },
+ "operator": { "en": "Operator", "zh-CN": "操作者" }
+ }
+ },
+
+ "questions": {
+ "T1_language": [
+ {
+ "id": "T1_001",
+ "type": "self_report",
+ "difficulty": "easy",
+ "track_time": false,
+ "question": {
+ "en": "When memorizing poems, song lyrics, or rhythmic texts, you:",
+ "zh-CN": "背诵诗歌、歌词或有韵律的文字时，你："
+ },
+ "options": [
+ {
+ "id": "A",
+ "text": {
+ "en": "Memorize easily, can recite after a few repetitions",
+ "zh-CN": "很容易记住，几遍就能背下来"
+ },
+ "scoring": { "T1": 2.0 }
+ },
+ {
+ "id": "B",
+ "text": {
+ "en": "Need some time, but usually can memorize",
+ "zh-CN": "需要一些时间，但通常能背下来"
+ },
+ "scoring": { "T1": 1.5 }
+ },
+ {
+ "id": "C",
+ "text": {
+ "en": "Quite difficult, need to practice many times",
+ "zh-CN": "比较困难，需要反复练习多次"
+ },
+ "scoring": { "T1": 1.0 }
+ },
+ {
+ "id": "D",
+ "text": {
+ "en": "Very hard to remember, even with repeated practice",
+ "zh-CN": "很难记住，即使反复练习也容易忘"
+ },
+ "scoring": { "T1": 0.5 }
+ }
+ ],
+ "measures": {
+ "en": "Phonological memory, rhythmic sensitivity",
+ "zh-CN": "语音记忆、韵律敏感度"
+ }
+ },
+ {
+ "id": "T1_002",
+ "type": "self_report",
+ "difficulty": "easy",
+ "question": {
+ "en": "When listening to others speak or reading articles, do you notice issues with word choice, grammar, or expression?",
+ "zh-CN": "听别人说话或看文章时，你会注意到用词、语法的问题吗？"
+ },
+ "options": [
+ {
+ "id": "A",
+ "text": {
+ "en": "Often notice, sometimes point them out or correct them mentally",
+ "zh-CN": "经常注意到，有时会指出来或在心里纠正"
+ },
+ "scoring": { "T1": 2.0 }
+ },
+ {
+ "id": "B",
+ "text": {
+ "en": "Sometimes notice obvious errors",
+ "zh-CN": "有时会注意到明显的错误"
+ },
+ "scoring": { "T1": 1.5 }
+ },
+ {
+ "id": "C",
+ "text": {
+ "en": "Rarely notice these details",
+ "zh-CN": "很少注意这些细节"
+ },
+ "scoring": { "T1": 1.0 }
+ },
+ {
+ "id": "D",
+ "text": {
+ "en": "Never notice, only focus on content itself",
+ "zh-CN": "从不注意，只关注内容本身"
+ },
+ "scoring": { "T1": 0.5 }
+ }
+ ]
+ },
+ {
+ "id": "T1_003",
+ "type": "self_report",
+ "difficulty": "easy",
+ "question": {
+ "en": "When describing something interesting to a friend or recommending a book/movie, you:",
+ "zh-CN": "向朋友描述一件有趣的事或推荐一本书/电影时，你："
+ },
+ "options": [
+ {
+ "id": "A",
+ "text": {
+ "en": "Can tell it vividly and coherently, others listen with great interest",
+ "zh-CN": "能生动地讲出来，有条理，别人听得津津有味"
+ },
+ "scoring": { "T1": 2.0, "T6": 0.5 },
+ "family_bonus": { "creator": 0.5 }
+ },
+ {
+ "id": "B",
+ "text": {
+ "en": "Can explain the main content, but may not be vivid enough",
+ "zh-CN": "能讲清楚主要内容，但可能不够生动"
+ },
+ "scoring": { "T1": 1.5 }
+ },
+ {
+ "id": "C",
+ "text": {
+ "en": "Often tell it in a disorganized way, or don't know where to start",
+ "zh-CN": "经常讲得比较乱，或不知道从哪说起"
+ },
+ "scoring": { "T1": 1.0 }
+ },
+ {
+ "id": "D",
+ "text": {
+ "en": "Not good at telling stories, prefer to let others see for themselves",
+ "zh-CN": "不太会讲，更喜欢让别人自己去看"
+ },
+ "scoring": { "T1": 0.5 }
+ }
+ ]
+ },
+ {
+ "id": "T1_004",
+ "type": "ability",
+ "difficulty": "medium",
+ "track_time": true,
+ "question": {
+ "en": "You see an advertisement: \"Clinical trials prove that 90% of people saw skin improvement after using this product for 2 weeks!\" \n\nYour first reaction is:",
+ "zh-CN": "看到一条广告：\"临床试验证明，使用本产品2周后，90%的人皮肤变好！\"\n\n你的第一反应是："
+ },
+ "options": [
+ {
+ "id": "A",
+ "text": {
+ "en": "This is based on clinical trials, 90% effectiveness shows the product works well. Scientific data is more reliable than personal feelings.",
+ "zh-CN": "这是临床试验的结果，90%的人有效说明产品确实不错，科学数据比个人感觉更可信"
+ },
+ "scoring": { "T1": 0.5 }
+ },
+ {
+ "id": "B",
+ "text": {
+ "en": "I'd want to know: sample size, definition of 'improvement', who conducted the study, was there a control group? Data could be manipulated for marketing.",
+ "zh-CN": "想知道样本量、“变好”的标准、谁做的实验、有无对照组，数据可能被操纵用于营销"
+ },
+ "scoring": { "T1": 2.0, "T2": 0.5 },
+ "family_bonus": { "guardian": 0.5 },
+ "time_bonus": {
+ "threshold_fast": 30,
+ "threshold_normal": 60,
+ "bonus_fast": { "T1": 0.5, "guardian": 0.5 },
+ "bonus_normal": { "T1": 0.3, "guardian": 0.3 }
+ }
+ },
+ {
+ "id": "C",
+ "text": {
+ "en": "Could be effective or exaggerated. I'd check more user reviews and independent tests, not just one ad.",
+ "zh-CN": "可能有效也可能是夸大宣传，需要看更多用户评价和独立测评，不会只凭一个广告判断"
+ },
+ "scoring": { "T1": 1.5 },
+ "family_bonus": { "guardian": 0.3 }
+ },
+ {
+ "id": "D",
+ "text": {
+ "en": "I don't trust ads at all. All commercial claims are exaggerated to sell products. I only trust my own or friends' actual experience.",
+ "zh-CN": "完全不相信广告，所有商业宣传都有夸大成分，都是为了卖产品，我只信任自己或朋友的实际体验"
+ },
+ "scoring": { "T1": 1.0 }
+ }
+ ],
+ "ai_era_value": 5
+ },
+ {
+ "id": "T1_005",
+ "type": "self_report",
+ "difficulty": "medium",
+ "question": {
+ "en": "When expressing the same meaning, can you think of multiple different ways to say it?",
+ "zh-CN": "表达同一个意思时，你能想到多种不同的说法吗？"
+ },
+ "options": [
+ {
+ "id": "A",
+ "text": {
+ "en": "Can think of many variations, can choose appropriate ones based on context",
+ "zh-CN": "能想到很多种，可以根据场合选择合适的"
+ },
+ "scoring": { "T1": 2.0 }
+ },
+ {
+ "id": "B",
+ "text": {
+ "en": "Can think of 2-3 different expressions",
+ "zh-CN": "能想到2-3种不同说法"
+ },
+ "scoring": { "T1": 1.5 }
+ },
+ {
+ "id": "C",
+ "text": {
+ "en": "Usually only use the most common expression",
+ "zh-CN": "通常只会用最常见的那一种"
+ },
+ "scoring": { "T1": 1.0 }
+ },
+ {
+ "id": "D",
+ "text": {
+ "en": "Not good at varying expressions",
+ "zh-CN": "不太会换不同的说法"
+ },
+ "scoring": { "T1": 0.5 }
+ }
+ ]
+ }
+ ],
+
+ "T2_logic": [
+ {
+ "id": "T2_001",
+ "type": "self_report",
+ "difficulty": "easy",
+ "question": {
+ "en": "When encountering problems, your thinking approach is usually:",
+ "zh-CN": "遇到问题时，你的思考方式通常是："
+ },
+ "options": [
+ {
+ "id": "A",
+ "text": {
+ "en": "Analyze the causes first, clarify the logic, then find solutions",
+ "zh-CN": "先分析原因，理清逻辑，再想办法"
+ },
+ "scoring": { "T2": 2.0 },
+ "family_bonus": { "solver": 0.5 }
+ },
+ {
+ "id": "B",
+ "text": {
+ "en": "Try first, change methods if it doesn't work",
+ "zh-CN": "先试试看，不行再换方法"
+ },
+ "scoring": { "T2": 1.5 },
+ "family_bonus": { "explorer": 0.5 }
+ },
+ {
+ "id": "C",
+ "text": {
+ "en": "Rely on intuition and experience to judge",
+ "zh-CN": "凭直觉和经验判断"
+ },
+ "scoring": { "T2": 1.0, "T7": 0.5 }
+ },
+ {
+ "id": "D",
+ "text": {
+ "en": "Not good at analysis, usually ask others or look up answers",
+ "zh-CN": "不太会分析，通常问别人或查答案"
+ },
+ "scoring": { "T2": 0.5 }
+ }
+ ]
+ },
+ {
+ "id": "T2_002",
+ "type": "self_report",
+ "difficulty": "easy",
+ "question": {
+ "en": "In daily life, are you sensitive to numbers, patterns, and regularities?",
+ "zh-CN": "日常生活中，你对数字、规律、模式敏感吗？"
+ },
+ "options": [
+ {
+ "id": "A",
+ "text": {
+ "en": "Very sensitive, often notice numbers and patterns",
+ "zh-CN": "很敏感，经常注意到数字和规律"
+ },
+ "scoring": { "T2": 2.0 }
+ },
+ {
+ "id": "B",
+ "text": {
+ "en": "Somewhat sensitive, but don't always notice",
+ "zh-CN": "有一定敏感度，但不总是注意"
+ },
+ "scoring": { "T2": 1.5 }
+ },
+ {
+ "id": "C",
+ "text": {
+ "en": "Don't pay much attention to these",
+ "zh-CN": "不太注意这些"
+ },
+ "scoring": { "T2": 1.0 }
+ },
+ {
+ "id": "D",
+ "text": {
+ "en": "Not sensitive to numbers and patterns",
+ "zh-CN": "对数字和规律没什么感觉"
+ },
+ "scoring": { "T2": 0.5 }
+ }
+ ]
+ },
+ {
+ "id": "T2_003",
+ "type": "ability",
+ "difficulty": "medium",
+ "track_time": true,
+ "question": {
+ "en": "Research finds: \"Students who regularly eat breakfast generally have better grades than those who skip breakfast.\"\n\nSomeone says: \"So if you want good grades, you must eat breakfast!\"\n\nYou think:",
+ "zh-CN": "研究发现：\"经常吃早餐的学生，成绩普遍比不吃早餐的学生好。\"\n\n有人说：\"所以要想成绩好，就要吃早餐！\"\n\n你认为："
+ },
+ "options": [
+ {
+ "id": "A",
+ "text": {
+ "en": "Yes, research data proves a causal relationship between eating breakfast and good grades.",
+ "zh-CN": "对，研究数据证明了吃早餐和成绩好有因果关系"
+ },
+ "scoring": { "T2": 0.5 }
+ },
+ {
+ "id": "B",
+ "text": {
+ "en": "Not entirely. Students with good life habits both value breakfast and study. Or better family conditions provide both nutrition and learning resources.",
+ "zh-CN": "不完全对。可能是生活习惯好的学生既重视吃早餐，又重视学习；也可能家庭条件好既能保证营养又有学习资源"
+ },
+ "scoring": { "T2": 2.0 },
+ "family_bonus": { "solver": 1.0, "guardian": 0.3 },
+ "time_bonus": {
+ "threshold_fast": 25,
+ "threshold_normal": 50,
+ "bonus_fast": { "T2": 0.5, "solver": 0.5 },
+ "bonus_normal": { "T2": 0.3, "solver": 0.3 }
+ }
+ },
+ {
+ "id": "C",
+ "text": {
+ "en": "Might be related or not, need to see how the study was done, if other variables were controlled.",
+ "zh-CN": "可能有关系也可能没关系，需要看研究怎么做的，有没有控制其他变量"
+ },
+ "scoring": { "T2": 1.5 },
+ "family_bonus": { "guardian": 0.5 }
+ },
+ {
+ "id": "D",
+ "text": {
+ "en": "They may correlate but not be causal. Like 'ice cream sales high when drownings increase' - both happen in summer.",
+ "zh-CN": "两者可能相关但不是因果。就像\"冰淇淋销量高时溺水多\"，不是冰淇淋导致溺水，而是都因为夏天"
+ },
+ "scoring": { "T2": 2.0, "T1": 0.3 },
+ "family_bonus": { "solver": 0.8 },
+ "time_bonus": {
+ "threshold_fast": 25,
+ "threshold_normal": 50,
+ "bonus_fast": { "T2": 0.5, "solver": 0.5 },
+ "bonus_normal": { "T2": 0.3, "solver": 0.3 }
+ }
+ }
+ ],
+ "ai_era_value": 5
+ },
+ {
+ "id": "T2_004",
+ "type": "ability",
+ "difficulty": "medium",
+ "track_time": true,
+ "question": {
+ "en": "A report is due Friday. Today is Wednesday, and you still need to: collect materials (2 hrs), write draft (3 hrs), revise/format (1 hr). Tonight you have club activities, Thursday night you have tutoring.\n\nHow would you arrange this?",
+ "zh-CN": "周五要交一份报告。今天是周三，你还需要：收集资料（2小时）、写初稿（3小时）、修改排版（1小时）。今天晚上有社团活动，周四晚上有补习课。\n\n你会如何安排？"
+ },
+ "options": [
+ {
+ "id": "A",
+ "text": {
+ "en": "Tonight after club collect materials (2h), Thursday use daytime fragments to write draft, continue after tutoring, Friday morning revise/format",
+ "zh-CN": "今天晚上社团后收集资料（2小时），周四利用白天碎片时间写初稿，周四晚补习后继续写，周五早上修改排版"
+ },
+ "scoring": { "T2": 2.0 },
+ "family_bonus": { "organizer": 1.0 },
+ "time_bonus": {
+ "threshold_fast": 40,
+ "threshold_normal": 80,
+ "bonus_fast": { "T2": 0.5, "organizer": 0.5 },
+ "bonus_normal": { "T2": 0.3, "organizer": 0.3 }
+ }
+ },
+ {
+ "id": "B",
+ "text": {
+ "en": "Thursday night after tutoring (9pm start), concentrate 6 hours to complete everything",
+ "zh-CN": "周四晚上补习课后（9点开始），集中6小时一次性完成所有工作"
+ },
+ "scoring": { "T2": 1.5 },
+ "family_bonus": { "solver": 0.5 }
+ },
+ {
+ "id": "C",
+ "text": {
+ "en": "Attend activities normally, wake up at 5am Friday, use 3 hours to complete everything",
+ "zh-CN": "今天和周四正常参加活动和学习，周五早上5点起床，用3小时集中完成"
+ },
+ "scoring": { "T2": 1.0 }
+ },
+ {
+ "id": "D",
+ "text": {
+ "en": "Skip club tonight, start report immediately, Thursday check and revise",
+ "zh-CN": "今天不参加社团活动，直接开始做报告，周四检查修改"
+ },
+ "scoring": { "T2": 1.5 },
+ "family_bonus": { "organizer": 0.5 }
+ }
+ ]
+ },
+ {
+ "id": "T2_005",
+ "type": "ability",
+ "difficulty": "medium",
+ "track_time": true,
+ "question": {
+ "en": "Phone store promotion:\n• Store A: iPhone 16, Original ¥7999, 10% off, Now ¥7199\n• Store B: iPhone 16, Original ¥8999, 20% off, Now ¥7199\n\nSalesperson says: \"Store B has bigger discount, better deal!\" You would:",
+ "zh-CN": "手机店促销：\n• A店：iPhone 16，原价¥7999，打9折，现价¥7199\n• B店：iPhone 16，原价¥8999，打8折，现价¥7199\n\n店员说：\"B店折扣更大，更划算！\" 你会："
+ },
+ "options": [
+ {
+ "id": "A",
+ "text": {
+ "en": "Choose B, because 20% off is bigger than 10% off",
+ "zh-CN": "选B店，因为8折比9折优惠力度大"
+ },
+ "scoring": { "T2": 0.5 }
+ },
+ {
+ "id": "B",
+ "text": {
+ "en": "Both have same final price, key is whether 'original price' is real. Should check official pricing.",
+ "zh-CN": "两家最终价格一样，关键在于\"原价\"是否真实。应该查官网定价"
+ },
+ "scoring": { "T2": 2.0, "T1": 0.5 },
+ "family_bonus": { "guardian": 1.0 },
+ "time_bonus": {
+ "threshold_fast": 20,
+ "threshold_normal": 40,
+ "bonus_fast": { "T2": 0.5, "guardian": 0.5 },
+ "bonus_normal": { "T2": 0.3, "guardian": 0.3 }
+ }
+ },
+ {
+ "id": "C",
+ "text": {
+ "en": "Both are same price, I'd compare after-sales service, whether genuine, return/exchange policies",
+ "zh-CN": "价格都是¥7199，我会对比两家店的售后服务、是否正品行货、退换货政策"
+ },
+ "scoring": { "T2": 1.5 },
+ "family_bonus": { "organizer": 0.5 }
+ },
+ {
+ "id": "D",
+ "text": {
+ "en": "Both same price, I'd check other stores or e-commerce platforms",
+ "zh-CN": "两家价格一样，我会再去其他店或电商平台比较"
+ },
+ "scoring": { "T2": 1.5 },
+ "family_bonus": { "guardian": 0.5, "solver": 0.3 }
+ }
+ ],
+ "ai_era_value": 4
+ }
+ ],
+
+ "T3_spatial": [
+ {
+ "id": "T3_001",
+ "type": "self_report",
+ "difficulty": "easy",
+ "question": {
+ "en": "In unfamiliar places (like a new city, large shopping mall), you:",
+ "zh-CN": "在陌生的地方（如新城市、大型商场），你："
+ },
+ "options": [
+ {
+ "id": "A",
+ "text": {
+ "en": "Rarely get lost, can quickly establish sense of direction, remember routes",
+ "zh-CN": "很少迷路，能快速建立方向感，记住路线"
+ },
+ "scoring": { "T3": 2.0 }
+ },
+ {
+ "id": "B",
+ "text": {
+ "en": "Have some sense of direction, but may need to look at route several times to remember",
+ "zh-CN": "有一定方向感，但可能需要看几次路才记住"
+ },
+ "scoring": { "T3": 1.5 }
+ },
+ {
+ "id": "C",
+ "text": {
+ "en": "Easily get lost, need to rely on maps or navigation",
+ "zh-CN": "容易迷路，需要依赖地图或导航"
+ },
+ "scoring": { "T3": 1.0 }
+ },
+ {
+ "id": "D",
+ "text": {
+ "en": "Often get lost, even on routes I've taken before",
+ "zh-CN": "经常迷路，即使走过的路也容易忘记"
+ },
+ "scoring": { "T3": 0.5 }
+ }
+ ]
+ },
+ {
+ "id": "T3_002",
+ "type": "self_report",
+ "difficulty": "easy",
+ "question": {
+ "en": "When observing environments, can you notice spatial layouts and object positions?",
+ "zh-CN": "观察环境时，你能注意到空间布局和物体位置吗？"
+ },
+ "options": [
+ {
+ "id": "A",
+ "text": {
+ "en": "Very keen, can quickly understand spatial layout, remember object positions",
+ "zh-CN": "很敏锐，能快速理解空间布局，记住物体的位置"
+ },
+ "scoring": { "T3": 2.0 }
+ },
+ {
+ "id": "B",
+ "text": {
+ "en": "Can notice obvious layout features",
+ "zh-CN": "能注意到明显的布局特点"
+ },
+ "scoring": { "T3": 1.5 }
+ },
+ {
+ "id": "C",
+ "text": {
+ "en": "More focused on overall impression, don't notice specific positions",
+ "zh-CN": "更关注整体，不太注意具体位置"
+ },
+ "scoring": { "T3": 1.0 }
+ },
+ {
+ "id": "D",
+ "text": {
+ "en": "Rarely notice spatial layout",
+ "zh-CN": "很少注意空间布局"
+ },
+ "scoring": { "T3": 0.5 }
+ }
+ ]
+ },
+ {
+ "id": "T3_003",
+ "type": "self_report",
+ "difficulty": "easy",
+ "question": {
+ "en": "When imagining an object in your mind (like a Rubik's cube, building), you can:",
+ "zh-CN": "在脑海中想象一个物体（如魔方、建筑），你能："
+ },
+ "options": [
+ {
+ "id": "A",
+ "text": {
+ "en": "Clearly imagine its appearance, can rotate it mentally, view from different angles",
+ "zh-CN": "清晰地想象它的样子，并能在脑海中旋转它，从不同角度看"
+ },
+ "scoring": { "T3": 2.0 }
+ },
+ {
+ "id": "B",
+ "text": {
+ "en": "Can roughly imagine, but rotation is somewhat vague",
+ "zh-CN": "大概能想象，但旋转比较模糊"
+ },
+ "scoring": { "T3": 1.5 }
+ },
+ {
+ "id": "C",
+ "text": {
+ "en": "Hard to imagine 3D objects in mind",
+ "zh-CN": "很难在脑海中想象立体物体"
+ },
+ "scoring": { "T3": 1.0 }
+ },
+ {
+ "id": "D",
+ "text": {
+ "en": "Can't do it at all, need to see actual object",
+ "zh-CN": "完全做不到，需要看实物"
+ },
+ "scoring": { "T3": 0.5 }
+ }
+ ]
+ },
+ {
+ "id": "T3_004",
+ "type": "ability",
+ "difficulty": "medium",
+ "track_time": true,
+ "question": {
+ "en": "Parking lot spaces: [1][2][3][4][5][6]\n\nNow 4 cars need to park:\n🔴 Red car parks in space 3\n🔵 Blue car parks right next to red car\n⚪ White car parks in leftmost space\n🟡 Yellow car parks right of blue car, with one empty space between\n\nQuestion: Which space does yellow car park in?",
+ "zh-CN": "停车场车位排列：[1][2][3][4][5][6]\n\n现在有4辆车要停：\n🔴 红车停在3号位\n🔵 蓝车停在红车右边，紧挨着红车\n⚪ 白车停在最左边\n🟡 黄车停在蓝车右边，中间隔了一个空位\n\n问：黄车停在几号位？"
+ },
+ "options": [
+ {
+ "id": "A",
+ "text": { "en": "Space 4", "zh-CN": "4号" },
+ "scoring": { "T3": 0.0 }
+ },
+ {
+ "id": "B",
+ "text": { "en": "Space 5", "zh-CN": "5号" },
+ "scoring": { "T3": 0.0 }
+ },
+ {
+ "id": "C",
+ "text": { "en": "Space 6", "zh-CN": "6号" },
+ "scoring": { "T3": 2.0, "T2": 0.5 },
+ "time_bonus": {
+ "threshold_fast": 40,
+ "threshold_normal": 80,
+ "bonus_fast": { "T3": 0.5 },
+ "bonus_normal": { "T3": 0.3 }
+ }
+ },
+ {
+ "id": "D",
+ "text": { "en": "Cannot determine", "zh-CN": "无法确定" },
+ "scoring": { "T3": 0.5 }
+ }
+ ],
+ "solution": {
+ "en": "[1]⚪ [2]empty [3]🔴 [4]🔵 [5]empty [6]🟡",
+ "zh-CN": "[1]⚪ [2]空 [3]🔴 [4]🔵 [5]空 [6]🟡"
+ }
+ },
+ {
+ "id": "T3_005",
+ "type": "self_report",
+ "difficulty": "easy",
+ "question": {
+ "en": "When going out or traveling, can you remember landmarks along the way?",
+ "zh-CN": "出门或旅行时，你能记住沿途的标志物吗？"
+ },
+ "options": [
+ {
+ "id": "A",
+ "text": {
+ "en": "Can remember many landmarks, can find way back from memory",
+ "zh-CN": "能记住很多标志物，回来时能靠记忆找到路"
+ },
+ "scoring": { "T3": 2.0 }
+ },
+ {
+ "id": "B",
+ "text": {
+ "en": "Can remember some obvious landmarks",
+ "zh-CN": "能记住一些明显的标志物"
+ },
+ "scoring": { "T3": 1.5 }
+ },
+ {
+ "id": "C",
+ "text": {
+ "en": "Can only remember very few",
+ "zh-CN": "只能记住极少数"
+ },
+ "scoring": { "T3": 1.0 }
+ },
+ {
+ "id": "D",
+ "text": {
+ "en": "Hard to remember landmarks along the way",
+ "zh-CN": "很难记住沿途的标志物"
+ },
+ "scoring": { "T3": 0.5 }
+ }
+ ]
+ }
+ ],
+
+ "T4_music": [
+ {
+ "id": "T4_001",
+ "type": "self_report",
+ "difficulty": "easy",
+ "question": {
+ "en": "After hearing a new song, you can:",
+ "zh-CN": "听一首新歌后，你能："
+ },
+ "options": [
+ {
+ "id": "A",
+ "text": {
+ "en": "Quickly hum the complete melody, with good pitch accuracy",
+ "zh-CN": "很快就能哼出完整旋律，音准很好"
+ },
+ "scoring": { "T4": 2.0 }
+ },
+ {
+ "id": "B",
+ "text": {
+ "en": "Can hum the main melody or chorus",
+ "zh-CN": "能哼出主旋律或副歌部分"
+ },
+ "scoring": { "T4": 1.5 }
+ },
+ {
+ "id": "C",
+ "text": {
+ "en": "Can only remember a little, easy to forget",
+ "zh-CN": "只能记住一点点，容易忘记"
+ },
+ "scoring": { "T4": 1.0 }
+ },
+ {
+ "id": "D",
+ "text": {
+ "en": "Hard to remember melodies",
+ "zh-CN": "很难记住旋律"
+ },
+ "scoring": { "T4": 0.5 }
+ }
+ ]
+ },
+ {
+ "id": "T4_002",
+ "type": "self_report",
+ "difficulty": "easy",
+ "question": {
+ "en": "When hearing music, you:",
+ "zh-CN": "听到音乐时，你会："
+ },
+ "options": [
+ {
+ "id": "A",
+ "text": {
+ "en": "Naturally tap along to rhythm, nod or sway, with accurate rhythm sense",
+ "zh-CN": "不自觉地跟着节奏打拍子、点头或摇摆，节奏感很准"
+ },
+ "scoring": { "T4": 2.0, "T5": 0.3 }
+ },
+ {
+ "id": "B",
+ "text": {
+ "en": "Can feel the rhythm, but don't always keep up",
+ "zh-CN": "能感受到节奏，但不总是跟上"
+ },
+ "scoring": { "T4": 1.5 }
+ },
+ {
+ "id": "C",
+ "text": {
+ "en": "Not very sensitive to rhythm",
+ "zh-CN": "对节奏不太敏感"
+ },
+ "scoring": { "T4": 1.0 }
+ },
+ {
+ "id": "D",
+ "text": {
+ "en": "Hard to feel musical rhythm",
+ "zh-CN": "很难感受到音乐的节奏"
+ },
+ "scoring": { "T4": 0.5 }
+ }
+ ]
+ },
+ {
+ "id": "T4_003",
+ "type": "self_report",
+ "difficulty": "easy",
+ "question": {
+ "en": "When listening to music, can you distinguish different instruments?",
+ "zh-CN": "听音乐时，你能分辨不同的乐器吗？"
+ },
+ "options": [
+ {
+ "id": "A",
+ "text": {
+ "en": "Can clearly distinguish, can even identify specific instruments",
+ "zh-CN": "能清楚分辨，甚至能听出具体是什么乐器"
+ },
+ "scoring": { "T4": 2.0 }
+ },
+ {
+ "id": "B",
+ "text": {
+ "en": "Can distinguish common instruments",
+ "zh-CN": "能分辨常见乐器"
+ },
+ "scoring": { "T4": 1.5 }
+ },
+ {
+ "id": "C",
+ "text": {
+ "en": "Can only distinguish general categories (strings, percussion, etc.)",
+ "zh-CN": "只能分辨出大概（弦乐、打击乐等）"
+ },
+ "scoring": { "T4": 1.0 }
+ },
+ {
+ "id": "D",
+ "text": {
+ "en": "Cannot distinguish",
+ "zh-CN": "分辨不出来"
+ },
+ "scoring": { "T4": 0.5 }
+ }
+ ]
+ },
+ {
+ "id": "T4_004",
+ "type": "ability",
+ "difficulty": "easy",
+ "requires_audio": true,
+ "track_time": false,
+ "question": {
+ "en": "Which of these three sounds has the highest pitch?\n\n🔊 Play audio:\n• Audio A: [Piano middle C (C4, 261.63 Hz)]\n• Audio B: [Piano high C (C5, 523.25 Hz)]\n• Audio C: [Piano low C (C3, 130.81 Hz)]",
+ "zh-CN": "以下三个音，哪个音最高？\n\n🔊 播放音频：\n• 音频A：[钢琴中音C（C4，261.63 Hz）]\n• 音频B：[钢琴高音C（C5，523.25 Hz）]\n• 音频C：[钢琴低音C（C3，130.81 Hz）]"
+ },
+ "audio_files": {
+ "A": "audio_C4.mp3",
+ "B": "audio_C5.mp3",
+ "C": "audio_C3.mp3"
+ },
+ "options": [
+ {
+ "id": "A",
+ "text": { "en": "Audio A", "zh-CN": "音频A" },
+ "scoring": { "T4": 0.0 }
+ },
+ {
+ "id": "B",
+ "text": { "en": "Audio B", "zh-CN": "音频B" },
+ "scoring": { "T4": 2.0 }
+ },
+ {
+ "id": "C",
+ "text": { "en": "Audio C", "zh-CN": "音频C" },
+ "scoring": { "T4": 0.0 }
+ },
+ {
+ "id": "D",
+ "text": { "en": "Cannot tell the difference", "zh-CN": "听不出差别" },
+ "scoring": { "T4": 0.5 }
+ }
+ ]
+ },
+ {
+ "id": "T4_005",
+ "type": "ability",
+ "difficulty": "medium",
+ "question": {
+ "en": "You want to add background music to a 'sad farewell' scene, you would choose:",
+ "zh-CN": "你想为一段“悲伤的离别”场景配背景音乐，你会选："
+ },
+ "options": [
+ {
+ "id": "A",
+ "text": {
+ "en": "Slow tempo, minor key, mainly strings, lighter volume",
+ "zh-CN": "慢速度、小调、弦乐为主、音量较轻"
+ },
+ "scoring": { "T4": 2.0 },
+ "family_bonus": { "creator": 0.5 }
+ },
+ {
+ "id": "B",
+ "text": {
+ "en": "Fast tempo, major key, mainly percussion, louder volume",
+ "zh-CN": "快速度、大调、打击乐为主、音量较大"
+ },
+ "scoring": { "T4": 0.0 }
+ },
+ {
+ "id": "C",
+ "text": {
+ "en": "Medium tempo, major key, piano solo",
+ "zh-CN": "中速度、大调、钢琴独奏"
+ },
+ "scoring": { "T4": 1.0 }
+ },
+ {
+ "id": "D",
+ "text": {
+ "en": "Don't know, just pick any lyrical song",
+ "zh-CN": "不知道，随便选一首抒情歌曲"
+ },
+ "scoring": { "T4": 0.0 }
+ }
+ ]
+ }
+ ],
+
+ "T5_bodily": [
+ {
+ "id": "T5_001",
+ "type": "self_report",
+ "difficulty": "easy",
+ "question": {
+ "en": "When learning new motor or movement skills (like dance, ball sports, playing instruments), you:",
+ "zh-CN": "学习新的运动或动作技能时（如舞蹈、球类运动、乐器演奏），你："
+ },
+ "options": [
+ {
+ "id": "A",
+ "text": {
+ "en": "Can imitate after watching once or twice, learn very quickly",
+ "zh-CN": "看一两遍就能模仿，学得很快"
+ },
+ "scoring": { "T5": 2.0 }
+ },
+ {
+ "id": "B",
+ "text": {
+ "en": "Need to practice a few times, but can master it",
+ "zh-CN": "需要练习几次，但能掌握"
+ },
+ "scoring": { "T5": 1.5 }
+ },
+ {
+ "id": "C",
+ "text": {
+ "en": "Need longer time of repeated practice",
+ "zh-CN": "需要较长时间反复练习"
+ },
+ "scoring": { "T5": 1.0 }
+ },
+ {
+ "id": "D",
+ "text": {
+ "en": "Learning movements is very difficult for me",
+ "zh-CN": "学习动作对我来说很困难"
+ },
+ "scoring": { "T5": 0.5 }
+ }
+ ]
+ },
+ {
+ "id": "T5_002",
+ "type": "self_report",
+ "difficulty": "easy",
+ "question": {
+ "en": "When using tools or equipment (like screwdrivers, scissors, kitchen utensils, lab instruments), you:",
+ "zh-CN": "使用工具或器械时（如螺丝刀、剪刀、厨具、实验器材），你："
+ },
+ "options": [
+ {
+ "id": "A",
+ "text": {
+ "en": "Very skillful, can control precisely",
+ "zh-CN": "很熟练，能精准控制"
+ },
+ "scoring": { "T5": 2.0 },
+ "family_bonus": { "operator": 0.5 }
+ },
+ {
+ "id": "B",
+ "text": {
+ "en": "Quite skillful",
+ "zh-CN": "比较熟练"
+ },
+ "scoring": { "T5": 1.5 }
+ },
+ {
+ "id": "C",
+ "text": {
+ "en": "Need time to adapt",
+ "zh-CN": "需要时间适应"
+ },
+ "scoring": { "T5": 1.0 }
+ },
+ {
+ "id": "D",
+ "text": {
+ "en": "Not good at operating tools",
+ "zh-CN": "不太擅长操作工具"
+ },
+ "scoring": { "T5": 0.5 }
+ }
+ ]
+ },
+ {
+ "id": "T5_003",
+ "type": "self_report",
+ "difficulty": "easy",
+ "question": {
+ "en": "In activities requiring hand-eye coordination (like playing ball, driving, gaming), you:",
+ "zh-CN": "需要手眼协调的活动（如打球、开车、玩游戏），你："
+ },
+ "options": [
+ {
+ "id": "A",
+ "text": {
+ "en": "Fast reactions, good coordination, can control accurately",
+ "zh-CN": "反应快，协调性好，能准确控制"
+ },
+ "scoring": { "T5": 2.0 }
+ },
+ {
+ "id": "B",
+ "text": {
+ "en": "Coordination is decent",
+ "zh-CN": "协调性还可以"
+ },
+ "scoring": { "T5": 1.5 }
+ },
+ {
+ "id": "C",
+ "text": {
+ "en": "Coordination is average, often make mistakes",
+ "zh-CN": "协调性一般，经常出错"
+ },
+ "scoring": { "T5": 1.0 }
+ },
+ {
+ "id": "D",
+ "text": {
+ "en": "Poor coordination",
+ "zh-CN": "协调性较差"
+ },
+ "scoring": { "T5": 0.5 }
+ }
+ ]
+ },
+ {
+ "id": "T5_004",
+ "type": "self_report",
+ "difficulty": "easy",
+ "question": {
+ "en": "When assembling/disassembling items, folding paper, or doing handicrafts, you:",
+ "zh-CN": "拆装物品、折纸或手工制作时，你："
+ },
+ "options": [
+ {
+ "id": "A",
+ "text": {
+ "en": "Very good at it, can understand structure and operate accurately",
+ "zh-CN": "很拿手，能理解结构并准确操作"
+ },
+ "scoring": { "T5": 2.0, "T3": 0.3 }
+ },
+ {
+ "id": "B",
+ "text": {
+ "en": "Quite skillful",
+ "zh-CN": "比较擅长"
+ },
+ "scoring": { "T5": 1.5 }
+ },
+ {
+ "id": "C",
+ "text": {
+ "en": "Need instructions or guidance",
+ "zh-CN": "需要说明书或指导"
+ },
+ "scoring": { "T5": 1.0 }
+ },
+ {
+ "id": "D",
+ "text": {
+ "en": "Often fail or give up",
+ "zh-CN": "经常失败或放弃"
+ },
+ "scoring": { "T5": 0.5 }
+ }
+ ]
+ },
+ {
+ "id": "T5_005",
+ "type": "self_report",
+ "difficulty": "medium",
+ "question": {
+ "en": "When learning new knowledge or skills, you prefer to:",
+ "zh-CN": "学习新知识或技能时，你更喜欢："
+ },
+ "options": [
+ {
+ "id": "A",
+ "text": {
+ "en": "Hands-on operation, actual experience, learn while doing",
+ "zh-CN": "亲手操作、实际体验，边做边学"
+ },
+ "scoring": { "T5": 2.0 },
+ "family_bonus": { "operator": 0.5 }
+ },
+ {
+ "id": "B",
+ "text": {
+ "en": "Watch video demonstrations, then try myself",
+ "zh-CN": "看视频演示，然后自己尝试"
+ },
+ "scoring": { "T5": 1.5 }
+ },
+ {
+ "id": "C",
+ "text": {
+ "en": "Read written instructions or listen to explanations",
+ "zh-CN": "阅读文字说明或听讲解"
+ },
+ "scoring": { "T5": 0.5, "T1": 0.5 }
+ },
+ {
+ "id": "D",
+ "text": {
+ "en": "Either way works, no particular preference",
+ "zh-CN": "都可以，没有特别偏好"
+ },
+ "scoring": { "T5": 1.0 }
+ }
+ ]
+ }
+ ],
+
+ "T6_interpersonal": [
+ {
+ "id": "T6_001",
+ "type": "self_report",
+ "difficulty": "easy",
+ "question": {
+ "en": "When a friend is in a bad mood but doesn't say so explicitly, you can:",
+ "zh-CN": "朋友心情不好，但没有明说。你能："
+ },
+ "options": [
+ {
+ "id": "A",
+ "text": {
+ "en": "Tell from facial expressions, tone, body language, and can sense their emotions",
+ "zh-CN": "从表情、语气、肢体语言看出来，并能感受到他的情绪"
+ },
+ "scoring": { "T6": 2.0 }
+ },
+ {
+ "id": "B",
+ "text": {
+ "en": "Vaguely sense something is wrong, but not quite sure",
+ "zh-CN": "隐约感觉不对劲，但不太确定"
+ },
+ "scoring": { "T6": 1.5 }
+ },
+ {
+ "id": "C",
+ "text": {
+ "en": "Won't notice unless they tell me",
+ "zh-CN": "除非他说出来，否则不会注意到"
+ },
+ "scoring": { "T6": 1.0 }
+ },
+ {
+ "id": "D",
+ "text": {
+ "en": "Even if they tell me, I can't really understand their feelings",
+ "zh-CN": "即使他说了，我也不太能理解他的感受"
+ },
+ "scoring": { "T6": 0.5 }
+ }
+ ],
+ "ai_era_value": 5
+ },
+ {
+ "id": "T6_002",
+ "type": "self_report",
+ "difficulty": "easy",
+ "question": {
+ "en": "When seeing others sad or in difficulty, you:",
+ "zh-CN": "看到别人难过或遇到困难时，你："
+ },
+ "options": [
+ {
+ "id": "A",
+ "text": {
+ "en": "Can empathize, want to comfort or help them",
+ "zh-CN": "能感同身受，想要安慰或帮助他们"
+ },
+ "scoring": { "T6": 2.0 },
+ "family_bonus": { "helper": 0.5 }
+ },
+ {
+ "id": "B",
+ "text": {
+ "en": "Can understand their feelings",
+ "zh-CN": "能理解他们的感受"
+ },
+ "scoring": { "T6": 1.5 }
+ },
+ {
+ "id": "C",
+ "text": {
+ "en": "Know they're unhappy, but don't know what to do",
+ "zh-CN": "知道他们不开心，但不知道该做什么"
+ },
+ "scoring": { "T6": 1.0 }
+ },
+ {
+ "id": "D",
+ "text": {
+ "en": "Can't really understand why they're sad",
+ "zh-CN": "不太能理解他们为什么难过"
+ },
+ "scoring": { "T6": 0.5 }
+ }
+ ],
+ "ai_era_value": 5
+ },
+ {
+ "id": "T6_003",
+ "type": "self_report",
+ "difficulty": "easy",
+ "question": {
+ "en": "In social situations (like parties, group discussions), you:",
+ "zh-CN": "在社交场合（如聚会、小组讨论），你："
+ },
+ "options": [
+ {
+ "id": "A",
+ "text": {
+ "en": "Can interact freely, easily connect with different people",
+ "zh-CN": "能自如交流，容易和不同的人建立联系"
+ },
+ "scoring": { "T6": 2.0 },
+ "family_bonus": { "influencer": 0.5 }
+ },
+ {
+ "id": "B",
+ "text": {
+ "en": "Can interact normally, but need some time to adapt",
+ "zh-CN": "能正常交流，但需要一点时间适应"
+ },
+ "scoring": { "T6": 1.5 }
+ },
+ {
+ "id": "C",
+ "text": {
+ "en": "Feel somewhat uncomfortable, prefer to listen",
+ "zh-CN": "感到不太自在，更愿意倾听"
+ },
+ "scoring": { "T6": 1.0, "T7": 0.3 }
+ },
+ {
+ "id": "D",
+ "text": {
+ "en": "Feel very uncomfortable, try to avoid socializing",
+ "zh-CN": "感到很不舒服，尽量避免社交"
+ },
+ "scoring": { "T6": 0.5, "T7": 0.5 }
+ }
+ ]
+ },
+ {
+ "id": "T6_004",
+ "type": "ability",
+ "difficulty": "medium",
+ "question": {
+ "en": "In a group project, two members have disagreements about the plan and are arguing. As a team member, you would:",
+ "zh-CN": "小组项目中，两个成员对方案有分歧，争执不下。作为组员，你会："
+ },
+ "options": [
+ {
+ "id": "A",
+ "text": {
+ "en": "Let both sides express their ideas and reasons, find common ground, propose compromise or better solution",
+ "zh-CN": "让双方说出想法和理由，寻找共同点，提出折中或更好的方案"
+ },
+ "scoring": { "T6": 2.0 },
+ "family_bonus": { "organizer": 0.5 }
+ },
+ {
+ "id": "B",
+ "text": {
+ "en": "Vote to decide, minority follows majority",
+ "zh-CN": "投票决定，少数服从多数"
+ },
+ "scoring": { "T6": 1.0 }
+ },
+ {
+ "id": "C",
+ "text": {
+ "en": "Persuade one side to accept the other's plan",
+ "zh-CN": "说服一方接受另一方的方案"
+ },
+ "scoring": { "T6": 0.5 }
+ },
+ {
+ "id": "D",
+ "text": {
+ "en": "Don't get involved, let them resolve it themselves",
+ "zh-CN": "不参与，让他们自己解决"
+ },
+ "scoring": { "T6": 0.0 }
+ }
+ ],
+ "ai_era_value": 4
+ },
+ {
+ "id": "T6_005",
+ "type": "ability",
+ "difficulty": "medium",
+ "question": {
+ "en": "A friend tells you: \"Your idea is quite interesting...\" \nBut their tone is hesitant, expression forced.\n\nYou understand this as:",
+ "zh-CN": "朋友对你说：\"你这个想法挺有意思的...\"\n但他的语气犹豫，表情勉强。\n\n你理解为："
+ },
+ "options": [
+ {
+ "id": "A",
+ "text": {
+ "en": "They really think it's interesting, I should continue",
+ "zh-CN": "他真的觉得有意思，我应该继续"
+ },
+ "scoring": { "T6": 0.0 }
+ },
+ {
+ "id": "B",
+ "text": {
+ "en": "They may not approve, but don't want to say it directly to hurt me",
+ "zh-CN": "他可能不太认可，但不想直说伤害我"
+ },
+ "scoring": { "T6": 2.0, "T1": 0.3 }
+ },
+ {
+ "id": "C",
+ "text": {
+ "en": "They're just being perfunctory, not interested at all",
+ "zh-CN": "他在敷衍我，根本没兴趣"
+ },
+ "scoring": { "T6": 1.0 }
+ },
+ {
+ "id": "D",
+ "text": {
+ "en": "Don't know, wait for them to say it explicitly",
+ "zh-CN": "不知道，等他明说"
+ },
+ "scoring": { "T6": 0.0 }
+ }
+ ]
+ }
+ ],
+
+ "T7_intrapersonal": [
+ {
+ "id": "T7_001",
+ "type": "self_report",
+ "difficulty": "easy",
+ "question": {
+ "en": "Regarding your strengths and weaknesses, you:",
+ "zh-CN": "对于自己的优点和缺点，你："
+ },
+ "options": [
+ {
+ "id": "A",
+ "text": {
+ "en": "Very clear, can specifically articulate them",
+ "zh-CN": "很清楚，能具体说出来"
+ },
+ "scoring": { "T7": 2.0 }
+ },
+ {
+ "id": "B",
+ "text": {
+ "en": "Roughly know some",
+ "zh-CN": "大概知道一些"
+ },
+ "scoring": { "T7": 1.5 }
+ },
+ {
+ "id": "C",
+ "text": {
+ "en": "Not very clear",
+ "zh-CN": "不太清楚"
+ },
+ "scoring": { "T7": 1.0 }
+ },
+ {
+ "id": "D",
+ "text": {
+ "en": "Haven't thought much about it",
+ "zh-CN": "没怎么想过"
+ },
+ "scoring": { "T7": 0.5 }
+ }
+ ],
+ "ai_era_value": 5
+ },
+ {
+ "id": "T7_002",
+ "type": "self_report",
+ "difficulty": "easy",
+ "question": {
+ "en": "When in a bad mood, can you:",
+ "zh-CN": "心情不好时，你能："
+ },
+ "options": [
+ {
+ "id": "A",
+ "text": {
+ "en": "Accurately identify the reason (e.g., \"because I did poorly on a test\", \"because I argued with a friend\")",
+ "zh-CN": "准确说出原因（如“因为考试没考好”“因为和朋友吵架了”）"
+ },
+ "scoring": { "T7": 2.0 }
+ },
+ {
+ "id": "B",
+ "text": {
+ "en": "Know I'm unhappy, but can't articulate the specific reason",
+ "zh-CN": "知道不开心，但说不太清具体原因"
+ },
+ "scoring": { "T7": 1.5 }
+ },
+ {
+ "id": "C",
+ "text": {
+ "en": "Don't pay much attention to my emotional changes",
+ "zh-CN": "不太注意自己的情绪变化"
+ },
+ "scoring": { "T7": 1.0 }
+ },
+ {
+ "id": "D",
+ "text": {
+ "en": "Even when in a bad mood, hard to realize or describe it",
+ "zh-CN": "即使心情不好，也很难意识到或描述"
+ },
+ "scoring": { "T7": 0.5 }
+ }
+ ]
+ },
+ {
+ "id": "T7_003",
+ "type": "self_report",
+ "difficulty": "easy",
+ "question": {
+ "en": "After encountering setbacks or failures, you will:",
+ "zh-CN": "遇到挫折或失败后，你会："
+ },
+ "options": [
+ {
+ "id": "A",
+ "text": {
+ "en": "Seriously reflect on causes and lessons, think about how to improve",
+ "zh-CN": "认真反思原因和教训，思考如何改进"
+ },
+ "scoring": { "T7": 2.0 },
+ "family_bonus": { "solver": 0.5 }
+ },
+ {
+ "id": "B",
+ "text": {
+ "en": "Think about it, but quickly move on",
+ "zh-CN": "想一想，但很快就过去了"
+ },
+ "scoring": { "T7": 1.5 }
+ },
+ {
+ "id": "C",
+ "text": {
+ "en": "Think it's bad luck or external reasons",
+ "zh-CN": "觉得是运气不好或外部原因"
+ },
+ "scoring": { "T7": 0.5 }
+ },
+ {
+ "id": "D",
+ "text": {
+ "en": "Try not to think about it, avoid unpleasantness",
+ "zh-CN": "尽量不去想，避免不愉快"
+ },
+ "scoring": { "T7": 1.0 }
+ }
+ ]
+ },
+ {
+ "id": "T7_004",
+ "type": "self_report",
+ "difficulty": "medium",
+ "question": {
+ "en": "Regarding the next 1-3 years, you:",
+ "zh-CN": "对于未来1-3年，你："
+ },
+ "options": [
+ {
+ "id": "A",
+ "text": {
+ "en": "Have clear goals, know what kind of person I want to become",
+ "zh-CN": "有明确的目标，知道自己想成为什么样的人"
+ },
+ "scoring": { "T7": 2.0 },
+ "family_bonus": { "organizer": 0.5 }
+ },
+ {
+ "id": "B",
+ "text": {
+ "en": "Have some vague ideas",
+ "zh-CN": "有一些模糊的想法"
+ },
+ "scoring": { "T7": 1.5 }
+ },
+ {
+ "id": "C",
+ "text": {
+ "en": "Take it step by step, no specific plan",
+ "zh-CN": "走一步看一步，没有具体规划"
+ },
+ "scoring": { "T7": 1.0 },
+ "family_bonus": { "explorer": 0.3 }
+ },
+ {
+ "id": "D",
+ "text": {
+ "en": "Don't think much about these questions",
+ "zh-CN": "不太想这些问题"
+ },
+ "scoring": { "T7": 0.5 }
+ }
+ ]
+ },
+ {
+ "id": "T7_005",
+ "type": "self_report",
+ "difficulty": "easy",
+ "question": {
+ "en": "When alone (no socializing, entertainment), you:",
+ "zh-CN": "一个人独处时（没有社交、娱乐），你："
+ },
+ "options": [
+ {
+ "id": "A",
+ "text": {
+ "en": "Really enjoy it, can think, do my own things, feel fulfilled",
+ "zh-CN": "很享受，可以思考、做自己的事，感觉充实"
+ },
+ "scoring": { "T7": 2.0 }
+ },
+ {
+ "id": "B",
+ "text": {
+ "en": "It's okay, but prefer being with people",
+ "zh-CN": "还可以，但更喜欢和人在一起"
+ },
+ "scoring": { "T7": 1.5, "T6": 0.3 }
+ },
+ {
+ "id": "C",
+ "text": {
+ "en": "Feel bored, lonely",
+ "zh-CN": "觉得无聊、孤单"
+ },
+ "scoring": { "T7": 1.0, "T6": 0.5 }
+ },
+ {
+ "id": "D",
+ "text": {
+ "en": "Feel anxious and restless",
+ "zh-CN": "会焦虑不安"
+ },
+ "scoring": { "T7": 0.5, "T6": 0.5 }
+ }
+ ]
+ }
+ ],
+
+ "T8_naturalist": [
+ {
+ "id": "T8_001",
+ "type": "self_report",
+ "difficulty": "easy",
+ "question": {
+ "en": "Can you distinguish different animals and plants?",
+ "zh-CN": "你能区分不同的动植物吗？"
+ },
+ "options": [
+ {
+ "id": "A",
+ "text": {
+ "en": "Can identify many species, very interested in animals and plants",
+ "zh-CN": "能识别很多种，对动植物很感兴趣"
+ },
+ "scoring": { "T8": 2.0 }
+ },
+ {
+ "id": "B",
+ "text": {
+ "en": "Can identify some common ones",
+ "zh-CN": "能识别一些常见的"
+ },
+ "scoring": { "T8": 1.5 }
+ },
+ {
+ "id": "C",
+ "text": {
+ "en": "Can only identify very few",
+ "zh-CN": "只能识别极少数"
+ },
+ "scoring": { "T8": 1.0 }
+ },
+ {
+ "id": "D",
+ "text": {
+ "en": "Basically cannot distinguish",
+ "zh-CN": "基本分辨不出来"
+ },
+ "scoring": { "T8": 0.5 }
+ }
+ ]
+ },
+ {
+ "id": "T8_002",
+ "type": "self_report",
+ "difficulty": "easy",
+ "question": {
+ "en": "Regarding seasonal changes, you:",
+ "zh-CN": "对于季节变化，你："
+ },
+ "options": [
+ {
+ "id": "A",
+ "text": {
+ "en": "Can notice specific changes (like which flowers bloom, which birds arrive, leaf colors)",
+ "zh-CN": "能注意到具体的变化（如哪种花开了、哪种鸟来了、树叶的颜色）"
+ },
+ "scoring": { "T8": 2.0 }
+ },
+ {
+ "id": "B",
+ "text": {
+ "en": "Know seasons are changing",
+ "zh-CN": "知道季节在变化"
+ },
+ "scoring": { "T8": 1.5 }
+ },
+ {
+ "id": "C",
+ "text": {
+ "en": "Don't pay much attention to these",
+ "zh-CN": "不太注意这些"
+ },
+ "scoring": { "T8": 1.0 }
+ },
+ {
+ "id": "D",
+ "text": {
+ "en": "Rarely pay attention to natural changes",
+ "zh-CN": "很少关注自然变化"
+ },
+ "scoring": { "T8": 0.5 }
+ }
+ ]
+ },
+ {
+ "id": "T8_003",
+ "type": "self_report",
+ "difficulty": "easy",
+ "question": {
+ "en": "Do you like interacting with nature?",
+ "zh-CN": "你喜欢接触自然吗？"
+ },
+ "options": [
+ {
+ "id": "A",
+ "text": {
+ "en": "Very much, often actively interact with nature",
+ "zh-CN": "非常喜欢，经常主动接触自然"
+ },
+ "scoring": { "T8": 2.0 }
+ },
+ {
+ "id": "B",
+ "text": {
+ "en": "Like it, occasionally go",
+ "zh-CN": "喜欢，偶尔会去"
+ },
+ "scoring": { "T8": 1.5 }
+ },
+ {
+ "id": "C",
+ "text": {
+ "en": "Don't particularly like it, prefer staying indoors",
+ "zh-CN": "不太喜欢，更喜欢待在室内"
+ },
+ "scoring": { "T8": 1.0 }
+ },
+ {
+ "id": "D",
+ "text": {
+ "en": "Not interested at all",
+ "zh-CN": "完全不感兴趣"
+ },
+ "scoring": { "T8": 0.5 }
+ }
+ ]
+ },
+ {
+ "id": "T8_004",
+ "type": "ability",
+ "difficulty": "medium",
+ "track_time": true,
+ "question": {
+ "en": "Grassland ecosystem: Grass → Rabbit → Fox → Wolf\n\nIf fox population decreases significantly, the most likely result is:",
+ "zh-CN": "草原生态系统：草→兔子→狐狸→狼\n\n如果狐狸数量大量减少，最可能的结果是："
+ },
+ "options": [
+ {
+ "id": "A",
+ "text": {
+ "en": "Rabbits increase, grass decreases, wolves may decrease",
+ "zh-CN": "兔子增加，草减少，狼可能减少"
+ },
+ "scoring": { "T8": 2.0, "T2": 0.5 },
+ "time_bonus": {
+ "threshold_fast": 40,
+ "threshold_normal": 80,
+ "bonus_fast": { "T8": 0.3 }
+ }
+ },
+ {
+ "id": "B",
+ "text": {
+ "en": "All animals decrease",
+ "zh-CN": "所有动物都减少"
+ },
+ "scoring": { "T8": 0.5 }
+ },
+ {
+ "id": "C",
+ "text": {
+ "en": "No impact",
+ "zh-CN": "没有影响"
+ },
+ "scoring": { "T8": 0.0 }
+ },
+ {
+ "id": "D",
+ "text": {
+ "en": "Grass grows better",
+ "zh-CN": "草长得更好"
+ },
+ "scoring": { "T8": 0.0 }
+ }
+ ]
+ },
+ {
+ "id": "T8_005",
+ "type": "ability",
+ "difficulty": "medium",
+ "track_time": true,
+ "question": {
+ "en": "Your indoor pothos plant shows these symptoms:\n• Leaf edges yellowing and curling\n• Soil surface white and hardened\n• Leaves near window more yellow\n\nMost likely cause is:",
+ "zh-CN": "你的室内绿萝出现以下症状：\n• 叶子边缘发黄、卷曲\n• 土壤表面发白、结块\n• 靠近窗户的叶子更黄\n\n最可能的原因是："
+ },
+ "options": [
+ {
+ "id": "A",
+ "text": {
+ "en": "Overwatering, root rot",
+ "zh-CN": "浇水过多，根部腐烂"
+ },
+ "scoring": { "T8": 0.5 }
+ },
+ {
+ "id": "B",
+ "text": {
+ "en": "Long-term lack of water, soil compaction",
+ "zh-CN": "长期缺水，土壤板结"
+ },
+ "scoring": { "T8": 2.0, "T2": 0.5 },
+ "time_bonus": {
+ "threshold_fast": 50,
+ "threshold_normal": 90,
+ "bonus_fast": { "T8": 0.5 },
+ "bonus_normal": { "T8": 0.3 }
+ }
+ },
+ {
+ "id": "C",
+ "text": {
+ "en": "Too much light, leaf burn",
+ "zh-CN": "光照过强，叶片灼伤"
+ },
+ "scoring": { "T8": 0.5 }
+ },
+ {
+ "id": "D",
+ "text": {
+ "en": "Nitrogen deficiency, malnutrition",
+ "zh-CN": "缺少氮肥，营养不良"
+ },
+ "scoring": { "T8": 0.5 }
+ }
+ ]
+ }
+ ]
+ },
+
+ "display_strategy": {
+ "free_report": {
+ "show_careers": [2, 4, 5],
+ "lock_careers": [1, 3],
+ "rationale": {
+ "en": "Lock #1 (92% best match) and #3 to maximize curiosity and upgrade conversion",
+ "zh-CN": "锁定#1（92%最佳匹配）和#3以最大化好奇心和付费转化"
+ }
+ },
+ "paid_unlock": {
+ "pathfinder": ["career_1", "career_3", "W_layer"],
+ "navigator": ["all_5_careers", "W_P_M_A_layers", "complete_roadmap"]
+ }
+ }
+}

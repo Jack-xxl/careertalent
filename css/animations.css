@@ -1,0 +1,73 @@
+/* ==========================================
+   TalentAI - Animations
+   ========================================== */
+
+/* ========== Floating Animation ========== */
+.float {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+
+/* ========== Fade In On Scroll ========== */
+.fade-in {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s, transform 0.8s;
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ========== Slide In from Left ========== */
+.slide-in-left {
+  opacity: 0;
+  transform: translateX(-50px);
+  transition: opacity 0.8s, transform 0.8s;
+}
+
+.slide-in-left.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ========== Slide In from Right ========== */
+.slide-in-right {
+  opacity: 0;
+  transform: translateX(50px);
+  transition: opacity 0.8s, transform 0.8s;
+}
+
+.slide-in-right.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ========== Scale Up ========== */
+.scale-up {
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 0.8s, transform 0.8s;
+}
+
+.scale-up.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ========== Rotate In ========== */
+.rotate-in {
+  opacity: 0;
+  transform: rotate(-10deg);
+  transition: opacity 0.8s, transform 0.8s;
+}
+
+.rotate-in.visible {
+  opacity: 1;
+  transform: rotate(0);
+}

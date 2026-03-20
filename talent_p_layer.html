@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>TalentAI · P层性格深度报告</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #050711;
+      --card: #0c101d;
+      --card-soft: #101524;
+      --accent: #34d399;
+      --accent-soft: rgba(52,211,153,0.18);
+      --danger: #fb7185;
+      --danger-soft: rgba(251,113,133,0.18);
+      --text: #f9fafb;
+      --sub: #9ca3af;
+      --line: rgba(148,163,184,0.25);
+      --yellow: #facc15;
+      --purple: #a855f7;
+      --orange: #fb923c;
+      --blue: #38bdf8;
+      --green: #22c55e;
+      --red: #ef4444;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{
+      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+      background:radial-gradient(circle at top,#111827 0,#020617 50%,#020617 100%);
+      color:var(--text);
+      line-height:1.6;
+      -webkit-font-smoothing:antialiased;
+      padding:24px 0 80px;
+    }
+    .shell{
+      max-width:1100px;
+      margin:0 auto;
+      padding:0 16px;
+    }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:3px 10px;
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,0.5);
+      font-size:11px;
+      letter-spacing:0.08em;
+      text-transform:uppercase;
+      color:var(--sub);
+      margin-bottom:16px;
+    }
+    .badge span.dot{
+      width:6px;height:6px;border-radius:50%;
+      background:radial-gradient(circle,#22c55e 0,#16a34a 60%,transparent 100%);
+      box-shadow:0 0 12px rgba(34,197,94,0.9);
+    }
+    h1.title{
+      font-size:26px;
+      margin-bottom:10px;
+    }
+    .subtitle{
+      font-size:14px;
+      color:var(--sub);
+      max-width:640px;
+    }
+    .grid-top{
+      display:grid;
+      grid-template-columns: minmax(0,3fr) minmax(0,2.5fr);
+      gap:16px;
+      margin-top:28px;
+    }
+    .card{
+      background: linear-gradient(145deg,rgba(15,23,42,0.96),rgba(15,23,42,0.9));
+      border-radius:18px;
+      border:1px solid rgba(148,163,184,0.3);
+      box-shadow:0 18px 40px rgba(15,23,42,0.8);
+      padding:20px 20px 18px;
+      position:relative;
+      overflow:hidden;
+    }
+    .card::before{
+      content:"";
+      position:absolute;
+      inset:-80px;
+      background:
+        radial-gradient(circle at top left,rgba(56,189,248,0.18),transparent 55%),
+        radial-gradient(circle at bottom right,rgba(52,211,153,0.14),transparent 55%);
+      opacity:0.8;
+      pointer-events:none;
+    }
+    .card-inner{position:relative;z-index:1;}
+    .eyebrow{
+      font-size:11px;
+      letter-spacing:0.16em;
+      text-transform:uppercase;
+      color:var(--sub);
+      margin-bottom:10px;
+    }
+    .arch-chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:5px 11px;
+      border-radius:999px;
+      background:rgba(15,23,42,0.9);
+      border:1px solid rgba(148,163,184,0.6);
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:0.12em;
+      margin-bottom:10px;
+    }
+    .arch-dot{
+      width:14px;height:14px;border-radius:50%;
+      background:conic-gradient(from 180deg at 50% 50%,#22c55e,#22c55e,#a855f7,#f97316,#22c55e);
+      box-shadow:0 0 14px rgba(52,211,153,0.8);
+    }
+    .arch-name{
+      font-size:22px;
+      font-weight:600;
+      margin-bottom:6px;
+    }
+    .arch-quote{
+      font-size:13px;
+      color:var(--sub);
+    }
+
+    .ocean-bars{
+      margin-top:10px;
+      display:flex;
+      flex-direction:column;
+      gap:7px;
+    }
+    .o-row{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-size:12px;
+    }
+    .o-label{
+      width:72px;
+      color:var(--sub);
+    }
+    .o-main{
+      flex:1;
+    }
+    .o-track{
+      width:100%;
+      height:6px;
+      border-radius:999px;
+      background:rgba(31,41,55,0.9);
+      overflow:hidden;
+    }
+    .o-fill{
+      height:100%;
+      width:0;
+      border-radius:999px;
+      background:linear-gradient(90deg,#22c55e,#38bdf8,#a855f7);
+      transition:width 0.9s cubic-bezier(.22,.8,.24,1);
+    }
+    .o-meta{
+      font-size:11px;
+      color:var(--sub);
+      display:flex;
+      justify-content:space-between;
+      margin-top:3px;
+    }
+
+    .pill-strip{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:14px;
+      font-size:11px;
+    }
+    .pill{
+      padding:4px 10px;
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,0.6);
+      color:var(--sub);
+    }
+
+    /* 能量卡 */
+    .energy-duo{
+      display:grid;
+      grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+      gap:12px;
+      margin-top:6px;
+    }
+    .en-card{
+      background:rgba(15,23,42,0.9);
+      border-radius:14px;
+      border:1px solid rgba(148,163,184,0.4);
+      padding:14px 14px 12px;
+      position:relative;
+    }
+    .en-ico{
+      width:20px;height:20px;border-radius:9px;
+      display:flex;align-items:center;justify-content:center;
+      font-size:12px;
+      margin-bottom:6px;
+    }
+    .en-ico.charge{
+      background:var(--accent-soft);
+    }
+    .en-ico.drain{
+      background:var(--danger-soft);
+    }
+    .en-title{
+      font-size:12px;
+      font-weight:600;
+      margin-bottom:6px;
+    }
+    .en-ul{
+      list-style:none;
+      font-size:12px;
+      color:var(--sub);
+    }
+    .en-ul li{
+      position:relative;
+      padding-left:13px;
+      margin-bottom:3px;
+    }
+    .en-ul li::before{
+      content:"•";
+      position:absolute;
+      left:2px;top:0;
+      color:#6ee7b7;
+    }
+
+    .section{
+      margin-top:26px;
+    }
+    .sec-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-end;
+      margin-bottom:10px;
+    }
+    .sec-title{
+      font-size:18px;
+      font-weight:600;
+    }
+    .sec-sub{
+      font-size:12px;
+      color:var(--sub);
+    }
+    .two-col{
+      display:grid;
+      grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);
+      gap:16px;
+    }
+    .find-card{
+      background:var(--card);
+      border-radius:16px;
+      border:1px solid rgba(148,163,184,0.5);
+      padding:16px 16px 14px;
+      margin-bottom:10px;
+      opacity:0;
+      transform:translateY(10px);
+      transition:all .5s ease;
+    }
+    .find-card.vis{
+      opacity:1;
+      transform:translateY(0);
+    }
+    .find-no{
+      font-size:11px;
+      color:var(--sub);
+      margin-bottom:4px;
+    }
+    .find-title{
+      font-size:14px;
+      font-weight:600;
+      margin-bottom:6px;
+    }
+    .find-body{
+      font-size:13px;
+      color:var(--sub);
+    }
+
+    /* 职业卡片 */
+    .career-card{
+      background:var(--card);
+      border-radius:16px;
+      border:1px solid rgba(148,163,184,0.5);
+      padding:14px 16px 14px;
+      margin-bottom:10px;
+    }
+    .combo-label{
+      display:inline-block;
+      padding:2px 8px;
+      border-radius:999px;
+      font-size:11px;
+      margin-bottom:8px;
+      color:#bbf7d0;
+      background:rgba(34,197,94,0.18);
+      border:1px solid rgba(34,197,94,0.5);
+    }
+    .combo-label.caution{
+      color:#fed7aa;
+      background:rgba(249,115,22,0.16);
+      border-color:rgba(249,115,22,0.6);
+    }
+    .cc-top{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin-bottom:4px;
+    }
+    .rank-badge{
+      width:22px;height:22px;border-radius:50%;
+      display:flex;align-items:center;justify-content:center;
+      font-size:13px;
+      font-weight:600;
+      background:rgba(15,23,42,0.95);
+      border:1px solid rgba(148,163,184,0.6);
+    }
+    .rank-badge.r1{border-color:#22c55e;}
+    .rank-badge.r2{border-color:#38bdf8;}
+    .rank-badge.r3{border-color:#eab308;}
+    .cc-name{
+      font-size:14px;
+      font-weight:600;
+      flex:1;
+    }
+    .type-tag{
+      font-size:11px;
+      padding:2px 7px;
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,0.6);
+      color:var(--sub);
+    }
+    .type-tag.tg{border-color:#22c55e;color:#bbf7d0;}
+    .type-tag.trad{border-color:#38bdf8;color:#bae6fd;}
+
+    .three-d{
+      display:flex;
+      gap:8px;
+      margin-top:8px;
+      margin-bottom:8px;
+      flex-wrap:wrap;
+    }
+    .td-item{
+      flex:1 1 90px;
+      min-width:90px;
+    }
+    .td-lbl{
+      font-size:11px;
+      color:var(--sub);
+      margin-bottom:2px;
+    }
+    .td-score{
+      font-size:12px;
+      margin-bottom:3px;
+    }
+    .td-bar{
+      width:100%;
+      height:5px;
+      border-radius:999px;
+      background:rgba(31,41,55,0.9);
+      overflow:hidden;
+    }
+    .td-fill{
+      height:100%;
+      width:0;
+      border-radius:999px;
+      background:linear-gradient(90deg,#22c55e,#facc15);
+      transition:width .9s cubic-bezier(.22,.8,.24,1);
+    }
+    .bb-row{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .bb-item{
+      flex:1 1 150px;
+      font-size:12px;
+      color:var(--sub);
+      padding:6px 8px;
+      border-radius:10px;
+      background:rgba(15,23,42,0.9);
+      border:1px dashed rgba(148,163,184,0.5);
+    }
+
+    /* 风险 */
+    .risk-card{
+      background:var(--card);
+      border-radius:16px;
+      border:1px solid rgba(148,163,184,0.5);
+      padding:14px 16px 14px;
+      margin-bottom:10px;
+    }
+    .risk-head{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      margin-bottom:6px;
+    }
+    .risk-ico{
+      width:24px;height:24px;border-radius:999px;
+      display:flex;align-items:center;justify-content:center;
+      font-size:14px;
+      background:rgba(15,23,42,0.9);
+      border:1px solid rgba(148,163,184,0.5);
+    }
+    .risk-title{
+      font-size:14px;
+      font-weight:600;
+    }
+    .risk-level{
+      font-size:11px;
+      padding:1px 6px;
+      border-radius:999px;
+      margin-top:2px;
+      display:inline-block;
+    }
+    .risk-level.rl-h{
+      background:var(--danger-soft);
+      color:#fecaca;
+      border:1px solid rgba(248,113,113,0.8);
+    }
+    .risk-level.rl-m{
+      background:rgba(248,250,252,0.02);
+      color:#fee2e2;
+      border:1px solid rgba(252,165,165,0.8);
+    }
+    .risk-body{
+      font-size:12px;
+      color:var(--sub);
+      margin-bottom:6px;
+    }
+    .risk-fix{
+      font-size:12px;
+      color:#e5e7eb;
+    }
+
+    /* 家长手册 */
+    .cmd-card{
+      background:var(--card);
+      border-radius:16px;
+      border:1px solid rgba(148,163,184,0.5);
+      padding:12px 14px 10px;
+      margin-bottom:8px;
+      font-size:12px;
+      color:var(--sub);
+    }
+    .cmd-title{
+      font-weight:600;
+      margin-bottom:4px;
+      color:#e5e7eb;
+    }
+    .cmd-avoid{
+      margin-top:4px;
+      color:#fca5a5;
+    }
+
+    /* 说明文字 */
+    .hint{
+      font-size:11px;
+      color:var(--sub);
+      margin-top:6px;
+    }
+
+    @media (max-width:900px){
+      .grid-top{grid-template-columns:1fr;}
+      .two-col{grid-template-columns:1fr;}
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="badge">
+      <span class="dot"></span>
+      TALENTAI · P层性格深度报告
+    </div>
+    <button onclick="
+      const keys = Object.keys(localStorage).filter(k=>k.startsWith('talentai_'));
+      keys.forEach(k=>localStorage.removeItem(k));
+      alert('✅ 缓存已清除！页面将重新加载');
+      location.reload();
+    " style="position:fixed;top:12px;right:12px;z-index:9999;background:#ef444420;color:#ef4444;border:1px solid #ef444440;border-radius:8px;padding:6px 12px;font-size:11px;cursor:pointer;font-family:inherit;">
+      🔄 清除缓存
+    </button>
+    <h1 class="title">你的性格 DNA 图谱</h1>
+    <p class="subtitle">
+      这一页不是在给你贴标签，而是帮你看清：在 AI 时代，什么样的环境、路径、合作方式最适合你。
+    </p>
+
+    <!-- 顶部：人格 + 能量 -->
+    <div class="grid-top">
+      <div class="card">
+        <div class="card-inner">
+          <div class="eyebrow">性格画像 · PERSONALITY PROFILE</div>
+          <div class="arch-chip">
+            <span class="arch-dot"></span>
+            <span id="archTag">核心气质</span>
+          </div>
+          <div class="arch-name" id="archName"></div>
+          <div class="arch-quote" id="archQuote"></div>
+
+          <div class="ocean-bars" id="oceanWrap">
+            <!-- 动态插入五维条形图 -->
+          </div>
+
+          <div class="pill-strip" id="pillStrip">
+            <!-- 动态贴出关键词 -->
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-inner">
+          <div class="eyebrow">能量地图 · ENERGY MAP</div>
+          <div class="en-desc" style="font-size:12px;color:var(--sub);margin-bottom:8px;">
+            不同的人，在不同场景下电量掉得完全不一样。先看清：什么在帮你“充电”，什么在悄悄掏空你。
+          </div>
+          <div class="energy-duo">
+            <div class="en-card">
+              <div class="en-ico charge">⚡</div>
+              <div class="en-title">让你“充电”的场景</div>
+              <ul class="en-ul" id="chargeList"></ul>
+            </div>
+            <div class="en-card">
+              <div class="en-ico drain">🪫</div>
+              <div class="en-title">让你“掉电”的场景</div>
+              <ul class="en-ul" id="drainList"></ul>
+            </div>
+          </div>
+          <div class="hint">
+            ⚡ 代表能让你恢复状态、越做越有劲的场景；🪫 代表会持续消耗你精力、做完只想躺平的场景。
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 个扎心真相 -->
+    <div class="section">
+      <div class="sec-head">
+        <div>
+          <div class="sec-title">3 个关于你的扎心真相</div>
+          <div class="sec-sub">这些不是普遍的性格结论，而是从你的实际数据里长出来的提醒。</div>
+        </div>
+      </div>
+      <div id="findWrap"></div>
+    </div>
+
+    <!-- 职业匹配 V3 生态池架构 -->
+    <div class="section">
+      <div class="sec-head">
+        <div>
+          <div class="sec-title">你的能力生态 × 最适合的职业方向</div>
+          <div class="sec-sub">系统先根据你的天赋（T层）× 性格（P层）判断你最属于哪个<strong>能力生态</strong>，再在该生态中展开最匹配的角色路径。</div>
+        </div>
+      </div>
+      <div id="ecosystemBanner"></div>
+      <div id="careerList"></div>
+      <div class="hint">提示：真正适合你的不是某个职位名称，而是一个<strong>能让你10年后越做越强的生态位</strong>——能力在增长，成就感在上升，AI在放大你的优势。</div>
+    </div>
+      </div>
+      <div id="careerList"></div>
+      <div class="hint">
+        提示：真正适合你的职业，不只是“能不能做”，还要看 <strong>做十年之后，你的能量和成就感会不会一起增长</strong>。
+      </div>
+    </div>
+
+    <!-- 风险地图 -->
+    <div class="section">
+      <div class="sec-head">
+        <div>
+          <div class="sec-title">风险预警：你最容易踩的 2–3 个坑</div>
+          <div class="sec-sub">不是吓唬你，而是提前看到：在哪些地方，你的优势最容易被反向利用。</div>
+        </div>
+      </div>
+      <div id="riskList"></div>
+    </div>
+
+    <!-- 家长行动指令 -->
+    <div class="section">
+      <div class="sec-head">
+        <div>
+          <div class="sec-title">给家长的 4 条精确行动指令</div>
+          <div class="sec-sub">如果你是家长，这一页可以直接当成“陪伴与教育的操作清单”。</div>
+        </div>
+      </div>
+      <div id="parentCmd"></div>
+    </div>
+
+  </div>
+
+  <script>
+    // ==========================
+    // 1. 读取数据（从 localStorage 或示例）
+    // ==========================
+    // P层五维分数：O 开放性, C 尽责性, E 外向性, A 宜人性, N 神经质/情绪稳定
+
+    // ✅ 版本缓存控制：版本变化时自动清除旧数据
+    const CACHE_VERSION = 'talentai_v3_1';
+    (function() {
+      const saved = localStorage.getItem('talentai_version');
+      if (saved !== CACHE_VERSION) {
+        Object.keys(localStorage)
+          .filter(k => k.startsWith('talentai_'))
+          .forEach(k => localStorage.removeItem(k));
+        localStorage.setItem('talentai_version', CACHE_VERSION);
+        console.log('✅ 旧缓存已自动清除');
+      }
+    })();
+
+    const dimScores = (function(){
+      try {
+        const raw = localStorage.getItem('talentai_p_dims');
+        if (raw) return JSON.parse(raw);
+      } catch(e){}
+      // 默认数据（真实测评分）
+      return { O:87, C:77, E:87, A:90, N:47 };
+    })();
+
+    // ✅ T层8维天赋分数（T层result.html完成后由result-generator.js写入）
+    const tScores = (function(){
+      try {
+        const raw = localStorage.getItem('talentai_t_scores');
+        if(raw) return JSON.parse(raw);
+      } catch(e){}
+      // 默认数据（真实测评分）
+      return {
+        T1_language:     { displayScore: 7.5, rawScore: 7.5, level: "中高" },
+        T2_logic:        { displayScore: 9.5, rawScore: 9.5, level: "极高" },
+        T3_spatial:      { displayScore: 6.5, rawScore: 6.5, level: "中等" },
+        T4_music:        { displayScore: 7.0, rawScore: 7.0, level: "中高" },
+        T5_bodily:       { displayScore: 6.5, rawScore: 6.5, level: "中等" },
+        T6_interpersonal:{ displayScore:10.0, rawScore:10.0, level: "满分" },
+        T7_intrapersonal:{ displayScore: 9.5, rawScore: 9.5, level: "极高" },
+        T8_naturalist:   { displayScore: 7.0, rawScore: 7.0, level: "中高" }
+      };
+    })();
+
+    // ✅ V3 职业库：55个职业，10大生态，含15个传统路径
+    const CAREERS_DB = [{"id": "ai_solution_architect", "name": "AI解决方案架构师", "family": "solver", "ecosystem": "ai_systems", "abilityType": "systematic", "aiUpgradeType": "ai_native", "ecosystemRole": "系统设计者", "req": {"T2_logic": 8.5, "T7_intrapersonal": 7.5, "T3_spatial": 6.5}, "bonus": {"T1_language": 0.3}, "desc": "为企业设计AI整体解决方案，把业务痛点拆解为可落地的AI方案。薪资40-120万/年。", "aiImpact": {"replacementRisk": 15, "collaborationPotential": 95, "salaryRange": "40-120万/年", "newbieAdvantage": 65}, "extremeRiskIndex": 3, "stressPattern": "逻辑压力型——复杂系统出错时高压", "longTermStability": "rising", "traditionalPath": false, "careerPath": "AI工程师 → 架构师 → 首席AI官(CAO)"}, {"id": "ml_engineer", "name": "机器学习工程师", "family": "solver", "ecosystem": "ai_systems", "abilityType": "systematic", "aiUpgradeType": "ai_native", "ecosystemRole": "算法建造者", "req": {"T2_logic": 9.0, "T3_spatial": 7.0, "T7_intrapersonal": 7.5}, "bonus": {"T1_language": 0.2}, "desc": "开发和优化机器学习模型，解决实际业务问题。薪资35-100万/年。", "aiImpact": {"replacementRisk": 30, "collaborationPotential": 92, "salaryRange": "35-100万/年", "newbieAdvantage": 60}, "extremeRiskIndex": 4, "stressPattern": "技术攻关压力型——卡点时极高焦虑", "longTermStability": "rising", "traditionalPath": false, "careerPath": "算法助理 → ML工程师 → AI研究员"}, {"id": "ai_product_manager", "name": "AI产品经理", "family": "organizer", "ecosystem": "ai_systems", "abilityType": "influential", "aiUpgradeType": "ai_augmented", "ecosystemRole": "需求转化者", "req": {"T6_interpersonal": 7.0, "T2_logic": 7.5, "T1_language": 7.0}, "bonus": {"T7_intrapersonal": 0.3}, "desc": "把用户需求转化为AI产品功能，协调技术与业务。薪资30-80万/年。", "aiImpact": {"replacementRisk": 25, "collaborationPotential": 88, "salaryRange": "30-80万/年", "newbieAdvantage": 72}, "extremeRiskIndex": 4, "stressPattern": "跨部门协调压力型", "longTermStability": "rising", "traditionalPath": false, "careerPath": "产品助理 → 产品经理 → 产品总监"}, {"id": "ai_ethics_consultant", "name": "AI伦理顾问", "family": "helper", "ecosystem": "ai_systems", "abilityType": "analytical", "aiUpgradeType": "human_core", "ecosystemRole": "价值守护者", "req": {"T7_intrapersonal": 8.0, "T1_language": 7.5, "T2_logic": 7.0}, "bonus": {"T6_interpersonal": 0.4}, "desc": "评估AI系统的伦理风险，制定合规框架。薪资35-90万/年。", "aiImpact": {"replacementRisk": 10, "collaborationPotential": 80, "salaryRange": "35-90万/年", "newbieAdvantage": 60}, "extremeRiskIndex": 2, "stressPattern": "价值冲突压力型", "longTermStability": "rising", "traditionalPath": false, "careerPath": "政策分析师 → AI伦理专员 → 首席伦理官"}, {"id": "ai_safety_researcher", "name": "AI安全研究员", "family": "explorer", "ecosystem": "ai_systems", "abilityType": "analytical", "aiUpgradeType": "human_core", "ecosystemRole": "安全守护者", "req": {"T2_logic": 9.5, "T7_intrapersonal": 9.0, "T1_language": 8.0}, "bonus": {"T3_spatial": 0.3}, "desc": "研究AI对齐与安全问题，防止AI系统产生有害行为。薪资50-200万/年。", "aiImpact": {"replacementRisk": 5, "collaborationPotential": 90, "salaryRange": "50-200万/年", "newbieAdvantage": 55}, "extremeRiskIndex": 3, "stressPattern": "认知负荷型——复杂问题长期高强度思考", "longTermStability": "rising", "traditionalPath": false, "careerPath": "计算机+哲学/数学 → AI安全研究员 → OpenAI/Anthropic"}, {"id": "data_scientist", "name": "数据科学家", "family": "solver", "ecosystem": "ai_systems", "abilityType": "analytical", "aiUpgradeType": "ai_native", "ecosystemRole": "数据洞察者", "req": {"T2_logic": 9.0, "T7_intrapersonal": 8.0, "T3_spatial": 7.0}, "bonus": {"T1_language": 0.2}, "desc": "从大数据中提取业务洞察，驱动决策。薪资30-120万/年。", "aiImpact": {"replacementRisk": 30, "collaborationPotential": 90, "salaryRange": "30-120万/年", "newbieAdvantage": 58}, "extremeRiskIndex": 3, "stressPattern": "数据质量焦虑型", "longTermStability": "stable", "traditionalPath": false, "careerPath": "数据分析师 → 数据科学家 → 首席数据官"}, {"id": "data_product_manager", "name": "数据产品经理", "family": "organizer", "ecosystem": "ai_systems", "abilityType": "systematic", "aiUpgradeType": "ai_augmented", "ecosystemRole": "数据产品化者", "req": {"T2_logic": 8.5, "T6_interpersonal": 7.0, "T7_intrapersonal": 7.5}, "bonus": {"T1_language": 0.3}, "desc": "把数据能力产品化，连接技术团队与业务决策。薪资25-70万/年。", "aiImpact": {"replacementRisk": 30, "collaborationPotential": 88, "salaryRange": "25-70万/年", "newbieAdvantage": 65}, "extremeRiskIndex": 3, "stressPattern": "跨部门协调压力型", "longTermStability": "stable", "traditionalPath": false, "careerPath": "数据分析师 → 数据产品经理 → 首席数据官"}, {"id": "ai_trainer", "name": "AI训练师/RLHF专员", "family": "creator", "ecosystem": "ai_systems", "abilityType": "analytical", "aiUpgradeType": "ai_native", "ecosystemRole": "模型优化者", "req": {"T7_intrapersonal": 7.5, "T2_logic": 7.0, "T1_language": 8.0}, "bonus": {"T3_spatial": 0.2}, "desc": "为大模型提供人类反馈训练，提升模型对齐质量。薪资20-55万/年。", "aiImpact": {"replacementRisk": 40, "collaborationPotential": 90, "salaryRange": "20-55万/年", "newbieAdvantage": 85}, "extremeRiskIndex": 3, "stressPattern": "重复性疲劳型", "longTermStability": "transforming", "traditionalPath": false, "careerPath": "标注员 → 训练师 → 对齐研究员"}, {"id": "research_ops", "name": "AI研究运营（Research Ops）", "family": "organizer", "ecosystem": "ai_systems", "abilityType": "systematic", "aiUpgradeType": "ai_augmented", "ecosystemRole": "研究加速者", "req": {"T2_logic": 7.5, "T6_interpersonal": 7.5, "T7_intrapersonal": 7.5}, "bonus": {"T1_language": 0.3}, "desc": "管理用户研究流程和知识库，让团队高效产出洞察。薪资20-55万/年。", "aiImpact": {"replacementRisk": 30, "collaborationPotential": 82, "salaryRange": "20-55万/年", "newbieAdvantage": 72}, "extremeRiskIndex": 3, "stressPattern": "资源不足焦虑型", "longTermStability": "rising", "traditionalPath": false, "careerPath": "用户研究员 → Research Ops → 研究总监"}, {"id": "robotics_engineer", "name": "机器人工程师", "family": "solver", "ecosystem": "robotics_hardware", "abilityType": "systematic", "aiUpgradeType": "ai_augmented", "ecosystemRole": "系统集成者", "req": {"T2_logic": 8.5, "T3_spatial": 8.0, "T5_bodily": 6.5}, "bonus": {"T7_intrapersonal": 0.3}, "desc": "设计开发机器人系统，融合机械、电子与AI控制。薪资30-90万/年。", "aiImpact": {"replacementRisk": 20, "collaborationPotential": 88, "salaryRange": "30-90万/年", "newbieAdvantage": 55}, "extremeRiskIndex": 3, "stressPattern": "精度失误压力型", "longTermStability": "rising", "traditionalPath": false, "careerPath": "机械工程师 → 机器人工程师 → 自动化系统总监"}, {"id": "autonomous_driving_engineer", "name": "自动驾驶系统工程师", "family": "solver", "ecosystem": "robotics_hardware", "abilityType": "systematic", "aiUpgradeType": "ai_native", "ecosystemRole": "感知决策者", "req": {"T2_logic": 9.5, "T3_spatial": 9.0, "T7_intrapersonal": 7.5}, "bonus": {"T5_bodily": 0.2}, "desc": "开发自动驾驶感知、决策和控制系统。薪资40-150万/年。", "aiImpact": {"replacementRisk": 12, "collaborationPotential": 92, "salaryRange": "40-150万/年", "newbieAdvantage": 50}, "extremeRiskIndex": 7, "stressPattern": "安全责任极重型——事故影响巨大", "longTermStability": "rising", "traditionalPath": false, "careerPath": "算法工程师 → 自动驾驶感知/规划 → 技术负责人"}, {"id": "embedded_ai_developer", "name": "嵌入式AI开发工程师", "family": "solver", "ecosystem": "robotics_hardware", "abilityType": "systematic", "aiUpgradeType": "ai_native", "ecosystemRole": "边缘计算者", "req": {"T2_logic": 9.0, "T3_spatial": 7.5, "T7_intrapersonal": 7.0}, "bonus": {"T5_bodily": 0.2}, "desc": "在硬件设备上部署轻量AI模型，让机器在边缘端智能运行。薪资25-70万/年。", "aiImpact": {"replacementRisk": 25, "collaborationPotential": 85, "salaryRange": "25-70万/年", "newbieAdvantage": 62}, "extremeRiskIndex": 3, "stressPattern": "调试失败压力型", "longTermStability": "rising", "traditionalPath": false, "careerPath": "嵌入式工程师 → AI芯片应用 → 硬件AI架构师"}, {"id": "industrial_automation_engineer", "name": "工业自动化工程师", "family": "operator", "ecosystem": "robotics_hardware", "abilityType": "systematic", "aiUpgradeType": "ai_augmented", "ecosystemRole": "工厂改造者", "req": {"T2_logic": 8.0, "T3_spatial": 7.5, "T5_bodily": 7.5}, "bonus": {"T8_naturalist": 0.2}, "desc": "用PLC、机器视觉、工业机器人改造传统工厂。薪资20-60万/年。", "aiImpact": {"replacementRisk": 22, "collaborationPotential": 82, "salaryRange": "20-60万/年", "newbieAdvantage": 68}, "extremeRiskIndex": 4, "stressPattern": "停线事故焦虑型", "longTermStability": "rising", "traditionalPath": false, "careerPath": "电气/机械工程师 → 自动化工程师 → 智能制造总监"}, {"id": "doctor_general", "name": "全科医生", "family": "guardian", "ecosystem": "biomedical", "abilityType": "caring", "aiUpgradeType": "traditional_ai_recast", "ecosystemRole": "健康守护者", "req": {"T6_interpersonal": 8.0, "T2_logic": 8.0, "T7_intrapersonal": 7.0, "T1_language": 7.5}, "bonus": {"T8_naturalist": 0.3}, "desc": "诊断治疗常见病，建立长期医患关系。薪资20-80万/年（公立/私立差异大）。", "aiImpact": {"replacementRisk": 15, "collaborationPotential": 75, "salaryRange": "20-80万/年", "newbieAdvantage": 30}, "extremeRiskIndex": 7, "stressPattern": "生命责任压力型——高职业倦怠风险", "longTermStability": "stable", "traditionalPath": true, "careerPath": "医学生(8年) → 住院医师 → 主治医生 → 主任医师"}, {"id": "surgeon", "name": "外科医生", "family": "guardian", "ecosystem": "biomedical", "abilityType": "systematic", "aiUpgradeType": "traditional_ai_recast", "ecosystemRole": "精准操作者", "req": {"T2_logic": 8.5, "T5_bodily": 9.0, "T3_spatial": 8.5, "T7_intrapersonal": 8.0}, "bonus": {"T6_interpersonal": 0.2}, "desc": "进行手术治疗，要求极高的操作精度和抗压能力。薪资30-200万/年。", "aiImpact": {"replacementRisk": 18, "collaborationPotential": 70, "salaryRange": "30-200万/年", "newbieAdvantage": 20}, "extremeRiskIndex": 9, "stressPattern": "生死决策压力型——极高职业燃耗", "longTermStability": "stable", "traditionalPath": true, "careerPath": "医学生(8-10年) → 住院外科 → 主治 → 主任外科医生"}, {"id": "psychiatrist_psychologist", "name": "心理咨询师/精神科医生", "family": "helper", "ecosystem": "biomedical", "abilityType": "caring", "aiUpgradeType": "human_core", "ecosystemRole": "心理疗愈者", "req": {"T6_interpersonal": 9.0, "T7_intrapersonal": 9.0, "T1_language": 8.0}, "bonus": {"T2_logic": 0.3}, "desc": "提供心理诊断与治疗，AI时代心理健康需求激增。薪资15-60万/年。", "aiImpact": {"replacementRisk": 8, "collaborationPotential": 65, "salaryRange": "15-60万/年", "newbieAdvantage": 40}, "extremeRiskIndex": 6, "stressPattern": "情绪感染压力型——反移情风险高", "longTermStability": "rising", "traditionalPath": true, "careerPath": "心理学硕士 → 实习咨询师 → 执照咨询师 → 督导师"}, {"id": "clinical_ai_officer", "name": "临床AI协作医生", "family": "guardian", "ecosystem": "biomedical", "abilityType": "analytical", "aiUpgradeType": "ai_augmented", "ecosystemRole": "人机协作者", "req": {"T2_logic": 8.5, "T6_interpersonal": 7.5, "T7_intrapersonal": 7.5}, "bonus": {"T1_language": 0.3}, "desc": "使用AI辅助诊断系统，提升医疗准确率，是传统医生的进化版。薪资35-100万/年。", "aiImpact": {"replacementRisk": 12, "collaborationPotential": 95, "salaryRange": "35-100万/年", "newbieAdvantage": 55}, "extremeRiskIndex": 5, "stressPattern": "技术-伦理双重压力型", "longTermStability": "rising", "traditionalPath": false, "careerPath": "临床医生 → AI医疗工具认证 → 临床AI专家"}, {"id": "biotech_researcher", "name": "生物科技研究员", "family": "explorer", "ecosystem": "biomedical", "abilityType": "analytical", "aiUpgradeType": "ai_augmented", "ecosystemRole": "科学探索者", "req": {"T2_logic": 9.0, "T8_naturalist": 8.5, "T7_intrapersonal": 8.0}, "bonus": {"T3_spatial": 0.3}, "desc": "研究基因编辑、蛋白质折叠等前沿生物技术。薪资20-80万/年。", "aiImpact": {"replacementRisk": 20, "collaborationPotential": 90, "salaryRange": "20-80万/年", "newbieAdvantage": 45}, "extremeRiskIndex": 4, "stressPattern": "实验失败挫败型——长期耐压要求高", "longTermStability": "rising", "traditionalPath": false, "careerPath": "博士研究生 → 博士后 → 研究员 → PI"}, {"id": "genetic_counselor", "name": "基因咨询师", "family": "helper", "ecosystem": "biomedical", "abilityType": "caring", "aiUpgradeType": "ai_augmented", "ecosystemRole": "遗传风险解读者", "req": {"T8_naturalist": 8.5, "T6_interpersonal": 8.0, "T7_intrapersonal": 7.5}, "bonus": {"T1_language": 0.4}, "desc": "解读基因检测报告，帮助家庭理解遗传风险。薪资20-60万/年。", "aiImpact": {"replacementRisk": 15, "collaborationPotential": 78, "salaryRange": "20-60万/年", "newbieAdvantage": 65}, "extremeRiskIndex": 4, "stressPattern": "坏消息传递压力型", "longTermStability": "rising", "traditionalPath": false, "careerPath": "遗传学+医学背景 → 基因咨询认证 → 医院/基因公司"}, {"id": "pharmacist", "name": "药剂师", "family": "guardian", "ecosystem": "biomedical", "abilityType": "systematic", "aiUpgradeType": "traditional_ai_recast", "ecosystemRole": "用药安全者", "req": {"T2_logic": 7.5, "T7_intrapersonal": 7.0, "T8_naturalist": 7.0}, "bonus": {"T6_interpersonal": 0.3}, "desc": "审核处方、指导用药，AI辅助提升准确率。薪资12-35万/年。", "aiImpact": {"replacementRisk": 45, "collaborationPotential": 72, "salaryRange": "12-35万/年", "newbieAdvantage": 50}, "extremeRiskIndex": 4, "stressPattern": "用药错误焦虑型", "longTermStability": "transforming", "traditionalPath": true, "careerPath": "药学本科 → 执照药剂师 → 临床药师 → 药学部主任"}, {"id": "energy_storage_engineer", "name": "储能系统工程师", "family": "solver", "ecosystem": "new_energy", "abilityType": "systematic", "aiUpgradeType": "ai_augmented", "ecosystemRole": "能源建造者", "req": {"T2_logic": 8.5, "T3_spatial": 7.5, "T7_intrapersonal": 7.0}, "bonus": {"T8_naturalist": 0.3}, "desc": "设计电池储能系统，解决新能源间歇性问题。薪资25-70万/年。", "aiImpact": {"replacementRisk": 20, "collaborationPotential": 82, "salaryRange": "25-70万/年", "newbieAdvantage": 65}, "extremeRiskIndex": 3, "stressPattern": "技术瓶颈压力型", "longTermStability": "rising", "traditionalPath": false, "careerPath": "电气工程师 → 储能工程师 → 储能系统总监"}, {"id": "carbon_trading_analyst", "name": "碳交易分析师", "family": "solver", "ecosystem": "new_energy", "abilityType": "analytical", "aiUpgradeType": "ai_augmented", "ecosystemRole": "碳市场操盘者", "req": {"T2_logic": 8.5, "T7_intrapersonal": 7.5, "T1_language": 7.0}, "bonus": {"T6_interpersonal": 0.3}, "desc": "分析碳市场，制定企业减排和碳资产管理策略。薪资20-60万/年。", "aiImpact": {"replacementRisk": 30, "collaborationPotential": 78, "salaryRange": "20-60万/年", "newbieAdvantage": 70}, "extremeRiskIndex": 4, "stressPattern": "市场波动焦虑型", "longTermStability": "rising", "traditionalPath": false, "careerPath": "环境经济学 → 碳核查员 → 碳交易分析师 → 碳资产总监"}, {"id": "solar_wind_engineer", "name": "光伏/风电系统工程师", "family": "operator", "ecosystem": "new_energy", "abilityType": "systematic", "aiUpgradeType": "ai_augmented", "ecosystemRole": "绿电建设者", "req": {"T2_logic": 7.5, "T3_spatial": 7.5, "T5_bodily": 6.5}, "bonus": {"T8_naturalist": 0.4}, "desc": "设计安装光伏和风电系统，是新能源基础设施的建造者。薪资15-45万/年。", "aiImpact": {"replacementRisk": 28, "collaborationPotential": 75, "salaryRange": "15-45万/年", "newbieAdvantage": 72}, "extremeRiskIndex": 4, "stressPattern": "工程安全压力型", "longTermStability": "rising", "traditionalPath": false, "careerPath": "电气工程师 → 光伏设计师 → 新能源项目经理"}, {"id": "hydrogen_engineer", "name": "氢能与燃料电池工程师", "family": "solver", "ecosystem": "new_energy", "abilityType": "systematic", "aiUpgradeType": "ai_augmented", "ecosystemRole": "清洁能源先锋", "req": {"T2_logic": 8.5, "T8_naturalist": 7.5, "T3_spatial": 7.0}, "bonus": {"T7_intrapersonal": 0.3}, "desc": "研发氢能储运和燃料电池系统，解决重型运输清洁化。薪资25-70万/年。", "aiImpact": {"replacementRisk": 18, "collaborationPotential": 80, "salaryRange": "25-70万/年", "newbieAdvantage": 72}, "extremeRiskIndex": 4, "stressPattern": "技术路线不确定焦虑型", "longTermStability": "rising", "traditionalPath": false, "careerPath": "化工/材料工程师 → 氢能专家 → 能源公司技术总监"}, {"id": "ai_learning_coach", "name": "AI学习教练（个性化陪跑）", "family": "helper", "ecosystem": "edu_tech", "abilityType": "caring", "aiUpgradeType": "ai_augmented", "ecosystemRole": "成长加速者", "req": {"T6_interpersonal": 8.0, "T7_intrapersonal": 7.5, "T1_language": 7.5}, "bonus": {"T2_logic": 0.3}, "desc": "用AI工具个性化辅导学习者，提升学习效率和动力。薪资15-50万/年。", "aiImpact": {"replacementRisk": 15, "collaborationPotential": 82, "salaryRange": "15-50万/年", "newbieAdvantage": 78}, "extremeRiskIndex": 3, "stressPattern": "情绪投入疲劳型", "longTermStability": "rising", "traditionalPath": false, "careerPath": "教师/培训师 → AI教练 → 学习设计总监"}, {"id": "teacher_traditional", "name": "学校教师（传统）", "family": "helper", "ecosystem": "edu_tech", "abilityType": "caring", "aiUpgradeType": "traditional_ai_recast", "ecosystemRole": "知识传递者", "req": {"T6_interpersonal": 8.0, "T1_language": 8.0, "T7_intrapersonal": 6.5}, "bonus": {"T4_music": 0.2}, "desc": "中小学或大学教师，AI时代需转型为学习引导者。薪资8-25万/年（公立）。", "aiImpact": {"replacementRisk": 35, "collaborationPotential": 68, "salaryRange": "8-25万/年", "newbieAdvantage": 55}, "extremeRiskIndex": 5, "stressPattern": "成就感缺失型——学生不进步时高挫败", "longTermStability": "transforming", "traditionalPath": true, "careerPath": "师范毕业 → 教师 → 教研组长 → 校长"}, {"id": "curriculum_designer", "name": "课程体验设计师", "family": "creator", "ecosystem": "edu_tech", "abilityType": "creative", "aiUpgradeType": "ai_augmented", "ecosystemRole": "学习路径设计者", "req": {"T1_language": 7.5, "T7_intrapersonal": 7.5, "T3_spatial": 6.5}, "bonus": {"T6_interpersonal": 0.3}, "desc": "设计让人上瘾的学习体验和课程产品。薪资20-55万/年。", "aiImpact": {"replacementRisk": 20, "collaborationPotential": 85, "salaryRange": "20-55万/年", "newbieAdvantage": 75}, "extremeRiskIndex": 3, "stressPattern": "创意枯竭压力型", "longTermStability": "rising", "traditionalPath": false, "careerPath": "内容策划 → 课程设计师 → 教育产品总监"}, {"id": "career_coach", "name": "AI时代职业规划师", "family": "helper", "ecosystem": "edu_tech", "abilityType": "influential", "aiUpgradeType": "human_core", "ecosystemRole": "路径导航者", "req": {"T6_interpersonal": 8.5, "T7_intrapersonal": 8.5, "T1_language": 8.0}, "bonus": {"T2_logic": 0.3}, "desc": "帮助个人在AI时代找到职业定位与发展路径。薪资20-100万/年。", "aiImpact": {"replacementRisk": 8, "collaborationPotential": 70, "salaryRange": "20-100万/年", "newbieAdvantage": 65}, "extremeRiskIndex": 3, "stressPattern": "客户期望管理压力型", "longTermStability": "rising", "traditionalPath": false, "careerPath": "HR/咨询师 → 职业教练认证 → 独立教练品牌"}, {"id": "family_edu_consultant", "name": "AI家庭教育顾问", "family": "helper", "ecosystem": "edu_tech", "abilityType": "caring", "aiUpgradeType": "human_core", "ecosystemRole": "家庭赋能者", "req": {"T6_interpersonal": 8.5, "T7_intrapersonal": 8.0, "T1_language": 8.0}, "bonus": {"T2_logic": 0.2}, "desc": "帮助家长科学养育，应对AI时代教育挑战。薪资20-80万/年。", "aiImpact": {"replacementRisk": 10, "collaborationPotential": 65, "salaryRange": "20-80万/年", "newbieAdvantage": 68}, "extremeRiskIndex": 3, "stressPattern": "家长焦虑感染型", "longTermStability": "rising", "traditionalPath": false, "careerPath": "教育/心理背景 → 亲子教练 → 教育咨询品牌"}, {"id": "edu_entrepreneur", "name": "教育科技创业者", "family": "explorer", "ecosystem": "edu_tech", "abilityType": "influential", "aiUpgradeType": "ai_native", "ecosystemRole": "教育创新者", "req": {"T6_interpersonal": 8.5, "T7_intrapersonal": 8.5, "T2_logic": 7.5}, "bonus": {"T1_language": 0.4}, "desc": "创建AI时代的教育产品或培训体系，解决学习效率问题。收入两极分化。", "aiImpact": {"replacementRisk": 10, "collaborationPotential": 88, "salaryRange": "两极分化", "newbieAdvantage": 75}, "extremeRiskIndex": 8, "stressPattern": "生存焦虑+获客压力型", "longTermStability": "rising", "traditionalPath": false, "careerPath": "教育/产品背景 → 教育创业 → 教育公司创始人"}, {"id": "ai_sales_ops", "name": "AI销售运营（智能拓客）", "family": "influencer", "ecosystem": "digital_business", "abilityType": "influential", "aiUpgradeType": "ai_augmented", "ecosystemRole": "商业连接者", "req": {"T6_interpersonal": 7.6, "T1_language": 7.2, "T2_logic": 6.4}, "bonus": {"T7_intrapersonal": 0.2}, "desc": "用AI工具优化销售漏斗、智能开拓客户资源。薪资15-80万/年（含提成）。", "aiImpact": {"replacementRisk": 32, "collaborationPotential": 85, "salaryRange": "15-80万/年", "newbieAdvantage": 80}, "extremeRiskIndex": 5, "stressPattern": "业绩压力型——KPI驱动高焦虑", "longTermStability": "stable", "traditionalPath": false, "careerPath": "销售 → AI销售运营 → 销售总监/CSO"}, {"id": "community_manager", "name": "社区运营官（Web3/AI社群）", "family": "influencer", "ecosystem": "digital_business", "abilityType": "influential", "aiUpgradeType": "ai_augmented", "ecosystemRole": "社群生态者", "req": {"T6_interpersonal": 8.5, "T1_language": 7.5, "T7_intrapersonal": 6.5}, "bonus": {"T2_logic": 0.2}, "desc": "建立和运营高粘性社区，转化为商业价值。薪资15-50万/年。", "aiImpact": {"replacementRisk": 25, "collaborationPotential": 80, "salaryRange": "15-50万/年", "newbieAdvantage": 82}, "extremeRiskIndex": 4, "stressPattern": "社群冲突管理压力型", "longTermStability": "stable", "traditionalPath": false, "careerPath": "运营专员 → 社区经理 → 用户增长总监"}, {"id": "brand_strategist", "name": "品牌战略师", "family": "creator", "ecosystem": "digital_business", "abilityType": "creative", "aiUpgradeType": "ai_augmented", "ecosystemRole": "意义建构者", "req": {"T1_language": 8.0, "T7_intrapersonal": 7.5, "T6_interpersonal": 7.0}, "bonus": {"T3_spatial": 0.3}, "desc": "制定品牌定位和传播策略，打造有灵魂的品牌。薪资25-80万/年。", "aiImpact": {"replacementRisk": 28, "collaborationPotential": 78, "salaryRange": "25-80万/年", "newbieAdvantage": 68}, "extremeRiskIndex": 4, "stressPattern": "创意被否压力型", "longTermStability": "stable", "traditionalPath": false, "careerPath": "文案/策划 → 品牌经理 → 品牌总监/CMO"}, {"id": "customer_success_manager", "name": "AI客户成功经理", "family": "helper", "ecosystem": "digital_business", "abilityType": "caring", "aiUpgradeType": "ai_augmented", "ecosystemRole": "客户价值放大者", "req": {"T6_interpersonal": 8.5, "T1_language": 7.5, "T2_logic": 6.5}, "bonus": {"T7_intrapersonal": 0.3}, "desc": "确保客户成功使用AI产品，降低流失率，提升LTV。薪资20-60万/年。", "aiImpact": {"replacementRisk": 28, "collaborationPotential": 80, "salaryRange": "20-60万/年", "newbieAdvantage": 75}, "extremeRiskIndex": 4, "stressPattern": "客户流失自责型", "longTermStability": "rising", "traditionalPath": false, "careerPath": "客服 → CSM → 客户成功总监"}, {"id": "entrepreneur", "name": "创业者/企业家", "family": "explorer", "ecosystem": "digital_business", "abilityType": "influential", "aiUpgradeType": "ai_augmented", "ecosystemRole": "价值创造者", "req": {"T6_interpersonal": 8.0, "T2_logic": 7.5, "T7_intrapersonal": 8.5}, "bonus": {"T1_language": 0.3}, "desc": "创建企业解决市场问题，AI时代创业门槛降低但竞争加剧。收入两极分化极大。", "aiImpact": {"replacementRisk": 5, "collaborationPotential": 95, "salaryRange": "两极分化", "newbieAdvantage": 75}, "extremeRiskIndex": 10, "stressPattern": "生存焦虑型——现金流和团队双重压力", "longTermStability": "transforming", "traditionalPath": false, "careerPath": "任何起点 → 创业 → 成功/失败/转型"}, {"id": "ecommerce_operator", "name": "跨境电商运营师", "family": "operator", "ecosystem": "digital_business", "abilityType": "systematic", "aiUpgradeType": "ai_augmented", "ecosystemRole": "全球流通者", "req": {"T2_logic": 7.5, "T6_interpersonal": 6.5, "T1_language": 7.0}, "bonus": {"T8_naturalist": 0.2}, "desc": "运营亚马逊/TikTok等平台，AI优化选品定价和广告投放。薪资15-60万/年。", "aiImpact": {"replacementRisk": 38, "collaborationPotential": 80, "salaryRange": "15-60万/年", "newbieAdvantage": 85}, "extremeRiskIndex": 5, "stressPattern": "平台规则变化焦虑型", "longTermStability": "transforming", "traditionalPath": false, "careerPath": "运营专员 → 类目运营 → 运营总监/独立卖家"}, {"id": "investment_analyst", "name": "投资分析师", "family": "solver", "ecosystem": "fintech", "abilityType": "analytical", "aiUpgradeType": "ai_augmented", "ecosystemRole": "价值发现者", "req": {"T2_logic": 9.0, "T7_intrapersonal": 8.0, "T1_language": 7.5}, "bonus": {"T3_spatial": 0.2}, "desc": "分析公司和市场，为投资决策提供研究支持。薪资25-150万/年。", "aiImpact": {"replacementRisk": 35, "collaborationPotential": 82, "salaryRange": "25-150万/年", "newbieAdvantage": 50}, "extremeRiskIndex": 6, "stressPattern": "预测失误自责型", "longTermStability": "transforming", "traditionalPath": true, "careerPath": "金融硕士 → 研究助理 → 分析师 → 基金经理"}, {"id": "cpa_accountant", "name": "注册会计师/审计师", "family": "guardian", "ecosystem": "fintech", "abilityType": "systematic", "aiUpgradeType": "traditional_ai_recast", "ecosystemRole": "数字守门人", "req": {"T2_logic": 8.5, "T7_intrapersonal": 7.5, "T3_spatial": 6.0}, "bonus": {"T1_language": 0.2}, "desc": "财务审计、税务筹划，AI时代高端咨询需求增加基础核算减少。薪资15-60万/年。", "aiImpact": {"replacementRisk": 55, "collaborationPotential": 65, "salaryRange": "15-60万/年", "newbieAdvantage": 45}, "extremeRiskIndex": 4, "stressPattern": "合规出错恐惧型", "longTermStability": "transforming", "traditionalPath": true, "careerPath": "会计学士+CPA → 审计师 → 财务总监/CFO"}, {"id": "actuary", "name": "精算师", "family": "solver", "ecosystem": "fintech", "abilityType": "analytical", "aiUpgradeType": "ai_augmented", "ecosystemRole": "风险量化者", "req": {"T2_logic": 9.5, "T7_intrapersonal": 8.0, "T3_spatial": 7.0}, "bonus": {"T1_language": 0.2}, "desc": "用数学模型评估金融和保险风险，AI时代精算师转型为模型监督者。薪资30-150万/年。", "aiImpact": {"replacementRisk": 30, "collaborationPotential": 80, "salaryRange": "30-150万/年", "newbieAdvantage": 40}, "extremeRiskIndex": 3, "stressPattern": "模型误差焦虑型", "longTermStability": "stable", "traditionalPath": true, "careerPath": "精算考试(5-10年) → 初级精算师 → 精算总监/CRO"}, {"id": "wealth_manager", "name": "高净值财富顾问", "family": "influencer", "ecosystem": "fintech", "abilityType": "influential", "aiUpgradeType": "human_core", "ecosystemRole": "财富守护者", "req": {"T6_interpersonal": 9.0, "T7_intrapersonal": 7.5, "T1_language": 8.0}, "bonus": {"T2_logic": 0.4}, "desc": "为高净值客户提供资产配置和财富传承方案。薪资30-500万+/年。", "aiImpact": {"replacementRisk": 10, "collaborationPotential": 72, "salaryRange": "30-500万+/年", "newbieAdvantage": 35}, "extremeRiskIndex": 5, "stressPattern": "市场亏损客户压力型", "longTermStability": "stable", "traditionalPath": true, "careerPath": "金融从业 → 理财规划师 → 私人银行家 → 家族办公室"}, {"id": "fintech_risk_engineer", "name": "金融科技风控工程师", "family": "solver", "ecosystem": "fintech", "abilityType": "systematic", "aiUpgradeType": "ai_native", "ecosystemRole": "风险防控者", "req": {"T2_logic": 9.0, "T3_spatial": 6.5, "T7_intrapersonal": 7.5}, "bonus": {"T1_language": 0.2}, "desc": "构建AI反欺诈和信用评分模型，守护金融安全。薪资30-90万/年。", "aiImpact": {"replacementRisk": 20, "collaborationPotential": 88, "salaryRange": "30-90万/年", "newbieAdvantage": 60}, "extremeRiskIndex": 5, "stressPattern": "金融损失责任压力型", "longTermStability": "rising", "traditionalPath": false, "careerPath": "数据分析师 → 风控模型工程师 → 首席风控官"}, {"id": "quant_researcher", "name": "量化研究员", "family": "solver", "ecosystem": "fintech", "abilityType": "analytical", "aiUpgradeType": "ai_native", "ecosystemRole": "市场数字猎手", "req": {"T2_logic": 10.0, "T7_intrapersonal": 8.5, "T3_spatial": 7.5}, "bonus": {"T4_music": 0.2}, "desc": "用数学模型在金融市场寻找Alpha。薪资50-500万+/年（表现差异极大）。", "aiImpact": {"replacementRisk": 40, "collaborationPotential": 85, "salaryRange": "50-500万+/年", "newbieAdvantage": 45}, "extremeRiskIndex": 8, "stressPattern": "亏损自责型——极度结果导向焦虑", "longTermStability": "transforming", "traditionalPath": false, "careerPath": "数学/物理博士 → 量化研究员 → 基金合伙人"}, {"id": "ai_content_creator", "name": "AI内容创作者", "family": "creator", "ecosystem": "creative_media", "abilityType": "creative", "aiUpgradeType": "ai_augmented", "ecosystemRole": "意义制造者", "req": {"T1_language": 8.5, "T7_intrapersonal": 7.5, "T3_spatial": 6.5}, "bonus": {"T4_music": 0.3}, "desc": "用AI工具规模化产出高质量内容，建立个人IP。薪资10-300万+/年。", "aiImpact": {"replacementRisk": 40, "collaborationPotential": 88, "salaryRange": "10-300万+/年", "newbieAdvantage": 90}, "extremeRiskIndex": 6, "stressPattern": "流量焦虑型——算法依赖高风险", "longTermStability": "transforming", "traditionalPath": false, "careerPath": "内容创作者 → AI创作者 → IP商业化/MCN"}, {"id": "ux_designer", "name": "UX/UI体验设计师", "family": "creator", "ecosystem": "creative_media", "abilityType": "creative", "aiUpgradeType": "ai_augmented", "ecosystemRole": "体验塑造者", "req": {"T3_spatial": 8.5, "T7_intrapersonal": 7.5, "T6_interpersonal": 7.0}, "bonus": {"T1_language": 0.2}, "desc": "设计用户界面和体验，AI时代需要更强的策略和同理心。薪资20-70万/年。", "aiImpact": {"replacementRisk": 35, "collaborationPotential": 85, "salaryRange": "20-70万/年", "newbieAdvantage": 72}, "extremeRiskIndex": 3, "stressPattern": "方案被否压力型", "longTermStability": "transforming", "traditionalPath": false, "careerPath": "视觉设计师 → UX设计师 → 体验设计总监"}, {"id": "architect", "name": "建筑师", "family": "creator", "ecosystem": "creative_media", "abilityType": "creative", "aiUpgradeType": "ai_augmented", "ecosystemRole": "空间创造者", "req": {"T3_spatial": 9.5, "T2_logic": 7.5, "T7_intrapersonal": 7.5}, "bonus": {"T6_interpersonal": 0.3}, "desc": "设计建筑空间，AI工具改变设计流程但创造力无法替代。薪资15-80万/年。", "aiImpact": {"replacementRisk": 28, "collaborationPotential": 78, "salaryRange": "15-80万/年", "newbieAdvantage": 45}, "extremeRiskIndex": 5, "stressPattern": "方案推翻重做压力型", "longTermStability": "stable", "traditionalPath": true, "careerPath": "建筑学5年 → 助理建筑师 → 注册建筑师 → 主创/合伙人"}, {"id": "musician_composer", "name": "音乐人/作曲家", "family": "creator", "ecosystem": "creative_media", "abilityType": "creative", "aiUpgradeType": "human_core", "ecosystemRole": "情感表达者", "req": {"T4_music": 9.5, "T7_intrapersonal": 8.5, "T1_language": 6.5}, "bonus": {"T6_interpersonal": 0.3}, "desc": "创作有灵魂的音乐，AI时代独特个人风格是护城河。收入差异极大。", "aiImpact": {"replacementRisk": 20, "collaborationPotential": 75, "salaryRange": "差异极大", "newbieAdvantage": 60}, "extremeRiskIndex": 8, "stressPattern": "创作瓶颈+收入不稳定双重焦虑", "longTermStability": "transforming", "traditionalPath": true, "careerPath": "音乐学习 → 独立音乐人 → 签约艺人/影视配乐"}, {"id": "game_designer", "name": "游戏设计师", "family": "creator", "ecosystem": "creative_media", "abilityType": "creative", "aiUpgradeType": "ai_augmented", "ecosystemRole": "虚拟世界构建者", "req": {"T3_spatial": 8.5, "T7_intrapersonal": 8.0, "T2_logic": 7.5}, "bonus": {"T4_music": 0.4}, "desc": "设计游戏系统、关卡和体验，AI时代需更强系统思维。薪资20-80万/年。", "aiImpact": {"replacementRisk": 30, "collaborationPotential": 85, "salaryRange": "20-80万/年", "newbieAdvantage": 70}, "extremeRiskIndex": 5, "stressPattern": "创意被否+加班文化双重压力", "longTermStability": "transforming", "traditionalPath": false, "careerPath": "游戏专业/自学 → 独立开发/游戏公司 → 创意总监"}, {"id": "lawyer", "name": "律师", "family": "guardian", "ecosystem": "legal_governance", "abilityType": "analytical", "aiUpgradeType": "traditional_ai_recast", "ecosystemRole": "权益捍卫者", "req": {"T2_logic": 9.0, "T1_language": 9.0, "T7_intrapersonal": 8.0}, "bonus": {"T6_interpersonal": 0.4}, "desc": "代理法律事务，AI时代高端诉讼和策略咨询反而溢价。薪资15-500万+/年。", "aiImpact": {"replacementRisk": 25, "collaborationPotential": 72, "salaryRange": "15-500万+/年", "newbieAdvantage": 35}, "extremeRiskIndex": 6, "stressPattern": "败诉自责型+客户期望管理压力", "longTermStability": "transforming", "traditionalPath": true, "careerPath": "法学本科+司法考试 → 实习律师 → 律师 → 合伙人"}, {"id": "ai_legal_counsel", "name": "AI法律科技顾问", "family": "solver", "ecosystem": "legal_governance", "abilityType": "analytical", "aiUpgradeType": "ai_native", "ecosystemRole": "法律数字化者", "req": {"T2_logic": 8.5, "T1_language": 8.0, "T7_intrapersonal": 7.5}, "bonus": {"T6_interpersonal": 0.3}, "desc": "用AI工具做合同审查、法律研究，效率10倍于传统律师。薪资30-120万/年。", "aiImpact": {"replacementRisk": 20, "collaborationPotential": 90, "salaryRange": "30-120万/年", "newbieAdvantage": 70}, "extremeRiskIndex": 4, "stressPattern": "法律责任焦虑型", "longTermStability": "rising", "traditionalPath": false, "careerPath": "法律+编程/AI → AI法律工具专家 → 法律科技创业"}, {"id": "compliance_officer", "name": "合规总监（AI/数据）", "family": "guardian", "ecosystem": "legal_governance", "abilityType": "systematic", "aiUpgradeType": "ai_augmented", "ecosystemRole": "风险边界守护者", "req": {"T2_logic": 8.5, "T7_intrapersonal": 8.0, "T1_language": 8.0}, "bonus": {"T6_interpersonal": 0.3}, "desc": "在AI公司或金融机构确保合规，AI治理需求爆发中。薪资30-120万/年。", "aiImpact": {"replacementRisk": 20, "collaborationPotential": 78, "salaryRange": "30-120万/年", "newbieAdvantage": 60}, "extremeRiskIndex": 5, "stressPattern": "监管变化焦虑型", "longTermStability": "rising", "traditionalPath": false, "careerPath": "法律/金融背景 → 合规专员 → 合规总监/CCO"}, {"id": "policy_analyst", "name": "政策研究/公共事务分析师", "family": "explorer", "ecosystem": "legal_governance", "abilityType": "analytical", "aiUpgradeType": "ai_augmented", "ecosystemRole": "社会洞察者", "req": {"T2_logic": 8.5, "T1_language": 8.5, "T7_intrapersonal": 7.5}, "bonus": {"T6_interpersonal": 0.3}, "desc": "研究政策走向，为政府或企业提供公共事务策略。薪资15-50万/年。", "aiImpact": {"replacementRisk": 22, "collaborationPotential": 75, "salaryRange": "15-50万/年", "newbieAdvantage": 55}, "extremeRiskIndex": 3, "stressPattern": "影响力受限挫败型", "longTermStability": "stable", "traditionalPath": true, "careerPath": "政治学/经济学 → 研究助理 → 政策分析师 → 智库研究员"}, {"id": "diplomat_intl_affairs", "name": "外交官/国际事务专家", "family": "influencer", "ecosystem": "legal_governance", "abilityType": "influential", "aiUpgradeType": "human_core", "ecosystemRole": "国际桥梁者", "req": {"T6_interpersonal": 9.5, "T1_language": 9.5, "T7_intrapersonal": 8.0}, "bonus": {"T2_logic": 0.3}, "desc": "代表国家或机构处理国际事务。", "aiImpact": {"replacementRisk": 5, "collaborationPotential": 60, "salaryRange": "特殊体系", "newbieAdvantage": 20}, "extremeRiskIndex": 5, "stressPattern": "政治压力型——外部不可控因素高", "longTermStability": "stable", "traditionalPath": true, "careerPath": "外语/国际关系 → 外交部考试 → 随员 → 参赞 → 大使"}, {"id": "aerospace_engineer", "name": "航空航天工程师", "family": "solver", "ecosystem": "aerospace_manufacturing", "abilityType": "systematic", "aiUpgradeType": "ai_augmented", "ecosystemRole": "极限系统者", "req": {"T2_logic": 9.5, "T3_spatial": 9.0, "T7_intrapersonal": 8.0}, "bonus": {"T5_bodily": 0.2}, "desc": "设计飞行器和航天器系统，极高精度要求。薪资25-80万/年。", "aiImpact": {"replacementRisk": 15, "collaborationPotential": 85, "salaryRange": "25-80万/年", "newbieAdvantage": 40}, "extremeRiskIndex": 7, "stressPattern": "零失误压力型——安全责任极重", "longTermStability": "rising", "traditionalPath": false, "careerPath": "航空航天硕士 → 系统工程师 → 总师"}, {"id": "civil_engineer", "name": "土木/结构工程师", "family": "solver", "ecosystem": "aerospace_manufacturing", "abilityType": "systematic", "aiUpgradeType": "traditional_ai_recast", "ecosystemRole": "物理空间建造者", "req": {"T2_logic": 8.0, "T3_spatial": 9.0, "T5_bodily": 6.5}, "bonus": {"T8_naturalist": 0.2}, "desc": "设计建筑结构和基础设施，AI辅助设计提升效率。薪资15-50万/年。", "aiImpact": {"replacementRisk": 30, "collaborationPotential": 75, "salaryRange": "15-50万/年", "newbieAdvantage": 50}, "extremeRiskIndex": 6, "stressPattern": "工程质量责任压力型", "longTermStability": "stable", "traditionalPath": true, "careerPath": "土木工程本科 → 工程师 → 项目总工 → 设计院院长"}, {"id": "smart_manufacturing_engineer", "name": "智能制造工程师", "family": "operator", "ecosystem": "aerospace_manufacturing", "abilityType": "systematic", "aiUpgradeType": "ai_native", "ecosystemRole": "工厂智能化者", "req": {"T2_logic": 8.5, "T3_spatial": 8.0, "T5_bodily": 7.0}, "bonus": {"T7_intrapersonal": 0.2}, "desc": "推动工厂数字化转型，部署工业AI和自动化系统。薪资25-75万/年。", "aiImpact": {"replacementRisk": 18, "collaborationPotential": 90, "salaryRange": "25-75万/年", "newbieAdvantage": 65}, "extremeRiskIndex": 4, "stressPattern": "停线事故压力型", "longTermStability": "rising", "traditionalPath": false, "careerPath": "机械/电气工程师 → 智能制造工程师 → 工厂数字化总监"}, {"id": "nuclear_engineer", "name": "核能系统工程师", "family": "solver", "ecosystem": "aerospace_manufacturing", "abilityType": "systematic", "aiUpgradeType": "ai_augmented", "ecosystemRole": "能源安全者", "req": {"T2_logic": 9.5, "T3_spatial": 8.0, "T7_intrapersonal": 8.5}, "bonus": {"T8_naturalist": 0.3}, "desc": "设计和运维核电站系统，是最严苛的工程领域之一。薪资30-90万/年。", "aiImpact": {"replacementRisk": 10, "collaborationPotential": 80, "salaryRange": "30-90万/年", "newbieAdvantage": 35}, "extremeRiskIndex": 8, "stressPattern": "核安全责任型——极度零失误要求", "longTermStability": "stable", "traditionalPath": false, "careerPath": "核工程硕士 → 运维工程师 → 核安全专家"}, {"id": "materials_engineer", "name": "新材料研究工程师", "family": "explorer", "ecosystem": "aerospace_manufacturing", "abilityType": "analytical", "aiUpgradeType": "ai_augmented", "ecosystemRole": "材料创新者", "req": {"T2_logic": 9.0, "T8_naturalist": 8.5, "T3_spatial": 7.5}, "bonus": {"T7_intrapersonal": 0.3}, "desc": "开发新型材料（碳纤维/半导体/超导）为航空航天和新能源提供基础。薪资20-70万/年。", "aiImpact": {"replacementRisk": 20, "collaborationPotential": 85, "salaryRange": "20-70万/年", "newbieAdvantage": 50}, "extremeRiskIndex": 3, "stressPattern": "实验周期长挫败型", "longTermStability": "rising", "traditionalPath": false, "careerPath": "材料科学博士 → 研究员 → 技术总监/创业"}, {"id": "social_entrepreneur", "name": "社会创新创业者", "family": "explorer", "ecosystem": "edu_tech", "abilityType": "influential", "aiUpgradeType": "ai_augmented", "ecosystemRole": "社会价值创造者", "req": {"T6_interpersonal": 9.0, "T7_intrapersonal": 8.0, "T1_language": 8.0}, "bonus": {"T2_logic": 0.3}, "desc": "用商业模式解决社会问题，AI时代影响力放大。收入差异极大但意义感极高。", "aiImpact": {"replacementRisk": 5, "collaborationPotential": 80, "salaryRange": "差异极大", "newbieAdvantage": 70}, "extremeRiskIndex": 7, "stressPattern": "资源不足+使命焦虑双重压力", "longTermStability": "rising", "traditionalPath": false, "careerPath": "公益/社会领域 → 社会企业家 → 行业领袖"}, {"id": "sports_performance_coach", "name": "运动表现教练/体能师", "family": "helper", "ecosystem": "biomedical", "abilityType": "caring", "aiUpgradeType": "ai_augmented", "ecosystemRole": "身体优化者", "req": {"T5_bodily": 9.0, "T6_interpersonal": 7.5, "T7_intrapersonal": 7.0}, "bonus": {"T8_naturalist": 0.3}, "desc": "用科学方法优化运动员和普通人的身体表现，AI辅助运动分析。薪资15-60万/年。", "aiImpact": {"replacementRisk": 15, "collaborationPotential": 72, "salaryRange": "15-60万/年", "newbieAdvantage": 65}, "extremeRiskIndex": 3, "stressPattern": "运动员受伤内疚型", "longTermStability": "rising", "traditionalPath": false, "careerPath": "体育科学 → 体能教练认证 → 运动表现总监"}, {"id": "dentist", "name": "牙科医生", "family": "guardian", "ecosystem": "biomedical", "abilityType": "systematic", "aiUpgradeType": "traditional_ai_recast", "ecosystemRole": "口腔健康者", "req": {"T5_bodily": 8.5, "T2_logic": 7.5, "T3_spatial": 8.0, "T6_interpersonal": 7.0}, "bonus": {"T7_intrapersonal": 0.2}, "desc": "口腔诊断和治疗，私立牙科是医疗中最高盈利方向之一。薪资30-200万/年。", "aiImpact": {"replacementRisk": 20, "collaborationPotential": 65, "salaryRange": "30-200万/年", "newbieAdvantage": 35}, "extremeRiskIndex": 5, "stressPattern": "操作失误焦虑型", "longTermStability": "stable", "traditionalPath": true, "careerPath": "口腔医学(5年) → 住院医师 → 主治 → 私立诊所创业"}, {"id": "ceo_executive", "name": "职业经理人/CEO", "family": "influencer", "ecosystem": "digital_business", "abilityType": "influential", "aiUpgradeType": "human_core", "ecosystemRole": "组织领导者", "req": {"T6_interpersonal": 9.0, "T7_intrapersonal": 8.5, "T1_language": 8.5}, "bonus": {"T2_logic": 0.4}, "desc": "带领组织实现战略目标，AI时代需要更强的人类判断力和文化塑造力。薪资50-∞。", "aiImpact": {"replacementRisk": 5, "collaborationPotential": 80, "salaryRange": "50万-无上限", "newbieAdvantage": 25}, "extremeRiskIndex": 8, "stressPattern": "孤独决策+组织压力型", "longTermStability": "stable", "traditionalPath": true, "careerPath": "任何起点 → 管理岗位 → 高管 → CEO"}, {"id": "consultant_strategy", "name": "战略咨询顾问（麦肯锡类）", "family": "solver", "ecosystem": "fintech", "abilityType": "analytical", "aiUpgradeType": "ai_augmented", "ecosystemRole": "战略解题者", "req": {"T2_logic": 9.5, "T1_language": 8.5, "T7_intrapersonal": 8.0}, "bonus": {"T6_interpersonal": 0.4}, "desc": "为大型企业解决战略问题，AI时代分析工作减少但洞察判断增值。薪资40-200万/年。", "aiImpact": {"replacementRisk": 30, "collaborationPotential": 82, "salaryRange": "40-200万/年", "newbieAdvantage": 40}, "extremeRiskIndex": 6, "stressPattern": "高强度加班+客户压力型", "longTermStability": "transforming", "traditionalPath": true, "careerPath": "名校MBA/名校直招 → 咨询师 → 经理 → 合伙人"}];
+
+    // 生态元数据（标签/为什么属于该生态/角色族群）
+    const ECOSYSTEM_META = {"ai_systems": {"label": "AI与智能系统生态", "icon": "🤖", "color": "#6366f1", "tagline": "构建和驾驭AI系统的人", "coreAbility": "逻辑 × 内省", "whyFit": "T2逻辑和T7内省是AI系统的核心——理解复杂系统、发现底层规律、深度独立思考", "roles": ["系统设计者", "算法建造者", "需求转化者", "价值守护者", "安全守护者", "数据洞察者"]}, "robotics_hardware": {"label": "机器人与硬件生态", "icon": "⚙️", "color": "#8b5cf6", "tagline": "让物理世界变得智能的人", "coreAbility": "逻辑 × 空间", "whyFit": "T2逻辑和T3空间是硬件世界的语言——三维思维和系统推理缺一不可", "roles": ["系统集成者", "感知决策者", "边缘计算者", "工厂改造者"]}, "biomedical": {"label": "生物医疗科技生态", "icon": "🧬", "color": "#10b981", "tagline": "守护生命与解码自然的人", "coreAbility": "自然 × 人际 × 逻辑", "whyFit": "T8自然观察力是理解生命系统的基础，T6人际是医患关系的核心纽带", "roles": ["健康守护者", "科学探索者", "心理疗愈者", "人机协作者", "遗传风险解读者"]}, "new_energy": {"label": "新能源与环境生态", "icon": "⚡", "color": "#f59e0b", "tagline": "重塑人类能源系统的人", "coreAbility": "逻辑 × 自然", "whyFit": "T2逻辑和T8自然观察是理解复杂能源系统和生态影响的基础", "roles": ["能源建造者", "清洁能源先锋", "碳市场操盘者", "绿电建设者"]}, "edu_tech": {"label": "教育科技生态", "icon": "📚", "color": "#3b82f6", "tagline": "点燃他人潜力的人", "coreAbility": "人际 × 内省 × 语言", "whyFit": "T6人际和T7内省的组合是理解他人学习状态、提供精准支持的天赋基础", "roles": ["成长加速者", "学习路径设计者", "路径导航者", "家庭赋能者", "教育创新者"]}, "digital_business": {"label": "数字商业生态", "icon": "💼", "color": "#ec4899", "tagline": "在数字世界创造商业价值的人", "coreAbility": "人际 × 语言 × 外向性", "whyFit": "T6人际和T1语言是商业连接的核心工具，高外向性让你自然擅长影响他人", "roles": ["商业连接者", "社群生态者", "意义建构者", "客户价值放大者", "价值创造者"]}, "fintech": {"label": "金融科技生态", "icon": "💰", "color": "#14b8a6", "tagline": "量化风险与创造财富的人", "coreAbility": "逻辑 × 内省 × 尽责性", "whyFit": "T2逻辑是金融分析的核心，T7内省带来独立判断力，高尽责性是金融业的生存基础", "roles": ["价值发现者", "风险量化者", "财富守护者", "风险防控者", "市场数字猎手"]}, "creative_media": {"label": "创意与媒体生态", "icon": "🎨", "color": "#f97316", "tagline": "用创造力影响世界的人", "coreAbility": "开放性 × 空间 × 语言", "whyFit": "高开放性是创意的土壤，T3空间和T1语言是视觉和叙事表达的工具", "roles": ["意义制造者", "体验塑造者", "空间创造者", "情感表达者", "虚拟世界构建者"]}, "legal_governance": {"label": "法律与社会治理生态", "icon": "⚖️", "color": "#6b7280", "tagline": "定义规则与守护秩序的人", "coreAbility": "逻辑 × 语言 × 尽责性", "whyFit": "T2逻辑构建论证体系，T1语言精准表达法律意图，高尽责性是法律工作的生命线", "roles": ["权益捍卫者", "法律数字化者", "风险边界守护者", "社会洞察者", "国际桥梁者"]}, "aerospace_manufacturing": {"label": "航空航天与先进制造生态", "icon": "🚀", "color": "#0ea5e9", "tagline": "突破物理极限的工程师", "coreAbility": "逻辑 × 空间 × 尽责性", "whyFit": "T2逻辑和T3空间是工程设计的双引擎，高尽责性是零失误要求的必要条件", "roles": ["极限系统者", "物理空间建造者", "工厂智能化者"]}};
+
+    // 能力类型配置
+    const ABILITY_CONFIG = {"systematic": {"label": "🔵 系统型", "color": "#6366f1", "desc": "善于构建复杂系统和逻辑框架"}, "analytical": {"label": "🟣 分析型", "color": "#8b5cf6", "desc": "善于拆解问题和量化推理"}, "creative": {"label": "🟠 创造型", "color": "#f97316", "desc": "善于原创思维和非线性联结"}, "influential": {"label": "🔴 影响型", "color": "#ec4899", "desc": "善于影响他人和推动集体行动"}, "caring": {"label": "🟢 护理型", "color": "#10b981", "desc": "善于感知他人需求和提供支持"}};
+
+    // ✅ 生态判断引擎：T×P → 主生态 + 次生态
+    function computeUserEcosystems(tS, pS) {
+      const O=pS.O??50,C=pS.C??50,E=pS.E??50,A=pS.A??50;
+      const g = dim => tS[dim]?(tS[dim].displayScore??5):5;
+      const T1=g('T1_language'),T2=g('T2_logic'),T3=g('T3_spatial'),
+            T4=g('T4_music'),T5=g('T5_bodily'),T6=g('T6_interpersonal'),
+            T7=g('T7_intrapersonal'),T8=g('T8_naturalist');
+      const scores = {
+        ai_systems:              T2*0.40+T7*0.25+(O/10)*0.15+(C/10)*0.20,
+        robotics_hardware:       T2*0.35+T3*0.35+T5*0.15+(C/10)*0.15,
+        biomedical:              T8*0.35+T2*0.25+T6*0.20+(A/10)*0.20,
+        new_energy:              T2*0.35+T8*0.30+T3*0.20+(C/10)*0.15,
+        edu_tech:                T6*0.35+T7*0.25+T1*0.20+(A/10)*0.20,
+        digital_business:        T6*0.35+T1*0.25+T2*0.15+(E/10)*0.25,
+        fintech:                 T2*0.45+T7*0.25+T1*0.10+(C/10)*0.20,
+        creative_media:          T4*0.20+T3*0.25+T1*0.25+(O/10)*0.30,
+        legal_governance:        T2*0.30+T1*0.35+T7*0.15+(C/10)*0.20,
+        aerospace_manufacturing: T2*0.35+T3*0.40+T5*0.10+(C/10)*0.15,
+      };
+      const ranked = Object.entries(scores).sort((a,b)=>b[1]-a[1])
+        .map(([eco,score])=>{return {eco,score:Math.round(score*10)/10}});
+      return {primary:ranked[0],secondary:ranked[1],all:ranked};
+    }
+
+    // ✅ T+P联合匹配：生态池架构 V3
+    const TP_CAREERS = (function(){
+      if(tScores && dimScores) return computeTPCareers(tScores,dimScores);
+      return [{
+        name:"AI解决方案架构师（示例）",comboType:"perfect",
+        comboLabel:"⚠️ 请先完成T层天赋测评",kind:"ai_native",
+        ecosystem:"ai_systems",abilityType:"systematic",ecosystemRole:"系统设计者",
+        traditionalPath:false,extremeRiskIndex:3,stressPattern:"逻辑压力型",
+        longTermStability:"rising",stabilityLabel:"📈上升期",
+        desc:"完成T层测评后将显示你的真实职业匹配结果。",
+        dims:{fit:88,energy:82,ai:85},boost:"请先完成天赋（T层）测评。",brake:"",
+        careerPath:"",salaryRange:"",replacementRisk:40,userPrimaryEco:"ai_systems"
+      }];
+    })();
+
+
+    function computeTPCareers(tS,pS){
+      const O=pS.O??50,C=pS.C??50,E=pS.E??50,A=pS.A??50,N=pS.N??50;
+      const stability=100-N;
+      const g = d => tS[d]?(tS[d].displayScore??5):5;
+      const T1=g('T1_language'),T2=g('T2_logic'),T3=g('T3_spatial'),T4=g('T4_music'),
+            T5=g('T5_bodily'),T6=g('T6_interpersonal'),T7=g('T7_intrapersonal'),T8=g('T8_naturalist');
+
+      // ✅ 双轨能量公式：P基础 + T天赋修正
+      // T天赋修正：核心维度每超过6分，给对应家族额外能量
+      const famP = {
+        creator:    Math.min(99, C*0.30+(100-C)*0.20+E*0.15+stability*0.20 + Math.max(0,(T1-6)*3+(T4-6)*2+(T3-6)*2)*0.35 ),
+        solver:     Math.min(99, C*0.30+(100-E)*0.12+stability*0.28+O*0.20 + Math.max(0,(T2-6)*4+(T7-6)*2)*0.35 ),
+        organizer:  Math.min(99, C*0.40+E*0.18+A*0.22+stability*0.20 + Math.max(0,(T6-6)*3+(T2-6)*1)*0.35 ),
+        guardian:   Math.min(99, C*0.40+stability*0.25+A*0.20+(100-O)*0.05 + Math.max(0,(T6-6)*3+(T7-6)*2)*0.35 ),
+        explorer:   Math.min(99, O*0.35+stability*0.25+(100-E)*0.12+C*0.18 + Math.max(0,(T8-6)*3+(T7-6)*2+(T2-6)*1)*0.35 ),
+        operator:   Math.min(99, C*0.40+stability*0.28+(100-E)*0.15+A*0.12 + Math.max(0,(T5-6)*3+(T2-6)*1)*0.35 ),
+        helper:     Math.min(99, A*0.38+E*0.25+stability*0.20+O*0.12 + Math.max(0,(T6-6)*3+(T7-6)*2)*0.35 ),
+        influencer: Math.min(99, E*0.32+A*0.25+O*0.23+C*0.10 + Math.max(0,(T6-6)*4+(T1-6)*2)*0.35 ),
+      };
+
+      const dimN={T1_language:'语言智能',T2_logic:'逻辑数学智能',T3_spatial:'空间智能',
+        T4_music:'音乐智能',T5_bodily:'身体动觉智能',T6_interpersonal:'人际智能',
+        T7_intrapersonal:'内省智能',T8_naturalist:'自然观察智能'};
+
+      const userEcos=computeUserEcosystems(tS,pS);
+      const primaryEco=userEcos.primary.eco;
+      const secondaryEco=userEcos.secondary.eco;
+
+      // 用户最强T维度（用于峰值加成）
+      const dims=['T1_language','T2_logic','T3_spatial','T4_music','T5_bodily','T6_interpersonal','T7_intrapersonal','T8_naturalist'];
+      const userTopDim=dims.reduce((b,d)=>g(d)>g(b)?d:b,'T1_language');
+
+      const scored=CAREERS_DB.map(career=>{
+        const req=career.req||{};
+        const rk=Object.keys(req);
+
+        // ① 能力匹配度（50%）
+        let aS=0,aW=0;
+        rk.forEach(d=>{
+          const us=g(d),nd=Number(req[d])||5,r=us/nd;
+          aS+=(r>=1?Math.min(110,100+(us-nd)*3):Math.pow(r,1.5)*100)*nd; aW+=nd;
+        });
+        Object.entries(career.bonus||{}).forEach(([d,bw])=>{
+          const us=g(d); bw=Number(bw);
+          if(us>=7){aS+=us*bw*10;} aW+=bw*5;
+        });
+        const ap=Math.min(99,aW>0?aS/aW:60);
+
+        // ② 能量可持续度（22%）—— 双轨公式
+        const ep=Math.min(99,Math.max(40,famP[career.family||'solver']??65));
+
+        // ③ AI放大指数（28%）
+        const aiBase=(T2*0.5+T7*0.3+(O/100)*10*0.2)/10*100;
+        const aip=Math.min(99,aiBase*0.4+(100-(career.aiImpact?.replacementRisk??40))*0.35+(career.aiImpact?.collaborationPotential??60)*0.25);
+
+        // ④ 生态加成（主+6, 次+3）
+        const ecoBonus=career.ecosystem===primaryEco?6:career.ecosystem===secondaryEco?3:0;
+
+        // ⑤ 天赋峰值加成（+2）：职业最强需求维度 = 用户最强T维度
+        const careerTopDim=rk.length?rk.reduce((b,d)=>Number(req[d]||0)>Number(req[b]||0)?d:b,rk[0]):'';
+        const peakBonus=careerTopDim===userTopDim?2:0;
+
+        // ⑥ 传统职业稳定性加成（+1）
+        const tradBonus=(career.traditionalPath&&career.longTermStability==='stable')?1:0;
+
+        // ⑦ 极端风险惩罚
+        const ri=career.extremeRiskIndex||5;
+        const riskP=ri>7?Math.max(0,(N-50)*0.1*(ri-7)):0;
+
+        // 综合分（新权重）
+        const total=ap*0.50+ep*0.22+aip*0.28+ecoBonus+peakBonus+tradBonus-riskP;
+
+        // 动态boost（引用生态身份 + 真实T分）
+        const ecoInfo=ECOSYSTEM_META[career.ecosystem]||{};
+        const topD=rk.reduce((b,d)=>g(d)>g(b)?d:b,rk[0]||'T6_interpersonal');
+        const topScore=g(topD);
+        let boost='';
+        if(topScore>=9.0) boost=`你的${dimN[topD]||topD}达到${topScore.toFixed(1)}/10，在「${ecoInfo.tagline||'这个方向'}」是顶尖天赋，长期深耕越难被替代。`;
+        else if(topScore>=7.5) boost=`你的${dimN[topD]||topD}（${topScore.toFixed(1)}/10）构成这个方向的核心竞争力，配合性格优势可持续复利。`;
+        else boost=`你的天赋组合在这个方向具备成长空间，找到发挥${E>=65?'沟通影响':'深度专注'}能力的具体场景是关键。`;
+
+        // 动态brake（多维度分析）
+        let brake='';
+        if(E<45)       brake=`外向性${E}分（偏内向）→ 避开高频即兴演讲；选用作品说话的岗位更有优势。`;
+        else if(E>=72) brake=`外向性${E}分（高外向）→ 长期独自闷头工作会耗尽能量；优先选有协作沟通的岗位。`;
+        else           brake=`外向性${E}分（均衡型）→ 协作与独立深思交替进行对你最可持续。`;
+        if(C>=78) brake+=` 尽责性${C}分极高——完美主义陷阱：设定「够好就交付」标准，避免过度打磨。`;
+        if(ri>=7)  brake+=` ⚠️ 压力指数${ri}/10：${career.stressPattern||''}`;
+
+        let comboType='explore',comboLabel='可探索·适合尝试';
+        if(total>=90&&ep>=68){comboType='perfect';comboLabel='高匹配·推荐优先考虑';}
+        else if(total>=80){comboType='good';comboLabel='匹配良好·可长期深耕';}
+        const stM={rising:'📈上升期',stable:'📊稳定期',transforming:'🔄转型期',declining:'📉下行期'};
+
+        return {
+          _total:total,name:career.name,comboType,comboLabel,
+          kind:career.aiUpgradeType||'ai_augmented',
+          ecosystem:career.ecosystem,abilityType:career.abilityType,
+          ecosystemRole:career.ecosystemRole||'',
+          traditionalPath:career.traditionalPath||false,
+          longTermStability:career.longTermStability||'stable',
+          stabilityLabel:stM[career.longTermStability]||'📊稳定期',
+          extremeRiskIndex:ri,stressPattern:career.stressPattern||'',
+          desc:career.desc,dims:{fit:Math.round(ap),energy:Math.round(ep),ai:Math.round(aip)},
+          boost,brake,careerPath:career.careerPath||'',
+          salaryRange:career.aiImpact?.salaryRange||'',
+          replacementRisk:career.aiImpact?.replacementRisk??40,
+          userPrimaryEco:primaryEco,ecoBonus,peakBonus,
+        };
+      });
+
+      // 归一化 Top5
+      const top5=scored.sort((a,b)=>b._total-a._total).slice(0,5);
+      const maxT=top5[0]._total,minT=top5[4]?._total??maxT-12;
+      const range=Math.max(maxT-minT,1);
+      top5.forEach(c=>{
+        const tMax=Math.min(96,Math.max(89,Math.round(maxT*0.975)));
+        const tMin=Math.max(tMax-16,62);
+        const norm=Math.round(tMax-((maxT-c._total)/range)*(tMax-tMin));
+        c.dims.fit=Math.min(99,Math.max(norm,58));
+        c.dims.energy=Math.min(99,Math.max(norm-5,52));
+        c.dims.ai=Math.min(99,Math.max(norm-2,55));
+      });
+      console.log('✅ V3.1算法 | 主生态:',primaryEco,'| Top5:',top5.map(c=>c.name).join(', '));
+      return top5;
+    }
+
+    function buildCareers(){
+      const banner = document.getElementById('ecosystemBanner');
+      const list   = document.getElementById('careerList');
+      if(!list) return;
+
+      // ━━━━━ 生态归属Banner ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      const primaryEco   = TP_CAREERS[0]?.userPrimaryEco;
+      const ecoInfo      = ECOSYSTEM_META[primaryEco] || {};
+      const secondaryEco = TP_CAREERS.find(c => c.ecoBonus === 3)?.ecosystem;
+      const secInfo      = secondaryEco ? ECOSYSTEM_META[secondaryEco] : null;
+
+      // 统计当前Top5中出现次数最多的能力类型
+      const abtCount = {};
+      TP_CAREERS.forEach(c => { const t=c.abilityType||'systematic'; abtCount[t]=(abtCount[t]||0)+1; });
+      const topAbt   = Object.entries(abtCount).sort((a,b)=>b[1]-a[1])[0];
+      const abt      = ABILITY_CONFIG[topAbt?.[0]] || {label:'综合型', color:'#6b7280', desc:''};
+
+      if(banner && ecoInfo.label) {
+        const roleTagsHTML = (ecoInfo.roles||[]).map(r =>
+          `<span style="background:${ecoInfo.color}18;color:${ecoInfo.color};border:1px solid ${ecoInfo.color}30;border-radius:20px;padding:3px 11px;font-size:11px;white-space:nowrap;font-weight:500;">${r}</span>`
+        ).join('');
+
+        banner.innerHTML = `
+          <div style="background:linear-gradient(135deg,${ecoInfo.color}12 0%,${ecoInfo.color}06 60%,transparent 100%);border:1px solid ${ecoInfo.color}28;border-radius:18px;padding:22px 20px 18px;margin-bottom:22px;position:relative;overflow:hidden;">
+
+            <!-- 装饰圆 -->
+            <div style="position:absolute;right:-30px;top:-30px;width:120px;height:120px;background:${ecoInfo.color}08;border-radius:50%;pointer-events:none;"></div>
+
+            <!-- 第1行：生态主标题 -->
+            <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;">
+              <div style="font-size:34px;line-height:1;filter:drop-shadow(0 2px 6px ${ecoInfo.color}40);">${ecoInfo.icon||'🌐'}</div>
+              <div style="flex:1;">
+                <div style="font-size:10px;color:${ecoInfo.color};font-weight:700;letter-spacing:1.5px;text-transform:uppercase;opacity:0.9;margin-bottom:3px;">你的主能力生态</div>
+                <div style="font-size:19px;font-weight:700;color:var(--text);line-height:1.2;">${ecoInfo.label}</div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:5px;align-items:flex-end;">
+                <div style="background:${abt.color}20;color:${abt.color};border:1px solid ${abt.color}40;border-radius:20px;padding:4px 12px;font-size:12px;font-weight:600;">${abt.label}</div>
+                <div style="font-size:10px;color:var(--sub);text-align:right;max-width:120px;line-height:1.3;">${abt.desc||''}</div>
+              </div>
+            </div>
+
+            <!-- 第2行：生态标语 + 为什么适合 -->
+            <div style="background:rgba(255,255,255,0.04);border-radius:12px;padding:12px 14px;margin-bottom:14px;border-left:3px solid ${ecoInfo.color};">
+              <div style="font-size:13px;color:var(--text);font-weight:600;margin-bottom:5px;">「${ecoInfo.tagline||''}」</div>
+              <div style="font-size:12px;color:var(--sub);line-height:1.6;">${ecoInfo.whyFit||''}</div>
+            </div>
+
+            <!-- 第3行：核心能力组合 -->
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
+              <span style="font-size:10px;color:var(--sub);font-weight:600;letter-spacing:0.5px;">核心能力：</span>
+              <span style="background:${ecoInfo.color}18;color:${ecoInfo.color};border-radius:8px;padding:3px 10px;font-size:12px;font-weight:600;">${ecoInfo.coreAbility||''}</span>
+            </div>
+
+            <!-- 第4行：角色族群 -->
+            <div>
+              <div style="font-size:10px;color:var(--sub);font-weight:600;letter-spacing:0.5px;margin-bottom:7px;">该生态中你可胜任的角色</div>
+              <div style="display:flex;flex-wrap:wrap;gap:6px;">${roleTagsHTML}</div>
+            </div>
+
+            <!-- 第5行：次生态（如有） -->
+            ${secInfo ? `
+            <div style="margin-top:14px;padding-top:12px;border-top:1px solid ${ecoInfo.color}18;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+              <span style="font-size:10px;color:var(--sub);font-weight:600;">次生态：</span>
+              <span style="background:${secInfo.color}18;color:${secInfo.color};border:1px solid ${secInfo.color}30;border-radius:20px;padding:3px 11px;font-size:11px;font-weight:500;">${secInfo.icon||''} ${secInfo.label}</span>
+              <span style="font-size:10px;color:var(--sub);">— 可探索的跨生态方向</span>
+            </div>` : ''}
+          </div>`;
+      }
+
+      // ━━━━━ 职业卡 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      const kindMap = {
+        'ai_native':             {cls:'tg', text:'🟢 AI原生'},
+        'ai_augmented':          {cls:'tb', text:'🔵 AI增强'},
+        'traditional_ai_recast': {cls:'ty', text:'🟡 传统转型'},
+        'human_core':            {cls:'tp', text:'🟣 人类核心'},
+      };
+      const stColorMap = {rising:'#10b981',stable:'#3b82f6',transforming:'#f59e0b',declining:'#ef4444'};
+      const riskBar = (ri) => {
+        const pct = Math.round((ri/10)*100);
+        const col = ri>=8?'#ef4444':ri>=6?'#f59e0b':'#10b981';
+        return `<div style="display:flex;align-items:center;gap:6px;margin-top:2px;">
+          <span style="font-size:10px;color:var(--sub);">压力</span>
+          <div style="flex:1;height:4px;background:rgba(255,255,255,0.08);border-radius:2px;max-width:60px;">
+            <div style="width:${pct}%;height:100%;background:${col};border-radius:2px;transition:width 0.8s;"></div>
+          </div>
+          <span style="font-size:10px;color:${col};font-weight:600;">${ri}/10</span>
+        </div>`;
+      };
+      const replaceBar = (pct) => {
+        const col = pct>=60?'#ef4444':pct>=35?'#f59e0b':'#10b981';
+        return `<div style="display:flex;align-items:center;gap:6px;margin-top:2px;">
+          <span style="font-size:10px;color:var(--sub);">被AI替代</span>
+          <div style="flex:1;height:4px;background:rgba(255,255,255,0.08);border-radius:2px;max-width:60px;">
+            <div style="width:${pct}%;height:100%;background:${col};border-radius:2px;"></div>
+          </div>
+          <span style="font-size:10px;color:${col};font-weight:600;">${pct}%</span>
+        </div>`;
+      };
+
+      list.innerHTML = TP_CAREERS.map((c, idx) => {
+        const eco   = ECOSYSTEM_META[c.ecosystem]||{label:c.ecosystem||'综合',icon:'🌐',color:'#6b7280'};
+        const abt   = ABILITY_CONFIG[c.abilityType]||{label:'综合型',color:'#6b7280'};
+        const kind  = kindMap[c.kind]||{cls:'tg',text:'🟢 AI友好'};
+        const stCol = stColorMap[c.longTermStability]||'#3b82f6';
+        const d     = c.dims||{fit:88,energy:82,ai:85};
+
+        let comboStyle='background:#10b98118;color:#10b981;border:1px solid #10b98130;';
+        if(c.comboType==='good')    comboStyle='background:#3b82f618;color:#3b82f6;border:1px solid #3b82f630;';
+        if(c.comboType==='explore') comboStyle='background:#f59e0b18;color:#f59e0b;border:1px solid #f59e0b30;';
+
+        return `
+        <div class="career-card" style="position:relative;overflow:hidden;">
+          <!-- 生态色左边条 -->
+          <div style="position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,${eco.color},${eco.color}66);border-radius:3px 0 0 3px;"></div>
+
+          <div style="padding-left:10px;">
+            <!-- ① 标签行 -->
+            <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;align-items:center;">
+              <span style="${comboStyle}border-radius:20px;padding:2px 10px;font-size:11px;font-weight:600;">${c.comboLabel}</span>
+              <span style="background:${eco.color}15;color:${eco.color};border:1px solid ${eco.color}28;border-radius:20px;padding:2px 8px;font-size:11px;">${eco.icon} ${eco.label}</span>
+              <span style="background:${abt.color}15;color:${abt.color};border:1px solid ${abt.color}28;border-radius:20px;padding:2px 8px;font-size:11px;">${abt.label}</span>
+              ${c.traditionalPath?'<span style="background:#7c3aed15;color:#7c3aed;border:1px solid #7c3aed28;border-radius:20px;padding:2px 8px;font-size:11px;">🏛️ 传统路径</span>':''}
+            </div>
+
+            <!-- ② 职业名 + 角色 + 类型标签 -->
+            <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:8px;">
+              <div style="background:linear-gradient(135deg,${eco.color},${eco.color}bb);color:#fff;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;box-shadow:0 2px 8px ${eco.color}40;">${idx+1}</div>
+              <div style="flex:1;min-width:0;">
+                <div style="font-size:16px;font-weight:700;color:var(--text);line-height:1.2;">${c.name}</div>
+                <div style="font-size:11px;color:var(--sub);margin-top:3px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;">
+                  ${c.ecosystemRole?`<span style="color:${eco.color};font-weight:500;">⬟ ${c.ecosystemRole}</span>`:''}
+                  <span style="color:${stCol};">${c.stabilityLabel}</span>
+                  ${c.salaryRange?`<span>💰 ${c.salaryRange}</span>`:''}
+                </div>
+              </div>
+              <div class="type-tag ${kind.cls}" style="flex-shrink:0;">${kind.text}</div>
+            </div>
+
+            <!-- ③ 职业描述 -->
+            <p style="font-size:12px;color:var(--sub);line-height:1.65;margin:0 0 12px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,0.06);">${c.desc}</p>
+
+            <!-- ④ 三维指标 -->
+            <div class="three-d" style="margin-bottom:12px;">
+              <div class="td-item">
+                <div class="td-lbl">能力匹配度</div>
+                <div class="td-score">${d.fit}%</div>
+                <div class="td-bar"><div class="td-fill" data-w="${d.fit}"></div></div>
+              </div>
+              <div class="td-item">
+                <div class="td-lbl">能量可持续度</div>
+                <div class="td-score">${d.energy}%</div>
+                <div class="td-bar"><div class="td-fill" data-w="${d.energy}"></div></div>
+              </div>
+              <div class="td-item">
+                <div class="td-lbl">AI放大指数</div>
+                <div class="td-score">${d.ai}%</div>
+                <div class="td-bar"><div class="td-fill" data-w="${d.ai}"></div></div>
+              </div>
+            </div>
+
+            <!-- ⑤ 加速器 / 刹车片 -->
+            <div class="bb-row" style="margin-bottom:12px;">
+              <div class="bb-item"><strong>⚡ 加速器：</strong>${c.boost||''}</div>
+              <div class="bb-item"><strong>🔴 刹车片：</strong>${c.brake||''}</div>
+            </div>
+
+            <!-- ⑥ 底部信息栏 -->
+            <div style="padding-top:10px;border-top:1px solid rgba(255,255,255,0.06);display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+              <div>
+                ${riskBar(c.extremeRiskIndex||5)}
+                ${c.stressPattern?`<div style="font-size:10px;color:var(--sub);margin-top:4px;line-height:1.4;">${c.stressPattern}</div>`:''}
+              </div>
+              <div>
+                ${replaceBar(c.replacementRisk??40)}
+                ${c.careerPath?`<div style="font-size:10px;color:var(--sub);margin-top:4px;line-height:1.4;">🛤️ ${c.careerPath}</div>`:''}
+              </div>
+            </div>
+          </div>
+        </div>`;
+      }).join('');
+
+      // 进度条动画
+      document.querySelectorAll('.td-fill').forEach(el => {
+        const w = Number(el.getAttribute('data-w')||0);
+        requestAnimationFrame(() => { el.style.width = w + '%'; });
+      });
+    }
+    function buildRisks(){
+      const C = dimScores.C ?? 50;
+      const E = dimScores.E ?? 50;
+      const A = dimScores.A ?? 50;
+      const N = dimScores.N ?? 50;
+
+      const isIntrovert = E < 50;
+      const isHighC = C >= 65;
+      const isHighA = A >= 60;
+      const isHighN = N >= 60;
+
+      const risks = [];
+
+      if(isHighC){
+        risks.push({
+          ico:'🧊',
+          title:'完美主义陷阱：做不完的打磨，追不上的迭代',
+          level:'rl-h', levelTxt:'高风险',
+          body:`你的尽责性得分为 ${C} 分，对质量的要求非常高。
+在 AI 版本更新从 18 个月压缩到 3–6 个月的时代，如果你总是想把每一版都打磨到“完美”，就会发现永远在追下一版。`,
+          fix:'<strong>规避方法：</strong>给每个任务设定一个“完成标准”，达到就交付；后面的灵感，放到下一次迭代里，而不是无限拖延这一版。'
+        });
+      }
+
+      if(isIntrovert && isHighA){
+        risks.push({
+          ico:'🌀',
+          title:'信息孤岛陷阱：深度思考者的可见性危机',
+          level:'rl-m', levelTxt:'中风险',
+          body:`你更擅长在安静环境里深度思考，又愿意为他人付出。
+但在现实职场里，“看得见的贡献”常常比“真实贡献”更容易被记住。
+如果你习惯在幕后把事做好，却很少主动汇报，长期会出现“别人只看到结果的一小部分”的情况。`,
+          fix:'<strong>规避方法：</strong>建立自己的“可见性仪式”——例如每周一封简短周报，让相关的人知道：这周你做了什么、发现了什么、下周准备做什么。'
+        });
+      }else if(!isIntrovert && isHighA){
+        risks.push({
+          ico:'🌀',
+          title:'关系透支陷阱：帮所有人，却忘了帮自己',
+          level:'rl-m', levelTxt:'中风险',
+          body:`你的外向性和宜人性都不低，意味着你在人群里很容易被需要：同学有事找你、团队有活想到你。
+短期看，这是能力被认可的表现；长期看，如果你不为自己的时间和精力划清边界，很容易变成“所有人的解决问题机器”，却很难为自己的长期目标留出空间。`,
+          fix:'<strong>规避方法：</strong>区分“可以帮一把的小事”和“会严重打断自己节奏的大事”。对后者学会说“不”，或者换成有边界的合作方式。'
+        });
+      }
+
+      if(isHighN){
+        risks.push({
+          ico:'⚡',
+          title:'情绪放大陷阱：一次失误被你在心里重播几十遍',
+          level:'rl-m', levelTxt:'中风险',
+          body:`你的神经质得分偏高（${N} 分），说明你对外界反馈非常敏感。
+好的一面是，你能快速察觉风险和错误；但如果每次失误都在心里反复“重播”，就会逐渐消耗自信心，甚至不敢尝试新机会。`,
+          fix:'<strong>规避方法：</strong>给每次失败设定一个“复盘时长”，例如 30 分钟写完复盘，就停止继续想这件事。把注意力重新拉回到下一步行动，而不是卡死在上一局输赢里。'
+        });
+      }
+
+      const wrap = document.getElementById('riskList');
+      if(!risks.length){
+        wrap.innerHTML = `<div class="hint">从当前数据看，没有特别突出的高风险模式。但请记住：任何优势在被过度使用时，都有可能变成另一种“隐形风险”。</div>`;
+        return;
+      }
+
+      wrap.innerHTML = risks.map(r=>`
+        <div class="risk-card">
+          <div class="risk-head">
+            <div class="risk-ico">${r.ico}</div>
+            <div>
+              <div class="risk-title">${r.title}</div>
+              <span class="risk-level ${r.level}">${r.levelTxt}</span>
+            </div>
+          </div>
+          <div class="risk-body">${r.body}</div>
+          <div class="risk-fix">${r.fix}</div>
+        </div>
+      `).join('');
+    }
+
+    // ==========================
+    // 8. 家长行动指令（动态）
+    // ==========================
+    function buildParentGuide(){
+      const O = dimScores.O ?? 50;
+      const C = dimScores.C ?? 50;
+      const E = dimScores.E ?? 50;
+      const A = dimScores.A ?? 50;
+
+      const isIntrovert = E < 50;
+      const isHighC = C >= 65;
+      const isHighO = O >= 60;
+      const isHighA = A >= 60;
+
+      const arr = [];
+
+      // CMD1：关于能量保护
+      if(isIntrovert){
+        arr.push({
+          title:"保护 TA 的安静时间，而不是逼 TA“多社交一点”",
+          body:"这类孩子最怕的不是任务，而是持续被打断和被迫寒暄。请帮 TA 固定出每天 1–2 段安静、不被打扰的时间，用来思考和完成真正重要的事情。",
+          avoid:"避免说：“你怎么总是一个人待着？去跟别人多玩一玩。”"
+        });
+      }else{
+        arr.push({
+          title:"给 TA 足够的“高质量社交”，而不是纯刷屏社交",
+          body:"外向的孩子，需要通过互动来获得能量。但如果大部分时间都耗在无效聊天和刷手机上，反而会被社交透支。请帮 TA 多创造有内容、有共同目标的团队活动。",
+          avoid:"避免一味压制：“你就不能安静一点吗？”而是帮 TA 学会选择高质量的互动。"
+        });
+      }
+
+      // CMD2：关于任务与责任
+      if(isHighC){
+        arr.push({
+          title:"在可控难度里让 TA 体验“按时交付”，而不是永远追求完美",
+          body:"可以给 TA 设计一些有明确截止时间的小项目——比如 2 周内完成一份小研究、一次展示。重点不是做到完美，而是学会在规定时间内做出“够好且可以交付”的成果。",
+          avoid:"避免说：“再改一改，还可以更好。”而是引导 TA 问：“在这次时间可控的前提下，我已经做到什么水平？”"
+        });
+      }else{
+        arr.push({
+          title:"帮 TA 找到一件值得长期坚持的事情，而不是只盯着短期成绩",
+          body:"尽责性中等的孩子，更需要先找到“愿意为之努力的目标”。可以一起列出 2–3 个兴趣领域，尝试用 3 个月的周期，做一个真正有成果的项目。",
+          avoid:"避免只用“再努力一点”这种空话去催促，而是一起把目标拆成一个个能执行的小任务。"
+        });
+      }
+
+      // CMD3：关于好奇心和探索
+      if(isHighO){
+        arr.push({
+          title:"把 TA 的好奇心引导到“可落地的实验”上",
+          body:"对新事物好奇是非常宝贵的特质。与其一味提醒“不要分心”，不如和 TA 一起选一个方向，设计一组可以在 2–4 周内完成的小实验，让好奇心有出口。",
+          avoid:"避免简单否定：“别想那些没用的。”"
+        });
+      }else{
+        arr.push({
+          title:"在安全感里面，一点点打开 TA 的“试错窗口”",
+          body:"相对谨慎的孩子，更需要在“安全可控”的环境里练习试错。可以从低风险的小尝试开始，例如：在家人面前做一次小分享、承担一次班级里的小角色。",
+          avoid:"避免突然把 TA 推到完全陌生的高压场景里，比如临时让 TA 上台发言，然后用结果来评价 TA 的能力。"
+        });
+      }
+
+      // CMD4：关于人际风格
+      if(isHighA){
+        arr.push({
+          title:"帮 TA 建立“既善良又有边界”的人际原则",
+          body:"愿意为他人着想是难得的优点，但如果不会说“不”，容易被消耗。可以和 TA 一起讨论：什么情况下可以帮忙？什么情况下要先保护自己的时间和底线？",
+          avoid:"避免随口说：“多吃点亏没关系。”这会让 TA 误以为“委屈自己才是好人”。"
+        });
+      }else{
+        arr.push({
+          title:"帮 TA 学会“坚定但不伤人”的表达方式",
+          body:"有原则的孩子，在集体里往往更容易看见问题。与其担心 TA 不好相处，不如教 TA 用更温和的方式表达不同意见，把批评变成建设性建议。",
+          avoid:"避免给 TA 贴上“难搞”“不合群”的标签。"
+        });
+      }
+
+      const wrap = document.getElementById('parentCmd');
+      wrap.innerHTML = arr.map(cmd=>`
+        <div class="cmd-card">
+          <div class="cmd-title">${cmd.title}</div>
+          <div>${cmd.body}</div>
+          <div class="cmd-avoid">⚠ 家长避免这样说：${cmd.avoid}</div>
+        </div>
+      `).join('');
+    }
+
+    // ==========================
+    // 9. 初始化
+    // ==========================
+
+    const ENERGY_SOURCES = (function(){
+      try{
+        const raw = localStorage.getItem('talentai_p_energy');
+        if(raw) return JSON.parse(raw);
+      }catch(e){}
+      return {
+        charge:[
+          "有整块时间独立钻研复杂问题",
+          "和少数几个人做深入、有内容的对话",
+          "能看见明确进展的长期项目"
+        ],
+        drain:[
+          "需要不断寒暄的泛社交场合",
+          "高频被打断、没有节奏的大型会议",
+          "做一堆看不见成果的零碎杂事"
+        ]
+      };
+    })();
+
+    const _findBodies = [];
+
+
+    function buildArchetype(){
+      const O = dimScores.O ?? 50;
+      const C = dimScores.C ?? 50;
+      const E = dimScores.E ?? 50;
+      const A = dimScores.A ?? 50;
+      const N = dimScores.N ?? 50;
+
+      let name = "平衡型成长者";
+      let quote = "你正在逐步找到最适合自己的成长节奏。";
+      let tag  = "性格相对均衡";
+
+      const isIntrovert = E < 50;
+      const isHighC = C >= 65;
+      const isHighO = O >= 60;
+      const isHighA = A >= 65;
+      const isLowN  = N <= 45;
+
+      if(!isIntrovert && isHighO){
+        name  = "行动型探索者";
+        quote = "你在与世界的互动中获得能量，越是有新鲜挑战，越能激发你的潜力。";
+        tag   = "外向 × 高开放";
+      }else if(isIntrovert && isHighO){
+        name  = "独行深海鲸";
+        quote = "你的沉静不是软弱，而是在等待最精准的出手时机。";
+        tag   = "安静 × 深度思考";
+      }else if(isHighC && isLowN){
+        name  = "稳健精进者";
+        quote = "你习惯用持续投入的方式，把一件事慢慢做到极致。";
+        tag   = "高尽责 × 稳定";
+      }else if(isHighA && !isIntrovert){
+        name  = "暖场协调者";
+        quote = "你擅长把人连接在一起，让团队在舒服的氛围中高效合作。";
+        tag   = "外向 × 宜人";
+      }
+
+      document.getElementById('archName').textContent = name;
+      document.getElementById('archQuote').textContent = "“" + quote + "”";
+      document.getElementById('archTag').textContent   = tag;
+    }
+
+    function buildOcean(){
+      const wrap = document.getElementById('oceanWrap');
+      const cfg = [
+        { key:'O', zh:'开放性',   en:'OPENNESS',     color: 'var(--purple)' },
+        { key:'C', zh:'尽责性',   en:'CONSCIENTIOUS',color: 'var(--green)' },
+        { key:'E', zh:'外向性',   en:'EXTRAVERSION', color: 'var(--orange)' },
+        { key:'A', zh:'宜人性',   en:'AGREEABLENESS',color: 'var(--blue)' },
+        { key:'N', zh:'稳定性',   en:'STABILITY',    color: 'var(--red)' }
+      ];
+      const html = cfg.map(row=>{
+        const score = dimScores[row.key] ?? 50;
+        let pctText = "中位水平";
+        if(score >= 70) pctText = "高于大多数人";
+        else if(score >= 60) pctText = "略高于平均";
+        else if(score <= 40) pctText = "低于大多数人";
+        else if(score <= 50) pctText = "略低于平均";
+
+        return `
+          <div class="o-row">
+            <div class="o-label">
+              <div>${row.zh}</div>
+              <div style="font-size:10px;color:var(--sub);">${row.en}</div>
+            </div>
+            <div class="o-main">
+              <div class="o-track">
+                <div class="o-fill" data-score="${score}" style="background:${row.color};"></div>
+              </div>
+              <div class="o-meta">
+                <span>${score} 分</span>
+                <span>${pctText}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+      wrap.innerHTML = html;
+
+      // 关键词 pill
+      const pills = [];
+      const O = dimScores.O ?? 50;
+      const C = dimScores.C ?? 50;
+      const E = dimScores.E ?? 50;
+      const A = dimScores.A ?? 50;
+      const N = dimScores.N ?? 50;
+
+      if(O >= 60) pills.push("好奇心强","愿意尝试新东西");
+      else pills.push("更重视安全感","喜欢先看别人怎么做");
+
+      if(C >= 65) pills.push("对结果有要求","愿意长期打磨一件事");
+      else pills.push("不喜欢被死规则绑住","需要找到让自己上头的目标");
+
+      if(E >= 60) pills.push("在人群中容易被看见","需要互动来获得能量");
+      else pills.push("更享受安静空间","不喜欢被迫寒暄");
+
+      if(A >= 60) pills.push("愿意站在别人角度想问题");
+      else pills.push("在关系里有自己的边界");
+
+      if(N <= 45) pills.push("大多数时候情绪比较稳");
+      else pills.push("对环境变化比较敏感");
+
+      document.getElementById('pillStrip').innerHTML =
+        pills.map(t=>`<span class="pill">${t}</span>`).join('');
+    }
+
+    function buildEnergy(){
+      const c = document.getElementById('chargeList');
+      const d = document.getElementById('drainList');
+      c.innerHTML = (ENERGY_SOURCES.charge || []).map(t=>`<li>${t}</li>`).join('');
+      d.innerHTML = (ENERGY_SOURCES.drain || []).map(t=>`<li>${t}</li>`).join('');
+    }
+
+    function buildFindings(){
+      const O = dimScores.O ?? 50;
+      const C = dimScores.C ?? 50;
+      const E = dimScores.E ?? 50;
+      const A = dimScores.A ?? 50;
+      const N = dimScores.N ?? 50;
+
+      const isIntrovert = E < 50;
+      const isHighC = C >= 65;
+      const isLowN  = N <= 45;
+      const isHighA = A >= 60;
+
+      const arr = [];
+
+      // F1：关于能量与工作方式（看外向性）
+      if(isIntrovert){
+        arr.push({
+          title:"你的思考力在安静环境被放大，在嘈杂环境中会被压缩",
+          body:`你的外向性得分偏低（${E} 分），说明你更擅长在安静、可控的环境里思考问题。
+那些需要你在会议室里不断“即兴发挥”的场景，只能让你发挥出 60% 左右的真实水平。
+刻意为自己保留固定的安静思考时间，比任何额外课程都更重要。`
+        });
+      }else{
+        arr.push({
+          title:"你的能量来自人和场景，远胜于单纯一个人闷头做事",
+          body:`你的外向性得分偏高（${E} 分），说明你在互动、讨论、快节奏项目中会进入最佳状态。
+如果长期被关在一个人做重复性任务，你的状态会明显下滑。
+刻意选择“需要沟通与协作”的学习和工作场景，你会比只靠自己独立学习的人走得更快。`
+        });
+      }
+
+      // F2：关于人际风格（看宜人性）
+      if(isHighA){
+        arr.push({
+          title:"你的人际天赋更偏向“建立深度信任”，而不是广撒网",
+          body:`你的宜人性得分为 ${A} 分，这说明你更擅长在信任关系里合作，而不是在竞争氛围里周旋。
+你最有优势的场景，是和少数关键伙伴长期合作，而不是不停换圈子、随时应付新关系。
+只要学会在关键时刻表达立场，这种气质会成为你职业发展的护城河。`
+        });
+      }else{
+        arr.push({
+          title:"你在关系里更看重原则和边界，而不是一味讨好",
+          body:`你的宜人性得分为 ${A} 分，说明你在关系中有自己的标准和底线，不会为了“和气”牺牲原则。
+在需要决策、需要守住规则的场景，你比一味迎合的人更可靠。
+只要学会更清晰地表达立场，这会是一种非常罕见的优势，而不是缺点。`
+        });
+      }
+
+      // F3：关于节奏感 & 执行方式（看尽责+情绪）
+      if(isHighC){
+        arr.push({
+          title:"你的高尽责性是超能力，也可能是最累自己的那把刀",
+          body:`你的尽责性得分为 ${C} 分，说明你对质量和责任有很高要求。
+好的一面是：你做事可靠、有始有终；风险在于，在 AI 快速迭代的时代，“够好且按时”往往比“完美但很慢”更有竞争力。
+学会给任务设定一个“完成标准”，而不是永无止境地打磨，是你接下来最重要的能力升级。`
+        });
+      }else{
+        arr.push({
+          title:"你更擅长抓重点，而不是在细枝末节上耗死自己",
+          body:`你的尽责性得分为 ${C} 分，相比完美主义，你更愿意把精力放在关键环节上。
+如果能再多一点自律和节奏感，你会比一味追求完美却总交不出成果的人，更适合在真实的工作场景中生存。`
+        });
+      }
+
+      const wrap = document.getElementById('findWrap');
+      wrap.innerHTML = arr.map((f,i)=>`
+        <div class="find-card" id="fc${i}">
+          <div class="find-no">发现 ${["一","二","三"][i]} · FINDING ${i+1}</div>
+          <div class="find-title">${f.title}</div>
+          <div class="find-body" id="fb${i}"></div>
+        </div>
+      `).join('');
+
+      _findBodies.length = 0;
+      arr.forEach(f=>_findBodies.push(f.body));
+    }
+
+
+    function animateOcean(){
+      document.querySelectorAll('.o-fill').forEach(el=>{
+        const v = Number(el.getAttribute('data-score')||0);
+        requestAnimationFrame(()=>{ el.style.width = v + '%'; });
+      });
+    }
+
+    function triggerFindings(){
+      _findBodies.forEach((t,idx)=>{
+        setTimeout(()=>{
+          const card = document.getElementById('fc'+idx);
+          if(card) card.classList.add('vis');
+          typeText('fb'+idx,t,14);
+        }, 150 + idx*180);
+      });
+    }
+
+    function typeText(id, text, speed){
+      const el = document.getElementById(id);
+      if(!el) return;
+      let i = 0;
+      const lines = text.split('\n');
+      const joined = lines.join('<br/>');
+      // 为避免打字太慢，直接一次性显示；如果想要打字效果，再改成逐字。
+      el.innerHTML = joined;
+    }
+
+    function init(){
+      buildArchetype();
+      buildOcean();
+      buildEnergy();
+      buildFindings();
+      buildCareers();
+      buildRisks();
+      buildParentGuide();
+      // 动画在下一帧触发
+      setTimeout(()=>{
+        animateOcean();
+        triggerFindings();
+      },120);
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

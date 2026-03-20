@@ -1,0 +1,239 @@
+{
+  "metadata": {
+    "product_name": "TalentAI Adaptability Layer (A-Layer)",
+    "version": "1.0.8",
+    "total_questions": 20,
+    "architecture_philosophy": {
+      "zh-CN": "A层被定义为'时代界面层'。它不改变个体的生命内核（P/W/M），但决定了个体与AI工具的摩擦系数。它与M层的区别在于：M层侧重于对AI协作的元认知信念，而A层侧重于实际的适配策略、杠杆利用及风险控制。",
+      "en-US": "A-Layer is defined as the 'Era Interface'. It doesn't change the individual's core (P/W/M) but determines the friction coefficient between the individual and AI tools. Unlike M-Layer's focus on cognitive beliefs, A-Layer focuses on adaptation strategies, leverage, and risk control."
+    },
+    "dimensions": [
+      { "id": "A1", "name": "AI Perception", "description": { "zh-CN": "AI认知定位：将AI视为工具、对手还是进化器官", "en-US": "AI Perception: Viewing AI as a tool, rival, or evolving organ." }, "max_score": 10.0 },
+      { "id": "A2", "name": "Task Allocation", "description": { "zh-CN": "人机分工能力：识别高价值人类任务与高效率AI任务的边界", "en-US": "Task Allocation: Identifying boundaries between human and AI tasks." }, "max_score": 10.0 },
+      { "id": "A3", "name": "Amplification Strategy", "description": { "zh-CN": "AI放大策略：利用AI杠杆实现10倍价值跃迁的思维", "en-US": "Amplification Strategy: Thinking about using AI for 10x value leaps." }, "max_score": 10.0 },
+      { "id": "A4", "name": "Learning & Transfer", "description": { "zh-CN": "学习与迁移：快速吸收新工具并进行跨领域方法论迁移的能力", "en-US": "Learning & Transfer: Rapid tool adoption and cross-domain methodology transfer." }, "max_score": 10.0 },
+      { "id": "A5", "name": "Dependency & Risk", "description": { "zh-CN": "依赖与风险控制：在不失去独立思考能力的前提下与AI深度协作", "en-US": "Dependency & Risk: Deep collaboration without losing independent thinking." }, "max_score": 10.0 }
+    ],
+    "scoring_formula": {
+      "method": "Dimension-based Cumulative Scoring",
+      "interpretation": {
+        "zh-CN": "分数越高代表AI时代的适应能力越强。低分反映出认知偏差、使用障碍或潜在的退化风险。该分数作为P/W/M总分的乘数系数（0.8 - 1.5x）。",
+        "en-US": "Higher scores indicate stronger AI adaptability. Low scores reflect cognitive bias or atrophy risk. This score acts as a multiplier (0.8 - 1.5x) for the P/W/M base."
+      }
+    },
+    "fusion_rules_explanation": {
+      "purpose": { "zh-CN": "A层与P×W×M三层交叉验证，识别AI时代下的职业溢价与熔断点。", "en-US": "A-layer cross-validates with P/W/M to identify career premiums and cut-off points." },
+      "integration_logic": { "zh-CN": "高AI适配力可弥补T层传统技能的短板；低AI适配力结合高P(神经质)预警技术焦虑症。", "en-US": "High AI adaptability compensates for T-layer gaps; low adaptability with high P(Neuroticism) warns of tech-anxiety." }
+    },
+    "behavioral_tags_definition": {
+      "threat_perception": { "zh-CN": "威胁感知：视AI为竞争者而非盟友", "en-US": "Threat Perception: AI as a rival." },
+      "asset_thinking": { "zh-CN": "资产思维：将Prompt/Workflow积累为数字资产", "en-US": "Asset Thinking: Accumulating AI assets." },
+      "ai_atrophy": { "zh-CN": "能力退化风险：独立思考或技能正在萎缩", "en-US": "AI Atrophy: Shrinking skills/independence." },
+      "proactive_evolution": { "zh-CN": "主动进化：积极重塑个人价值护城河", "en-US": "Proactive Evolution: Reshaping personal moats." }
+    }
+  },
+  "questions": [
+    {
+      "id": "A01", "dimension": "A1",
+      "question": { "zh-CN": "你在做一个复杂项目，你心里把AI当成：", "en-US": "In a complex project, you view AI as:" },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "高级工具：主导权在我", "en-US": "Advanced Tool" }, "scoring": { "A1": 1.5 } },
+        { "id": "B", "text": { "zh-CN": "助手：帮我处理琐事", "en-US": "Assistant" }, "scoring": { "A1": 2.0 } },
+        { "id": "C", "text": { "zh-CN": "智囊团：汇集不同角度，我决策", "en-US": "Think Tank" }, "scoring": { "A1": 2.5 }, "behavioral_tags": { "proactive_evolution": 0.5 } },
+        { "id": "D", "text": { "zh-CN": "不得不用的东西：被动跟随", "en-US": "Necessary burden" }, "scoring": { "A1": 1.0 }, "behavioral_tags": { "threat_perception": 0.5 } }
+      ]
+    },
+    {
+      "id": "A02", "dimension": "A1",
+      "question": { "zh-CN": "发现AI在某个任务上表现比你好，第一反应：", "en-US": "When AI outperforms you:" },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "思考它强在哪，我能学什么", "en-US": "What can I learn?" }, "scoring": { "A1": 2.5 }, "behavioral_tags": { "proactive_evolution": 0.8 } },
+        { "id": "B", "text": { "zh-CN": "各有所长，专注我擅长的", "en-US": "Complementary focus" }, "scoring": { "A1": 2.0 } },
+        { "id": "C", "text": { "zh-CN": "不服：它只是套路，我有灵性", "en-US": "It's just formulas" }, "scoring": { "A1": 1.2 }, "behavioral_tags": { "threat_perception": 0.4 } },
+        { "id": "D", "text": { "zh-CN": "焦虑：我会不会被替代", "en-US": "Fear of replacement" }, "scoring": { "A1": 0.8 }, "behavioral_tags": { "threat_perception": 1.0 } }
+      ]
+    },
+    {
+      "id": "A03", "dimension": "A1",
+      "question": { "zh-CN": "用AI完成出色作品被夸奖时：", "en-US": "When praised for AI-assisted work:" },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "共同完成，感到自豪", "en-US": "Proud of co-creation" }, "scoring": { "A1": 2.5 } },
+        { "id": "B", "text": { "zh-CN": "我的想法为主，AI只是工具", "en-US": "My idea primarily" }, "scoring": { "A1": 2.0 } },
+        { "id": "C", "text": { "zh-CN": "心虚，觉得不是自己的能力", "en-US": "Imposter syndrome" }, "scoring": { "A1": 1.2 }, "behavioral_tags": { "threat_perception": 0.3 } },
+        { "id": "D", "text": { "zh-CN": "其实是AI厉害", "en-US": "AI is the hero" }, "scoring": { "A1": 1.5 } }
+      ]
+    },
+    {
+      "id": "A04", "dimension": "A1",
+      "question": { "zh-CN": "面对“AI将替代脑力工作”的预言：", "en-US": "Facing AI-replacement prophecies:" },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "进化成管理AI的人", "en-US": "Evolve to manage AI" }, "scoring": { "A1": 2.5 }, "behavioral_tags": { "proactive_evolution": 1.0 } },
+        { "id": "B", "text": { "zh-CN": "改变方式，价值仍在", "en-US": "Adapt value" }, "scoring": { "A1": 2.0 } },
+        { "id": "C", "text": { "zh-CN": "怀疑，没那么容易", "en-US": "Skeptical" }, "scoring": { "A1": 1.2 } },
+        { "id": "D", "text": { "zh-CN": "迷茫焦虑，不知所措", "en-US": "Lost and anxious" }, "scoring": { "A1": 0.8 }, "behavioral_tags": { "threat_perception": 0.8 } }
+      ]
+    },
+    {
+      "id": "A05", "dimension": "A2",
+      "question": { "zh-CN": "写报告时，你倾向如何分工？", "en-US": "Report task allocation:" },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "我只提观点，其余给AI", "en-US": "Insights me, rest AI" }, "scoring": { "A2": 2.5 } },
+        { "id": "B", "text": { "zh-CN": "我做核心，AI做资料收集", "en-US": "Core me, research AI" }, "scoring": { "A2": 2.0 } },
+        { "id": "C", "text": { "zh-CN": "我为主，AI做基础检查", "en-US": "I lead, AI checks" }, "scoring": { "A2": 1.5 } },
+        { "id": "D", "text": { "zh-CN": "基本自做，AI查错", "en-US": "Solo, AI proofreads" }, "scoring": { "A2": 1.0 } }
+      ]
+    },
+    {
+      "id": "A06", "dimension": "A2",
+      "question": { "zh-CN": "决定任务归属AI的标准是：", "en-US": "Criteria for AI delegation:" },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "效能导向：谁做更合适", "en-US": "Effectiveness oriented" }, "scoring": { "A2": 2.5 } },
+        { "id": "B", "text": { "zh-CN": "效率导向：考虑时间成本", "en-US": "Efficiency oriented" }, "scoring": { "A2": 2.0 } },
+        { "id": "C", "text": { "zh-CN": "成长导向：为了锻炼自己", "en-US": "Growth oriented" }, "scoring": { "A2": 1.2 } },
+        { "id": "D", "text": { "zh-CN": "看心情，无固定标准", "en-US": "By mood" }, "scoring": { "A2": 1.0 } }
+      ]
+    },
+    {
+      "id": "A07", "dimension": "A2",
+      "question": { "zh-CN": "创意项目协作中，你倾向：", "en-US": "Creative collaboration:" },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "AI先生成多个想法我改", "en-US": "AI ideates, I edit" }, "scoring": { "A2": 2.5 } },
+        { "id": "B", "text": { "zh-CN": "我先做初稿AI优化", "en-US": "I draft, AI optimizes" }, "scoring": { "A2": 2.0 } },
+        { "id": "C", "text": { "zh-CN": "往返迭代，互相启发", "en-US": "Iterative inspiration" }, "scoring": { "A2": 2.0 } },
+        { "id": "D", "text": { "zh-CN": "自做，最后AI润色", "en-US": "Solo, AI polish" }, "scoring": { "A2": 1.2 } }
+      ]
+    },
+    {
+      "id": "A08", "dimension": "A2",
+      "question": { "zh-CN": "你如何划定人机边界？", "en-US": "Man-machine boundaries:" },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "能力边界：给它擅长的", "en-US": "Capability-based" }, "scoring": { "A2": 2.5 } },
+        { "id": "B", "text": { "zh-CN": "重要性：重要的自己做", "en-US": "Importance-based" }, "scoring": { "A2": 2.0 } },
+        { "id": "C", "text": { "zh-CN": "难度：难的自己做", "en-US": "Difficulty-based" }, "scoring": { "A2": 1.5 } },
+        { "id": "D", "text": { "zh-CN": "模糊，试试看再说", "en-US": "Vague trial" }, "scoring": { "A2": 1.0 } }
+      ]
+    },
+    {
+      "id": "A09", "dimension": "A3",
+      "question": { "zh-CN": "AI帮你省下大量时间后，你会：", "en-US": "With time saved by AI:" },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "做以前做不到的高价值项目", "en-US": "Higher value projects" }, "scoring": { "A3": 2.5 }, "behavioral_tags": { "proactive_evolution": 1.0 } },
+        { "id": "B", "text": { "zh-CN": "接更多同类活赚更多钱", "en-US": "Scale work" }, "scoring": { "A3": 2.0 } },
+        { "id": "C", "text": { "zh-CN": "学习新技能提升自己", "en-US": "Self-improvement" }, "scoring": { "A3": 2.0 } },
+        { "id": "D", "text": { "zh-CN": "享受生活找回平衡", "en-US": "Life balance" }, "scoring": { "A3": 1.0 } }
+      ]
+    },
+    {
+      "id": "A10", "dimension": "A3",
+      "question": { "zh-CN": "缺少实现想法的技能时：", "en-US": "Missing skills for idea:" },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "用AI补位直接实现", "en-US": "AI skill-supplement" }, "scoring": { "A3": 2.5 }, "behavioral_tags": { "proactive_evolution": 0.8 } },
+        { "id": "B", "text": { "zh-CN": "找专业人合作", "en-US": "Partner up" }, "scoring": { "A3": 1.5 } },
+        { "id": "C", "text": { "zh-CN": "先花时间学再做", "en-US": "Learn then do" }, "scoring": { "A3": 1.0 } },
+        { "id": "D", "text": { "zh-CN": "简化想法做能做的", "en-US": "Downscale idea" }, "scoring": { "A3": 0.8 } }
+      ]
+    },
+    {
+      "id": "A11", "dimension": "A3",
+      "question": { "zh-CN": "你比不会用AI的同事强在：", "en-US": "Advantage over non-AI peers:" },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "产出倍增，降维打击", "en-US": "Multiplier advantage" }, "scoring": { "A3": 2.5 }, "behavioral_tags": { "proactive_evolution": 0.6 } },
+        { "id": "B", "text": { "zh-CN": "更快完成，时间优势", "en-US": "Speed advantage" }, "scoring": { "A3": 2.0 } },
+        { "id": "C", "text": { "zh-CN": "差不太多，能力才是根本", "en-US": "Limited difference" }, "scoring": { "A3": 1.2 } },
+        { "id": "D", "text": { "zh-CN": "不一定，AI只是辅助", "en-US": "Uncertain" }, "scoring": { "A3": 0.8 } }
+      ]
+    },
+    {
+      "id": "A12", "dimension": "A3",
+      "question": { "zh-CN": "关于AI经验积累，你会：", "en-US": "AI experience accumulation:" },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "建立个人提示词库/模板资产", "en-US": "Build asset library" }, "scoring": { "A3": 2.5 }, "behavioral_tags": { "asset_thinking": 1.0 } },
+        { "id": "B", "text": { "zh-CN": "偶尔保存好用的技巧", "en-US": "Save occasionally" }, "scoring": { "A3": 1.8 }, "behavioral_tags": { "asset_thinking": 0.5 } },
+        { "id": "C", "text": { "zh-CN": "现用现想，不特意保存", "en-US": "No storage" }, "scoring": { "A3": 1.0 } },
+        { "id": "D", "text": { "zh-CN": "想整理但不知道怎么建", "en-US": "Want to but can't" }, "scoring": { "A3": 1.2 } }
+      ]
+    },
+    {
+      "id": "A13", "dimension": "A4",
+      "question": { "zh-CN": "现象级AI新工具出现时：", "en-US": "New viral AI tool:" },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "第一时间熬夜研究边界", "en-US": "Immediate research" }, "scoring": { "A4": 2.5 }, "behavioral_tags": { "proactive_evolution": 0.7 } },
+        { "id": "B", "text": { "zh-CN": "周末或空闲时计划学习", "en-US": "Planned learning" }, "scoring": { "A4": 2.0 } },
+        { "id": "C", "text": { "zh-CN": "等大家都说好用了再学", "en-US": "Wait for consensus" }, "scoring": { "A4": 1.2 } },
+        { "id": "D", "text": { "zh-CN": "除非要求，否则不主动学", "en-US": "Learn if required" }, "scoring": { "A4": 0.8 } }
+      ]
+    },
+    {
+      "id": "A14", "dimension": "A4",
+      "question": { "zh-CN": "A场景的技巧迁移到B场景，你：", "en-US": "Transferring AI skill A to B:" },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "经常跨界联想，主动尝试", "en-US": "Proactive cross-field" }, "scoring": { "A4": 2.5 }, "behavioral_tags": { "proactive_evolution": 0.6 } },
+        { "id": "B", "text": { "zh-CN": "有人提示时会尝试", "en-US": "Try if prompted" }, "scoring": { "A4": 1.8 } },
+        { "id": "C", "text": { "zh-CN": "不太会，习惯专供专用", "en-US": "Fixed habits" }, "scoring": { "A4": 1.0 } },
+        { "id": "D", "text": { "zh-CN": "B场景有专门工具，不用迁移", "en-US": "Use specialized only" }, "scoring": { "A4": 1.2 } }
+      ]
+    },
+    {
+      "id": "A15", "dimension": "A4",
+      "question": { "zh-CN": "当工具已满足80%需求，你会：", "en-US": "When tool meets 80% needs:" },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "深挖高级功能发现新可能", "en-US": "Deep dive features" }, "scoring": { "A4": 2.5 } },
+        { "id": "B", "text": { "zh-CN": "够用就行，不浪费精力", "en-US": "Good enough" }, "scoring": { "A4": 1.8 } },
+        { "id": "C", "text": { "zh-CN": "对比类似工具，广度优先", "en-US": "Cross-compare" }, "scoring": { "A4": 2.0 } },
+        { "id": "D", "text": { "zh-CN": "不想学太复杂的深奥功能", "en-US": "Avoid complexity" }, "scoring": { "A4": 1.0 } }
+      ]
+    },
+    {
+      "id": "A16", "dimension": "A4",
+      "question": { "zh-CN": "常用工具操作大变时，你：", "en-US": "Tool UX major change:" },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "马上学新版，看新机会", "en-US": "Immediate adaptation" }, "scoring": { "A4": 2.5 }, "behavioral_tags": { "proactive_evolution": 0.4 } },
+        { "id": "B", "text": { "zh-CN": "先学变动大的部分", "en-US": "Learn major shifts" }, "scoring": { "A4": 2.0 } },
+        { "id": "C", "text": { "zh-CN": "继续旧版，实在不行再换", "en-US": "Legacy first" }, "scoring": { "A4": 1.2 } },
+        { "id": "D", "text": { "zh-CN": "很烦 变动，渴望稳定", "en-US": "Resist change" }, "scoring": { "A4": 0.8 }, "behavioral_tags": { "threat_perception": 0.5 } }
+      ]
+    },
+    {
+      "id": "A17", "dimension": "A5",
+      "question": { "zh-CN": "突遇断网无法使用AI，你发现：", "en-US": "If AI goes offline:" },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "能自做，只是稍慢且质量保住", "en-US": "Can solo, quality stays" }, "scoring": { "A5": 2.5 } },
+        { "id": "B", "text": { "zh-CN": "能做但效率大降，手感生疏", "en-US": "Can do, efficiency drops" }, "scoring": { "A5": 2.0 }, "behavioral_tags": { "ai_atrophy": 0.4 } },
+        { "id": "C", "text": { "zh-CN": "很难完成，细节做不好", "en-US": "Hard to complete" }, "scoring": { "A5": 1.2 }, "behavioral_tags": { "ai_atrophy": 0.7 } },
+        { "id": "D", "text": { "zh-CN": "脑子空，失去组织能力", "en-US": "Brain blank" }, "scoring": { "A5": 0.5 }, "behavioral_tags": { "ai_atrophy": 1.0 } }
+      ]
+    },
+    {
+      "id": "A18", "dimension": "A5",
+      "question": { "zh-CN": "对于AI生成的重要文档，你：", "en-US": "Important AI document:" },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "要求AI解释逻辑并对撞验证", "en-US": "Clash logic validation" }, "scoring": { "A5": 2.5 } },
+        { "id": "B", "text": { "zh-CN": "仔细检查核心部分和数据", "en-US": "Check core data" }, "scoring": { "A5": 2.0 } },
+        { "id": "C", "text": { "zh-CN": "大致看下，信任AI结果", "en-US": "Quick scan" }, "scoring": { "A5": 1.2 }, "behavioral_tags": { "ai_atrophy": 0.3 } },
+        { "id": "D", "text": { "zh-CN": "不检查，出错了再说", "en-US": "No check" }, "scoring": { "A5": 0.5 }, "behavioral_tags": { "ai_atrophy": 0.8 } }
+      ]
+    },
+    {
+      "id": "A19", "dimension": "A5",
+      "question": { "zh-CN": "复杂思考过程中，你的习惯是：", "en-US": "Complex thinking process:" },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "自做大纲/思维导图后再问AI", "en-US": "Own draft first" }, "scoring": { "A5": 2.5 } },
+        { "id": "B", "text": { "zh-CN": "自想一会儿再与AI讨论", "en-US": "Think solo then talk" }, "scoring": { "A5": 2.0 } },
+        { "id": "C", "text": { "zh-CN": "直接问节省时间", "en-US": "Ask immediately" }, "scoring": { "A5": 1.2 }, "behavioral_tags": { "ai_atrophy": 0.5 } },
+        { "id": "D", "text": { "zh-CN": "先看AI怎么说再思考", "en-US": "AI views first" }, "scoring": { "A5": 0.5 }, "behavioral_tags": { "ai_atrophy": 0.9 } }
+      ]
+    },
+    {
+      "id": "A20", "dimension": "A5",
+      "question": { "zh-CN": "发现长期用AI后某些能力下降，你：", "en-US": "Skill drop due to AI:" },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "警觉并开启离线刻意练习", "en-US": "Deliberate offline practice" }, "scoring": { "A5": 2.5 }, "behavioral_tags": { "proactive_evolution": 0.8 } },
+        { "id": "B", "text": { "zh-CN": "注意到并偶尔保持手感", "en-US": "Occasional practice" }, "scoring": { "A5": 2.0 } },
+        { "id": "C", "text": { "zh-CN": "觉得无所谓，AI能代替就行", "en-US": "Doesn't matter" }, "scoring": { "A5": 1.0 }, "behavioral_tags": { "ai_atrophy": 0.6 } },
+        { "id": "D", "text": { "zh-CN": "没注意到这个问题", "en-US": "Not noticed" }, "scoring": { "A5": 0.5 }, "behavioral_tags": { "ai_atrophy": 1.0 } }
+      ]
+    }
+  ]
+}
+
+

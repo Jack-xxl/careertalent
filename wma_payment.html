@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>微信支付 · 解锁终极报告</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+    background:#0b0f1c;
+    color:#fff;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+.container{
+    width:100%;
+    max-width:420px;
+    text-align:center;
+    padding:30px;
+}
+.price{
+    font-size:36px;
+    font-weight:700;
+    color:#22c55e;
+}
+.status{
+    margin:15px 0;
+    font-size:14px;
+    color:#9ca3af;
+}
+.qr-box{
+    background:#111827;
+    padding:20px;
+    border-radius:16px;
+    margin:25px 0;
+}
+.qr-placeholder{
+    width:200px;
+    height:200px;
+    background:#fff;
+    margin:0 auto;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#000;
+    font-weight:bold;
+}
+.btn{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:12px;
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+}
+.btn-green{
+    background:linear-gradient(90deg,#22c55e,#16a34a);
+    color:white;
+}
+.hidden{
+    display:none;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+    <h2>微信支付</h2>
+    <div class="price">¥150</div>
+
+    <div class="status" id="payStatus">
+        请使用微信扫码支付
+    </div>
+
+    <div class="qr-box">
+        <div class="qr-placeholder">
+            模拟微信二维码
+        </div>
+    </div>
+
+    <button class="btn btn-green" onclick="simulateWeChatSuccess()">
+        模拟支付成功
+    </button>
+
+</div>
+
+<script>
+
+// =============================
+// 当前版本：模拟支付
+// 未来版本：替换为真实微信支付
+// =============================
+
+function simulateWeChatSuccess(){
+
+    document.getElementById("payStatus").innerText = "支付成功，正在跳转...";
+
+    // 写入支付标记
+    localStorage.setItem('talentai_wma_paid','1');
+    localStorage.setItem('talentai_wma_paid_at',new Date().toISOString());
+
+    // 清除旧测评数据
+    localStorage.removeItem('talentai_wma_completed_at');
+    localStorage.removeItem('talentai_wma_answers');
+    localStorage.removeItem('talentai_wma_layer');
+    localStorage.removeItem('talentai_wma_q');
+    localStorage.removeItem('talentai_wma_timer');
+
+    setTimeout(()=>{
+        window.location.href = "wma-assessment.html";
+    },1200);
+}
+
+</script>
+
+</body>
+</html>

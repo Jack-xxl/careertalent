@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>答案核对 - TalentAI</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+    padding:20px;
+}
+.container{
+    max-width:1100px;
+    margin:0 auto;
+    background:white;
+    border-radius:16px;
+    padding:30px;
+    box-shadow:0 20px 60px rgba(0,0,0,0.3);
+}
+h1{color:#667eea;margin-bottom:8px;}
+.subtitle{color:#6B7280;margin-bottom:30px;}
+
+.controls{
+    display:flex;
+    gap:15px;
+    margin-bottom:30px;
+    flex-wrap:wrap;
+}
+button{
+    padding:12px 20px;
+    border:none;
+    border-radius:8px;
+    font-weight:600;
+    cursor:pointer;
+}
+.btn-success{background:#10B981;color:white;}
+.btn-primary{background:#667eea;color:white;}
+.btn-warning{background:#F59E0B;color:white;}
+
+.dimension-section{
+    margin-bottom:25px;
+    border:2px solid #E5E7EB;
+    border-radius:12px;
+    overflow:hidden;
+}
+.dimension-header{
+    background:#667eea;
+    color:white;
+    padding:14px 20px;
+    font-weight:600;
+}
+.question-grid{
+    padding:20px;
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+    gap:15px;
+}
+.question-card{
+    border:2px solid #E5E7EB;
+    border-radius:8px;
+    padding:15px;
+    text-align:center;
+}
+.question-id{font-weight:600;color:#667eea;}
+.answer-display{
+    font-size:28px;
+    font-weight:700;
+    margin:8px 0;
+}
+.answer-display.unanswered{color:#EF4444;}
+.answer-display.answered{color:#10B981;}
+.answer-text{
+    font-size:12px;
+    color:#6B7280;
+    min-height:32px;
+}
+.edit-btn{
+    margin-top:10px;
+    width:100%;
+    padding:6px;
+    background:#E5E7EB;
+    border-radius:6px;
+    font-size:12px;
+    cursor:pointer;
+}
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.5);
+    justify-content:center;
+    align-items:center;
+}
+.modal.show{display:flex;}
+.modal-content{
+    background:white;
+    padding:30px;
+    border-radius:16px;
+    width:95%;
+    max-width:550px;
+}
+.option-item{
+    padding:10px;
+    border:2px solid #E5E7EB;
+    border-radius:8px;
+    margin-bottom:8px;
+    cursor:pointer;
+}
+.option-item.selected{
+    border-color:#667eea;
+    background:#EEF2FF;
+}
+.modal-buttons{
+    display:flex;
+    gap:10px;
+    margin-top:20px;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+<h1>✅ 答案核对</h1>
+<p class="subtitle">确认所有题目后提交结果</p>
+
+<div class="controls">
+<button class="btn-success" onclick="confirmAndSubmit()">✓ 确认提交</button>
+<button class="btn-primary" onclick="location.href='assessment.html'">← 返回修改</button>
+<button class="btn-warning" onclick="location.reload()">刷新</button>
+</div>
+
+<div id="content"></div>
+</div>
+
+<!-- 修改弹窗 -->
+<div id="editModal" class="modal">
+<div class="modal-content">
+<div id="modalTitle" style="font-weight:600;margin-bottom:15px;"></div>
+<div id="modalQuestion" style="margin-bottom:15px;"></div>
+<div id="modalOptions"></div>
+<div class="modal-buttons">
+<button class="btn-primary" onclick="saveEdit()">保存</button>
+<button class="btn-warning" onclick="closeModal()">取消</button>
+</div>
+</div>
+</div>
+
+<script>
+
+let questionsData=null;
+let userAnswers=null;
+let currentEditQuestion=null;
+
+const DIMENSION_NAMES={
+'T1_language':'语言智能',
+'T2_logic':'逻辑数学智能',
+'T3_spatial':'空间智能',
+'T4_music':'音乐智能',
+'T5_bodily':'身体动觉智能',
+'T6_interpersonal':'人际智能',
+'T7_intrapersonal':'内省智能',
+'T8_naturalist':'自然观察智能'
+};
+
+window.addEventListener('DOMContentLoaded',init);
+
+async function init(){
+    const res=await fetch('data/t-layer-questions.json');
+    questionsData=await res.json();
+
+    const answersStr=localStorage.getItem('talentai_answers');
+    if(!answersStr){
+        alert('未找到答题数据');
+        location.href='assessment.html';
+        return;
+    }
+    userAnswers=JSON.parse(answersStr);
+
+    // 强制修正数组长度
+    Object.keys(DIMENSION_NAMES).forEach(dim=>{
+        const total=questionsData.questions[dim].length;
+        if(!userAnswers[dim]){
+            userAnswers[dim]=new Array(total).fill(null);
+        }
+        if(userAnswers[dim].length<total){
+            userAnswers[dim]=[
+                ...userAnswers[dim],
+                ...new Array(total-userAnswers[dim].length).fill(null)
+            ];
+        }
+    });
+
+    displayAllAnswers();
+}
+
+function displayAllAnswers(){
+    const content=document.getElementById('content');
+    let html='';
+
+    Object.keys(DIMENSION_NAMES).forEach(dim=>{
+        const questions=questionsData.questions[dim];
+        const answers=userAnswers[dim];
+
+        html+=`<div class="dimension-section">
+        <div class="dimension-header">${DIMENSION_NAMES[dim]}</div>
+        <div class="question-grid">`;
+
+        questions.forEach((q,i)=>{
+            const ans=answers[i];
+            const option=q.options.find(o=>o.id===ans);
+            const text=option?option.text['zh-CN']||option.text:'未作答';
+
+            html+=`
+            <div class="question-card">
+                <div class="question-id">${q.id}</div>
+                <div class="answer-display ${ans?'answered':'unanswered'}">
+                    ${ans||'?'}
+                </div>
+                <div class="answer-text">${text}</div>
+                <div class="edit-btn" onclick="editAnswer('${dim}',${i})">修改</div>
+            </div>`;
+        });
+
+        html+=`</div></div>`;
+    });
+
+    content.innerHTML=html;
+}
+
+function editAnswer(dim,index){
+    const q=questionsData.questions[dim][index];
+    currentEditQuestion={dim,index};
+
+    document.getElementById('modalTitle').textContent=`修改 - ${q.id}`;
+    document.getElementById('modalQuestion').textContent=q.question['zh-CN']||q.question;
+
+    let optionsHtml='';
+    q.options.forEach(opt=>{
+        const selected=userAnswers[dim][index]===opt.id?'selected':'';
+        optionsHtml+=`
+        <div class="option-item ${selected}" onclick="selectOption('${opt.id}')">
+            <b>${opt.id}.</b> ${opt.text['zh-CN']||opt.text}
+        </div>`;
+    });
+
+    document.getElementById('modalOptions').innerHTML=optionsHtml;
+    document.getElementById('editModal').classList.add('show');
+}
+
+function selectOption(id){
+    document.querySelectorAll('.option-item').forEach(i=>i.classList.remove('selected'));
+    event.target.classList.add('selected');
+    event.target.dataset.value=id;
+}
+
+function saveEdit(){
+    const selected=document.querySelector('.option-item.selected');
+    if(!selected){alert('请选择');return;}
+
+    const value=selected.textContent.trim().charAt(0);
+    const {dim,index}=currentEditQuestion;
+    userAnswers[dim][index]=value;
+
+    localStorage.setItem('talentai_answers',JSON.stringify(userAnswers));
+    closeModal();
+    displayAllAnswers();
+}
+
+function closeModal(){
+    document.getElementById('editModal').classList.remove('show');
+}
+
+function confirmAndSubmit(){
+
+    let unanswered=0;
+
+    Object.keys(DIMENSION_NAMES).forEach(dim=>{
+        const questions=questionsData.questions[dim];
+        const answers=userAnswers[dim];
+
+        questions.forEach((q,i)=>{
+            if(!answers[i]) unanswered++;
+        });
+    });
+
+    if(unanswered>0){
+        alert(`还有 ${unanswered} 道题未作答`);
+        return;
+    }
+
+    localStorage.setItem('talentai_answers',JSON.stringify(userAnswers));
+    localStorage.setItem('talentai_completed_at',new Date().toISOString());
+
+    window.location.replace('result.html');
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,284 @@
+{
+  "metadata": {
+    "product_name": "TalentAI Meta-Intelligence Layer (M-Layer)",
+    "version": "1.0.6",
+    "total_questions": 20,
+    "dimensions": [
+      { "id": "GM", "name": "Growth Mindset", "description": { "zh-CN": "成长思维：对失败的反应及能力可塑性的内隐信念", "en-US": "Growth Mindset: Implicit beliefs about response to failure and the plasticity of ability." }, "max_score": 10.0 },
+      { "id": "CR", "name": "Cognitive Reframing", "description": { "zh-CN": "认知重构: 观点冲突处理及不确定信息的解释弹性", "en-US": "Cognitive Reframing: Explanatory flexibility for uncertainty and conflict resolution." }, "max_score": 7.5 },
+      { "id": "ST", "name": "Systems Thinking", "description": { "zh-CN": "系统思维: 多维度归因、长周期决策及全局系统分析能力", "en-US": "Systems Thinking: Multi-dimensional attribution, long-term decision making, and global analysis." }, "max_score": 7.5 },
+      { "id": "VR", "name": "Value Realization", "description": { "zh-CN": "价值具现: 想法落地执行力、迭代思维及反馈响应机制", "en-US": "Value Realization: Idea implementation, iterative thinking, and feedback response." }, "max_score": 7.5 },
+      { "id": "AC", "name": "AI Collaboration", "description": { "zh-CN": "AI协作: 人机分工策略、工具学习主动性及信任边界", "en-US": "AI Collaboration: Human-AI division of labor, learning proactivity, and trust boundaries." }, "max_score": 10.0 },
+      { "id": "EB", "name": "Ethical Balance", "description": { "zh-CN": "伦理平衡: 法律与道德权衡、手段与目的的平衡感", "en-US": "Ethical Balance: Weighing law vs. morality and the balance between means and ends." }, "max_score": 7.5 }
+    ],
+    "scoring_formula": {
+      "method": "Dimension-based Cumulative Scoring",
+      "per_dimension": "sum(selected_option_scores)",
+      "score_range": {
+        "per_question": "0.5 to 2.5 points",
+        "GM_AC_total": "2.0 to 10.0 (4 questions each)",
+        "CR_ST_VR_EB_total": "1.5 to 7.5 (3 questions each)"
+      },
+      "interpretation": {
+        "zh-CN": "分数越高代表该维度的元认知能力越强。低分反映出认知局限或习惯性防御偏误。",
+        "en-US": "Higher scores indicate stronger meta-cognitive abilities. Low scores reflect cognitive limitations or defensive biases."
+      }
+    },
+    "behavioral_tags_definition": {
+      "neuroticism_trigger": { "zh-CN": "对应P层情绪不稳定性，反映压力下的防御性反应", "en-US": "Linked to P-layer Neuroticism, reflecting defensive reactions under pressure." },
+      "fixed_mindset": { "zh-CN": "固定思维标记，认为能力边界由天赋锁定", "en-US": "Fixed mindset marker; belief that ability boundaries are locked by innate talent." },
+      "ai_reliance_risk": { "zh-CN": "AI过度依赖风险，倾向于牺牲批判性思维换取效率", "en-US": "AI over-reliance risk; tendency to sacrifice critical thinking for efficiency." }
+    },
+    "fusion_rules_explanation": {
+      "purpose": { "zh-CN": "P×W×M 三层冲突交叉解析与职业赛道熔断", "en-US": "P×W×M cross-layer analysis and career track cutoffs." },
+      "soft_cutoff": {
+        "definition": { "zh-CN": "柔性阈值：识别个体与职业环境之间的认知摩擦力。", "en-US": "Soft Cutoff: Identifying cognitive friction between individuals and career environments." },
+        "critical": { "zh-CN": "红旗：代表极大概率在赛道核心环节产生心智崩溃。", "en-US": "Critical: High probability of mental collapse in core track areas." },
+        "warning": { "zh-CN": "黄旗：代表在该赛道工作会感到明显的认知疲劳。", "en-US": "Warning: Indicates significant cognitive fatigue in this track." }
+      }
+    }
+  },
+  "questions": [
+    {
+      "id": "M01",
+      "dimension": "GM",
+      "question": { "zh-CN": "项目失败后醒来，你的第一个想法：", "en-US": "First thought after project failure:" },
+      "career_impact": { "critical_tracks": ["Entrepreneurship", "High-pressure Roles"] },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "至少尝试过了", "en-US": "At least I tried" }, "scoring": { "GM": 1.5 } },
+        { "id": "B", "text": { "zh-CN": "找出哪里出了问题", "en-US": "Find what went wrong" }, "scoring": { "GM": 2.5 } },
+        { "id": "C", "text": { "zh-CN": "可能不适合我", "en-US": "Maybe not for me" }, "scoring": { "GM": 1.0 } },
+        { "id": "D", "text": { "zh-CN": "不想面对这件事", "en-US": "Don't want to face it" }, "scoring": { "GM": 0.8 }, "behavioral_tags": { "neuroticism_trigger": 0.3 } }
+      ]
+    },
+    {
+      "id": "M02",
+      "dimension": "GM",
+      "question": { "zh-CN": "身边有人明显比你强很多，你会想：", "en-US": "Someone is much better than you:" },
+      "career_impact": { "critical_tracks": ["Leadership", "Personal Growth"] },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "他付出了很多，我也可以练", "en-US": "He worked hard, I can too" }, "scoring": { "GM": 2.5 } },
+        { "id": "B", "text": { "zh-CN": "我有别的强项", "en-US": "I have other strengths" }, "scoring": { "GM": 1.5 } },
+        { "id": "C", "text": { "zh-CN": "没时间练这个", "en-US": "No time to practice" }, "scoring": { "GM": 1.0 } },
+        { "id": "D", "text": { "zh-CN": "他天生擅长，我学不来", "en-US": "He's a natural, I can't" }, "scoring": { "GM": 0.5 }, "behavioral_tags": { "fixed_mindset": 1.0 } }
+      ]
+    },
+    {
+      "id": "M03",
+      "dimension": "GM",
+      "question": { "zh-CN": "学新技能卡住一周没进展：", "en-US": "Stuck for a week on new skill:" },
+      "career_impact": { "critical_tracks": ["R&D", "Engineering"] },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "换个角度找新方法", "en-US": "Change angles" }, "scoring": { "GM": 2.5 } },
+        { "id": "B", "text": { "zh-CN": "先跳过，回头看", "en-US": "Skip and revisit" }, "scoring": { "GM": 1.8 } },
+        { "id": "C", "text": { "zh-CN": "反复练习直到突破", "en-US": "Keep practicing" }, "scoring": { "GM": 2.0 } },
+        { "id": "D", "text": { "zh-CN": "暂时放弃", "en-US": "Give up" }, "scoring": { "GM": 0.8 } }
+      ]
+    },
+    {
+      "id": "M04",
+      "dimension": "GM",
+      "question": { "zh-CN": "语气直接的批评，第一反应：", "en-US": "Direct criticism reaction:" },
+      "career_impact": { "critical_tracks": ["Coaching", "Management"] },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "关注内容是否有道理", "en-US": "Focus on content logic" }, "scoring": { "GM": 2.5 } },
+        { "id": "B", "text": { "zh-CN": "波动后思考反馈", "en-US": "Reflect after emotion" }, "scoring": { "GM": 2.0 } },
+        { "id": "C", "text": { "zh-CN": "觉得被否定了", "en-US": "Feel rejected" }, "scoring": { "GM": 1.0 } },
+        { "id": "D", "text": { "zh-CN": "很难接受，忽略它", "en-US": "Ignore it" }, "scoring": { "GM": 0.5 } }
+      ]
+    },
+    {
+      "id": "M05",
+      "dimension": "CR",
+      "question": { "zh-CN": "观点争论无法说服对方：", "en-US": "Unable to convince colleague:" },
+      "career_impact": { "critical_tracks": ["Sales", "Negotiation"] },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "站位对方重新理解", "en-US": "Take their view" }, "scoring": { "CR": 2.5 } },
+        { "id": "B", "text": { "zh-CN": "搁置争论，独立思考", "en-US": "Pause and think" }, "scoring": { "CR": 2.0 } },
+        { "id": "C", "text": { "zh-CN": "坚持自己，尊重差异", "en-US": "Stick to my view" }, "scoring": { "CR": 1.2 } },
+        { "id": "D", "text": { "zh-CN": "认为对方思维有问题", "en-US": "Their logic is bad" }, "scoring": { "CR": 0.5 } }
+      ]
+    },
+    {
+      "id": "M06",
+      "dimension": "CR",
+      "question": { "zh-CN": "同事突然冷淡原因不明：", "en-US": "Colleague turns cold:" },
+      "career_impact": { "critical_tracks": ["Psychology", "HR"] },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "假设多因，不急结论", "en-US": "Assume multiple causes" }, "scoring": { "CR": 2.5 } },
+        { "id": "B", "text": { "zh-CN": "反思自己言行", "en-US": "Self-reflection" }, "scoring": { "CR": 1.8 } },
+        { "id": "C", "text": { "zh-CN": "猜测对方是否有意见", "en-US": "Guessing motives" }, "scoring": { "CR": 1.0 } },
+        { "id": "D", "text": { "zh-CN": "认定对方针对我", "en-US": "Personal attack" }, "scoring": { "CR": 0.5 } }
+      ]
+    },
+    {
+      "id": "M07",
+      "dimension": "CR",
+      "question": { "zh-CN": "回想重大失败后，你会：", "en-US": "Reflecting on major failure:" },
+      "career_impact": { "critical_tracks": ["Strategy", "Investment"] },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "看到差距，知道补什么", "en-US": "See the gap" }, "scoring": { "CR": 2.5 } },
+        { "id": "B", "text": { "zh-CN": "学到了很多过程经验", "en-US": "Learned from process" }, "scoring": { "CR": 2.0 } },
+        { "id": "C", "text": { "zh-CN": "运气不好，下次会好", "en-US": "Bad luck" }, "scoring": { "CR": 1.0 } },
+        { "id": "D", "text": { "zh-CN": "想不通为什么失败", "en-US": "Still confused" }, "scoring": { "CR": 0.8 } }
+      ]
+    },
+    {
+      "id": "M08",
+      "dimension": "ST",
+      "question": { "zh-CN": "项目反复延期，表面原因是执行力：", "en-US": "Delays blamed on execution:" },
+      "career_impact": { "critical_tracks": ["System Architecture", "Operations"] },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "看系统性流程/目标问题", "en-US": "Systemic check" }, "scoring": { "ST": 2.5 } },
+        { "id": "B", "text": { "zh-CN": "找关键延误节点", "en-US": "Find delay nodes" }, "scoring": { "ST": 2.0 } },
+        { "id": "C", "text": { "zh-CN": "确实是执行力问题", "en-US": "It is execution" }, "scoring": { "ST": 1.0 } },
+        { "id": "D", "text": { "zh-CN": "延期很正常", "en-US": "Normal delay" }, "scoring": { "ST": 0.5 } }
+      ]
+    },
+    {
+      "id": "M09",
+      "dimension": "ST",
+      "question": { "zh-CN": "看到短期巨大成功，关注：", "en-US": "Focus on short-term success:" },
+      "career_impact": { "critical_tracks": ["Investment", "Consulting"] },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "时代机遇与趋势", "en-US": "Eras and trends" }, "scoring": { "ST": 2.5 } },
+        { "id": "B", "text": { "zh-CN": "个人能力与策略", "en-US": "Skills and strategy" }, "scoring": { "ST": 1.5 } },
+        { "id": "C", "text": { "zh-CN": "运气与人脉", "en-US": "Luck and network" }, "scoring": { "ST": 1.0 } },
+        { "id": "D", "text": { "zh-CN": "只看结果", "en-US": "Only results" }, "scoring": { "ST": 0.5 } }
+      ]
+    },
+    {
+      "id": "M10",
+      "dimension": "ST",
+      "question": { "zh-CN": "接受新工作时重点考虑：", "en-US": "Considering a new job:" },
+      "career_impact": { "critical_tracks": ["Career Planning", "Strategy"] },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "未来5-10年的路径", "en-US": "5-10 year path" }, "scoring": { "ST": 2.5 } },
+        { "id": "B", "text": { "zh-CN": "下一步跳槽的跳板价值", "en-US": "Next jump value" }, "scoring": { "ST": 2.0 } },
+        { "id": "C", "text": { "zh-CN": "目前薪资团队", "en-US": "Current salary/team" }, "scoring": { "ST": 1.2 } },
+        { "id": "D", "text": { "zh-CN": "先接受再说", "en-US": "Accept first" }, "scoring": { "ST": 0.8 } }
+      ]
+    },
+    {
+      "id": "M11",
+      "dimension": "VR",
+      "question": { "zh-CN": "想法有价值但实现成本高：", "en-US": "Valuable idea, high cost:" },
+      "career_impact": { "critical_tracks": ["Entrepreneurship", "Product Management"] },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "拆解步骤，做MVP", "en-US": "Steps and MVP" }, "scoring": { "VR": 2.5 } },
+        { "id": "B", "text": { "zh-CN": "找人合作落地", "en-US": "Find partners" }, "scoring": { "VR": 2.0 } },
+        { "id": "C", "text": { "zh-CN": "等条件成熟", "en-US": "Wait" }, "scoring": { "VR": 1.0 } },
+        { "id": "D", "text": { "zh-CN": "成本太高，放弃", "en-US": "Give up" }, "scoring": { "VR": 0.5 } }
+      ]
+    },
+    {
+      "id": "M12",
+      "dimension": "VR",
+      "question": { "zh-CN": "作品已70分，到90分需两倍时间：", "en-US": "70% done, 90% takes 2x time:" },
+      "career_impact": { "critical_tracks": ["Agile Development", "Startup"] },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "发70分版快速迭代", "en-US": "Ship 70% and iterate" }, "scoring": { "VR": 2.5 } },
+        { "id": "B", "text": { "zh-CN": "做到80分平衡", "en-US": "Balance at 80%" }, "scoring": { "VR": 2.0 } },
+        { "id": "C", "text": { "zh-CN": "做到90分再发", "en-US": "90% before ship" }, "scoring": { "VR": 1.2 } },
+        { "id": "D", "text": { "zh-CN": "到Deadline就发", "en-US": "Ship at deadline" }, "scoring": { "VR": 1.5 } }
+      ]
+    },
+    {
+      "id": "M13",
+      "dimension": "VR",
+      "question": { "zh-CN": "负面反馈说体验不好/看不懂：", "en-US": "Feedback: bad UX/confusing:" },
+      "career_impact": { "critical_tracks": ["Customer Success", "UI/UX"] },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "看反馈比例高低", "en-US": "Check feedback ratio" }, "scoring": { "VR": 2.5 } },
+        { "id": "B", "text": { "zh-CN": "马上改", "en-US": "Fix immediately" }, "scoring": { "VR": 2.0 } },
+        { "id": "C", "text": { "zh-CN": "符合理念才改", "en-US": "Fix if vision-aligned" }, "scoring": { "VR": 1.5 } },
+        { "id": "D", "text": { "zh-CN": "下个版本再说", "en-US": "Next version" }, "scoring": { "VR": 1.8 } }
+      ]
+    },
+    {
+      "id": "M14",
+      "dimension": "AC",
+      "question": { "zh-CN": "写3000字报告，怎么用AI：", "en-US": "3k report with AI:" },
+      "career_impact": { "critical_tracks": ["Content Creation", "AI-Integrated Roles"] },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "搜集资料，核心自写", "en-US": "Research only" }, "scoring": { "AC": 2.5 } },
+        { "id": "B", "text": { "zh-CN": "AI生大纲，我填内容", "en-US": "AI for outline" }, "scoring": { "AC": 2.0 } },
+        { "id": "C", "text": { "zh-CN": "AI初稿，我大修", "en-US": "AI draft, heavy edit" }, "scoring": { "AC": 1.8 } },
+        { "id": "D", "text": { "zh-CN": "自写，AI只查语法", "en-US": "Solo, AI for grammar" }, "scoring": { "AC": 1.0 } }
+      ]
+    },
+    {
+      "id": "M15",
+      "dimension": "AC",
+      "question": { "zh-CN": "AI工具能替代你擅长的工作：", "en-US": "AI replaces your skills:" },
+      "career_impact": { "critical_tracks": ["Tech Roles", "Future-proof Skills"] },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "聚焦更高价值部分", "en-US": "Higher value focus" }, "scoring": { "AC": 2.5 } },
+        { "id": "B", "text": { "zh-CN": "接受变化，调整定位", "en-US": "Accept and adjust" }, "scoring": { "AC": 2.0 } },
+        { "id": "C", "text": { "zh-CN": "不安，观望趋势", "en-US": "Unease watching" }, "scoring": { "AC": 1.2 } },
+        { "id": "D", "text": { "zh-CN": "抗拒，削弱价值", "en-US": "Resist" }, "scoring": { "AC": 0.5 } }
+      ]
+    },
+    {
+      "id": "M16",
+      "dimension": "AC",
+      "question": { "zh-CN": "AI生成的输出看起来不错：", "en-US": "AI output looks good:" },
+      "career_impact": { "critical_tracks": ["Quality Assurance", "Compliance"] },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "严查逻辑与事实", "en-US": "Verify logic/facts" }, "scoring": { "AC": 2.5 } },
+        { "id": "B", "text": { "zh-CN": "检关键点，余信AI", "en-US": "Key check only" }, "scoring": { "AC": 2.0 } },
+        { "id": "C", "text": { "zh-CN": "仅灵感，手动重写", "en-US": "Inspiration only" }, "scoring": { "AC": 1.5 } },
+        { "id": "D", "text": { "zh-CN": "直接使用", "en-US": "Use directly" }, "scoring": { "AC": 0.8 }, "behavioral_tags": { "ai_reliance_risk": 1.0 } }
+      ]
+    },
+    {
+      "id": "M17",
+      "dimension": "AC",
+      "question": { "zh-CN": "新AI工具很火，你会：", "en-US": "New viral AI tool:" },
+      "career_impact": { "critical_tracks": ["Innovation", "CTO"] },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "马上研究怎么用", "en-US": "Study immediately" }, "scoring": { "AC": 2.5 } },
+        { "id": "B", "text": { "zh-CN": "看案例有用再学", "en-US": "Cases first" }, "scoring": { "AC": 2.0 } },
+        { "id": "C", "text": { "zh-CN": "需要时再学", "en-US": "Learn when needed" }, "scoring": { "AC": 1.2 } },
+        { "id": "D", "text": { "zh-CN": "不相信AI能力", "en-US": "Doubt AI" }, "scoring": { "AC": 0.5 } }
+      ]
+    },
+    {
+      "id": "M18",
+      "dimension": "EB",
+      "question": { "zh-CN": "灰色操作获利但不违法：", "en-US": "Grey ops profit:" },
+      "career_impact": { "critical_tracks": ["Legal", "Public Sector"] },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "明确拒绝", "en-US": "Refuse" }, "scoring": { "EB": 2.5 } },
+        { "id": "B", "text": { "zh-CN": "倾向不用", "en-US": "Avoid" }, "scoring": { "EB": 2.0 } },
+        { "id": "C", "text": { "zh-CN": "大家都用我也用", "en-US": "Follow others" }, "scoring": { "EB": 1.0 } },
+        { "id": "D", "text": { "zh-CN": "不违法就行", "en-US": "As long as legal" }, "scoring": { "EB": 0.5 } }
+      ]
+    },
+    {
+      "id": "M19",
+      "dimension": "EB",
+      "question": { "zh-CN": "不光彩手段能共赢：", "en-US": "Dirty means for win-win:" },
+      "career_impact": { "critical_tracks": ["Leadership", "Corporate Ethics"] },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "方式同样重要", "en-US": "Means matter" }, "scoring": { "EB": 2.5 } },
+        { "id": "B", "text": { "zh-CN": "接受但有心理负担", "en-US": "Accept with guilt" }, "scoring": { "EB": 1.8 } },
+        { "id": "C", "text": { "zh-CN": "结果最重要", "en-US": "Ends over means" }, "scoring": { "EB": 1.0 } },
+        { "id": "D", "text": { "zh-CN": "成功就行", "en-US": "Success only" }, "scoring": { "EB": 0.5 } }
+      ]
+    },
+    {
+      "id": "M20",
+      "dimension": "EB",
+      "question": { "zh-CN": "修正AI偏见会降准增本：", "en-US": "Fixing AI bias:" },
+      "career_impact": { "critical_tracks": ["Data Ethics", "Social Responsibility"] },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "修正偏见，公平第一", "en-US": "Fix bias; fairness" }, "scoring": { "EB": 2.5 } },
+        { "id": "B", "text": { "zh-CN": "透明披露让用户定", "en-US": "Disclose to users" }, "scoring": { "EB": 2.0 } },
+        { "id": "C", "text": { "zh-CN": "人工复核关键点", "en-US": "Human review" }, "scoring": { "EB": 2.0 } },
+        { "id": "D", "text": { "zh-CN": "效率优先", "en-US": "Efficiency first" }, "scoring": { "EB": 0.8 } }
+      ]
+    }
+  ]
+}
+

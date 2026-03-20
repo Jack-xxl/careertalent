@@ -1,0 +1,327 @@
+{
+  "metadata": {
+    "product_name": "TalentAI Motivation Matrix (W-Layer)",
+    "version": "2.0.0",
+    "total_questions": 28,
+    "dimensions": [
+      {
+        "id": "W1",
+        "name": "收入回报",
+        "description": { "zh-CN": "对收入与物质回报的重视程度", "en-US": "Income and material reward" },
+        "max_score": 8.0
+      },
+      {
+        "id": "W2",
+        "name": "稳定安全",
+        "description": { "zh-CN": "职业确定性、安全感与可预期性需求", "en-US": "Stability, security and predictability" },
+        "max_score": 8.0
+      },
+      {
+        "id": "W3",
+        "name": "社会认可",
+        "description": { "zh-CN": "对归属、认同与协作连接的需求", "en-US": "Belonging, recognition and connection" },
+        "max_score": 8.0
+      },
+      {
+        "id": "W4",
+        "name": "成长速度",
+        "description": { "zh-CN": "对技能提升速度、学习曲线陡峭度和职业跃迁节奏的渴望程度", "en-US": "Growth speed, learning curve and career leap" },
+        "max_score": 8.0
+      },
+      {
+        "id": "W5",
+        "name": "自主自由",
+        "description": { "zh-CN": "对自主掌控、弹性与决策空间的需求", "en-US": "Autonomy, flexibility and control" },
+        "max_score": 8.0
+      },
+      {
+        "id": "W6",
+        "name": "价值意义",
+        "description": { "zh-CN": "追求社会意义与正面影响", "en-US": "Meaning and positive impact" },
+        "max_score": 8.0
+      },
+      {
+        "id": "W7",
+        "name": "领导影响",
+        "description": { "zh-CN": "对带领他人、主导方向、承担责任的需求", "en-US": "Leadership, direction and responsibility" },
+        "max_score": 8.0
+      }
+    ],
+    "behavioral_tags_definition": {
+      "order_bias": { "zh-CN": "秩序偏好：倾向系统稳定性", "en-US": "Order Bias: Preference for systemic stability" },
+      "trader_mindset": { "zh-CN": "交易者心态：对ROI及回报敏感", "en-US": "Trader Mindset: Sensitivity to ROI" },
+      "ai_reliance": { "zh-CN": "AI依赖", "en-US": "AI Reliance" },
+      "independent_judgment": { "zh-CN": "独立判断", "en-US": "Independent Judgment" }
+    }
+  },
+  "questions": [
+    {
+      "id": "W01", "dimension": "W6", "type": "scenario",
+      "question": { "zh-CN": "你在考虑两份工作：工作A年薪45万稳定但重复；工作B年薪40万做教育产品帮助偏远孩子。你会：" },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "选A，但业余做公益" }, "scoring": { "W6": 0.5, "W1": 1.0 } },
+        { "id": "B", "text": { "zh-CN": "选A，稳定收入和品牌更重要" }, "scoring": { "W6": 0.3, "W1": 1.5 }, "behavioral_tags": { "trader_mindset": 0.6 } },
+        { "id": "C", "text": { "zh-CN": "选B，少5万但更有意义" }, "scoring": { "W6": 1.5, "W1": 0.5 } },
+        { "id": "D", "text": { "zh-CN": "选B，但谈到45万否则不平衡" }, "scoring": { "W6": 1.0, "W1": 1.2 }, "behavioral_tags": { "trader_mindset": 0.8 } }
+      ]
+    },
+    {
+      "id": "W02", "dimension": "W6", "type": "scenario",
+      "question": { "zh-CN": "如果每周有10小时完全自由的时间，且不考虑生存压力，你会：" },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "做高收益的副业增加财富" }, "scoring": { "W1": 2.0 }, "behavioral_tags": { "trader_mindset": 1.0 } },
+        { "id": "B", "text": { "zh-CN": "参与对社会有益的公益项目" }, "scoring": { "W6": 2.0 } },
+        { "id": "C", "text": { "zh-CN": "深度钻研自己感兴趣的专业难题" }, "scoring": { "W4": 1.5, "W2": 0.5 } },
+        { "id": "D", "text": { "zh-CN": "用来彻底放松和陪伴家人" }, "scoring": { "W6": 0.3, "W3": 1.0 } }
+      ]
+    },
+    {
+      "id": "W03", "dimension": "W6", "type": "scenario",
+      "question": { "zh-CN": "实现财务自由后，如果要启动一个新项目，你首要追求的是：" },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "高回报率，证明商业眼光" }, "scoring": { "W1": 1.8 }, "behavioral_tags": { "trader_mindset": 0.8 } },
+        { "id": "B", "text": { "zh-CN": "解决某种具体的社会痛点" }, "scoring": { "W6": 2.0 } },
+        { "id": "C", "text": { "zh-CN": "技术创新，探索未知领域" }, "scoring": { "W4": 1.8 } },
+        { "id": "D", "text": { "zh-CN": "建立一个温暖的工作社区" }, "scoring": { "W3": 1.5, "W6": 0.5 } }
+      ]
+    },
+    {
+      "id": "W04", "dimension": "W6", "type": "scenario",
+      "question": { "zh-CN": "十年以后，你希望同行和后辈提起你时，最先想到的是：" },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "那个创造了巨大财富的成功者" }, "scoring": { "W1": 2.0 }, "behavioral_tags": { "trader_mindset": 1.0 } },
+        { "id": "B", "text": { "zh-CN": "那个深刻改变了行业现状的变革者" }, "scoring": { "W6": 1.5, "W5": 1.0 } },
+        { "id": "C", "text": { "zh-CN": "那个帮助过无数人的行业导师" }, "scoring": { "W6": 2.0, "W3": 0.5 } },
+        { "id": "D", "text": { "zh-CN": "那个在专业领域极致纯粹的专家" }, "scoring": { "W4": 1.5, "W2": 1.0 } }
+      ]
+    },
+    {
+      "id": "W05", "dimension": "W1", "type": "scenario",
+      "question": { "zh-CN": "目前月薪2万，机会A涨至2.8万（稳步增长）；机会B薪资不变但能进入爆发力强的新领域，你会：" },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "选A，稳定增长最实际" }, "scoring": { "W1": 1.8 } },
+        { "id": "B", "text": { "zh-CN": "选A，业余尝试新领域" }, "scoring": { "W1": 1.5, "W4": 0.5 } },
+        { "id": "C", "text": { "zh-CN": "选B，追求长期职业天花板" }, "scoring": { "W1": 0.8, "W4": 1.5 } },
+        { "id": "D", "text": { "zh-CN": "选B，成长价值远超薪资差额" }, "scoring": { "W1": 0.5, "W4": 2.0 }, "behavioral_tags": { "trader_mindset": -0.5 } }
+      ]
+    },
+    {
+      "id": "W06", "dimension": "W1", "type": "scenario",
+      "question": { "zh-CN": "项目大获成功但主管因种种原因未公开你的核心贡献，你会：" },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "无所谓，项目奖金发到位就行" }, "scoring": { "W1": 1.8 }, "behavioral_tags": { "trader_mindset": 1.0 } },
+        { "id": "B", "text": { "zh-CN": "感到委屈，希望获得应有的荣誉和头衔" }, "scoring": { "W1": 1.2, "W6": 0.5 } },
+        { "id": "C", "text": { "zh-CN": "私下陈述贡献，争取下一轮晋升资源" }, "scoring": { "W1": 1.5 } },
+        { "id": "D", "text": { "zh-CN": "只要团队氛围好，以后有的是机会" }, "scoring": { "W3": 1.5, "W1": 0.3 } }
+      ]
+    },
+    {
+      "id": "W07", "dimension": "W1", "type": "scenario",
+      "question": { "zh-CN": "如果投入3个月的高强度工作后，完全没有反馈、成果和奖金，你会：" },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "相信长期价值，继续按计划投入" }, "scoring": { "W1": 0.5, "W2": 1.8 } },
+        { "id": "B", "text": { "zh-CN": "动力严重下降，开始减少精力投入" }, "scoring": { "W1": 1.5 } },
+        { "id": "C", "text": { "zh-CN": "立刻寻求反馈，换一个见效快的事情做" }, "scoring": { "W1": 1.8 }, "behavioral_tags": { "trader_mindset": 0.8 } },
+        { "id": "D", "text": { "zh-CN": "非常焦虑，认为是公司环境不行" }, "scoring": { "W1": 1.2, "W3": 0.5 } }
+      ]
+    },
+    {
+      "id": "W08", "dimension": "W1", "type": "scenario",
+      "question": { "zh-CN": "副业A能立刻月入5k（上限低）；副业B半年无收入（上限2万+），你会：" },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "选A，马上拿到钱最踏实" }, "scoring": { "W1": 2.0 }, "behavioral_tags": { "trader_mindset": 1.2 } },
+        { "id": "B", "text": { "zh-CN": "先做A攒一些本金，再转做B" }, "scoring": { "W1": 1.5 }, "behavioral_tags": { "trader_mindset": 0.6 } },
+        { "id": "C", "text": { "zh-CN": "主攻B，但保留A作为底线" }, "scoring": { "W1": 1.0, "W2": 1.0 } },
+        { "id": "D", "text": { "zh-CN": "All in 选B，坚信长期收益" }, "scoring": { "W1": 0.5, "W2": 1.5 } }
+      ]
+    },
+    {
+      "id": "W09", "dimension": "W3", "type": "scenario",
+      "question": { "zh-CN": "如果你可以选择通勤1小时回办公室，或在家全职远程，你会：" },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "选办公室，面对面社交和氛围无法替代" }, "scoring": { "W3": 2.0 } },
+        { "id": "B", "text": { "zh-CN": "希望混合办公，每周去1-2天维系关系" }, "scoring": { "W3": 1.5 } },
+        { "id": "C", "text": { "zh-CN": "倾向远程，只要有定期的线上团建活动" }, "scoring": { "W3": 0.8 } },
+        { "id": "D", "text": { "zh-CN": "选全远程，工作和社交应该完全分开" }, "scoring": { "W3": 0.2 } }
+      ]
+    },
+    {
+      "id": "W10", "dimension": "W3", "type": "scenario",
+      "question": { "zh-CN": "当一个项目失败且团队开始互相指责时，你的本能反应是：" },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "主动站出来缓和气氛并寻找共识" }, "scoring": { "W3": 2.0 } },
+        { "id": "B", "text": { "zh-CN": "理智分析问题根源，只讨论逻辑不针对人" }, "scoring": { "W3": 1.0 } },
+        { "id": "C", "text": { "zh-CN": "优先自保，确保自己的责任区域是清晰的" }, "scoring": { "W3": 0.3, "W2": 1.0 } },
+        { "id": "D", "text": { "zh-CN": "非常烦躁，想申请调离或独立工作" }, "scoring": { "W3": 0.1 } }
+      ]
+    },
+    {
+      "id": "W11", "dimension": "W3", "type": "scenario",
+      "question": { "zh-CN": "对我来说，最理想的工作氛围应该是：" },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "大家像亲密队友甚至家人一样互助" }, "scoring": { "W3": 2.0 } },
+        { "id": "B", "text": { "zh-CN": "保持专业礼貌，高效协作但不深交" }, "scoring": { "W3": 1.0 } },
+        { "id": "C", "text": { "zh-CN": "高度竞争，优秀的人在一起碰撞火花" }, "scoring": { "W3": 0.5, "W1": 1.0 } },
+        { "id": "D", "text": { "zh-CN": "完全去中心化，每个人都是独立的模块" }, "scoring": { "W3": 0.2 } }
+      ]
+    },
+    {
+      "id": "W12", "dimension": "W3", "type": "scenario",
+      "question": { "zh-CN": "你带的新人独立完成了第一个项目，你最自然的反应是：" },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "在全组面前公开表扬，让大家都知道他做得好" }, "scoring": { "W3": 1.5 } },
+        { "id": "B", "text": { "zh-CN": "私下告诉他做得好，鼓励他继续" }, "scoring": { "W3": 1.2 } },
+        { "id": "C", "text": { "zh-CN": "直接安排更难的任务，认可就是信任" }, "scoring": { "W3": 0.8 } },
+        { "id": "D", "text": { "zh-CN": "没特别反应，做好是本分" }, "scoring": { "W3": 0.2 } }
+      ]
+    },
+    {
+      "id": "W13", "dimension": "W4", "type": "scenario",
+      "question": { "zh-CN": "如果周末有整两天的自由选择，且预算充足，你会：" },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "尝试一项从未玩过的极限或新奇体验" }, "scoring": { "W4": 2.0 } },
+        { "id": "B", "text": { "zh-CN": "深度学习一个正感兴趣的冷门知识" }, "scoring": { "W4": 1.5, "W2": 0.5 } },
+        { "id": "C", "text": { "zh-CN": "去熟悉的餐厅或公园享受静谧时光" }, "scoring": { "W4": 0.5 } },
+        { "id": "D", "text": { "zh-CN": "补觉并完成本周未处理的工作" }, "scoring": { "W4": 0.1, "W1": 0.5 } }
+      ]
+    },
+    {
+      "id": "W14", "dimension": "W4", "type": "scenario",
+      "question": { "zh-CN": "一个顶级的跨界大师课需要占用你3个周末，但内容与工作无关，你会：" },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "非常兴奋，马上报名并投入学习" }, "scoring": { "W4": 2.0 } },
+        { "id": "B", "text": { "zh-CN": "先试看一部分，确实有启发再买" }, "scoring": { "W4": 1.2 } },
+        { "id": "C", "text": { "zh-CN": "考虑性价比，如果不增加收益就放弃" }, "scoring": { "W4": 0.5, "W1": 1.0 }, "behavioral_tags": { "trader_mindset": 0.8 } },
+        { "id": "D", "text": { "zh-CN": "忽略，下班后不想再动脑了" }, "scoring": { "W4": 0.2 } }
+      ]
+    },
+    {
+      "id": "W15", "dimension": "W4", "type": "scenario",
+      "question": { "zh-CN": "如果有一个非常有前景但完全陌生的跨界机会，你会：" },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "热血沸腾，想马上投身其中" }, "scoring": { "W4": 2.0 } },
+        { "id": "B", "text": { "zh-CN": "有兴趣，但会先进行多维度的调研" }, "scoring": { "W4": 1.5 } },
+        { "id": "C", "text": { "zh-CN": "犹豫，担心现状被打破带来的风险" }, "scoring": { "W4": 0.5, "W2": 1.5 } },
+        { "id": "D", "text": { "zh-CN": "拒绝，更愿意在深耕已久的领域获利" }, "scoring": { "W4": 0.2, "W1": 1.0 } }
+      ]
+    },
+    {
+      "id": "W16", "dimension": "W4", "type": "scenario",
+      "question": { "zh-CN": "如果最近一周的工作全是机械重复的琐事，你会：" },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "主动申请新业务挑战" }, "scoring": { "W4": 2.0 } },
+        { "id": "B", "text": { "zh-CN": "研究工具尝试自动化" }, "scoring": { "W4": 1.5 } },
+        { "id": "C", "text": { "zh-CN": "忍耐做完，相信基础价值" }, "scoring": { "W4": 0.8, "W2": 0.5 } },
+        { "id": "D", "text": { "zh-CN": "感到极其焦虑，考虑跳槽" }, "scoring": { "W4": 1.2 } }
+      ]
+    },
+    {
+      "id": "W17", "dimension": "W2", "type": "forced_choice",
+      "question": { "zh-CN": "【二选一】以下哪种职业状态更让你安心？" },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "收入固定、职责清晰、不用担心明天" }, "scoring": { "W2": 2.0 } },
+        { "id": "B", "text": { "zh-CN": "收入波动但上限极高、每天都是新局面" }, "scoring": { "W2": 0.2, "W5": 0.8 } }
+      ]
+    },
+    {
+      "id": "W18", "dimension": "W2", "type": "forced_choice",
+      "question": { "zh-CN": "【二选一】选工作时你最看重：" },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "编制/大厂/五险一金/不会突然失业" }, "scoring": { "W2": 2.0 } },
+        { "id": "B", "text": { "zh-CN": "没有保障但完全自由，成败由自己决定" }, "scoring": { "W2": 0.2, "W5": 1.5 } }
+      ]
+    },
+    {
+      "id": "W19", "dimension": "W2", "type": "scenario",
+      "question": { "zh-CN": "朋友邀你创业，逻辑清晰但前6个月收入为零，你的真实反应是：" },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "无法接受，没有稳定收入会严重影响状态" }, "scoring": { "W2": 2.0 } },
+        { "id": "B", "text": { "zh-CN": "有压力但可以接受，逻辑对就值得冒险" }, "scoring": { "W2": 1.0, "W5": 1.0 } },
+        { "id": "C", "text": { "zh-CN": "没什么大不了，不确定性是创业的一部分" }, "scoring": { "W2": 0.3, "W5": 1.8 } },
+        { "id": "D", "text": { "zh-CN": "反而兴奋，这种压力让我状态最好" }, "scoring": { "W2": 0.1, "W5": 2.0 } }
+      ]
+    },
+    {
+      "id": "W20", "dimension": "W2", "type": "forced_choice",
+      "question": { "zh-CN": "【二选一】你更担心哪种情况发生在自己身上？" },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "突然失业、收入中断、生活没有保障" }, "scoring": { "W2": 2.0 } },
+        { "id": "B", "text": { "zh-CN": "一辈子按别人的规则走、没有活出自己" }, "scoring": { "W2": 0.2, "W5": 2.0 } }
+      ]
+    },
+    {
+      "id": "W21", "dimension": "W5", "type": "forced_choice",
+      "question": { "zh-CN": "【二选一】如果两份工作收入相同，你会选：" },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "完全自己决定做什么、怎么做、什么时候做" }, "scoring": { "W5": 2.0 } },
+        { "id": "B", "text": { "zh-CN": "方向清晰、执行有支撑、不需要自己操心全局" }, "scoring": { "W5": 0.2, "W2": 0.5 } }
+      ]
+    },
+    {
+      "id": "W22", "dimension": "W5", "type": "forced_choice",
+      "question": { "zh-CN": "【二选一】被人管着但收入高，还是自己做主但收入中等？" },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "被管着，收入高更实际" }, "scoring": { "W5": 0.2, "W1": 1.0 } },
+        { "id": "B", "text": { "zh-CN": "自己做主，掌控感比钱更重要" }, "scoring": { "W5": 2.0 } }
+      ]
+    },
+    {
+      "id": "W23", "dimension": "W5", "type": "scenario",
+      "question": { "zh-CN": "理想中你和工作的关系，最接近哪种？" },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "我是打工者，公司给方向我来执行" }, "scoring": { "W5": 0.2, "W2": 1.0 } },
+        { "id": "B", "text": { "zh-CN": "我是专业人，在组织里保持独立判断" }, "scoring": { "W5": 1.2 } },
+        { "id": "C", "text": { "zh-CN": "我是合伙人，参与方向决策" }, "scoring": { "W5": 1.8, "W7": 0.8 } },
+        { "id": "D", "text": { "zh-CN": "我是创业者，自己就是组织的核心" }, "scoring": { "W5": 2.0, "W7": 1.5 } }
+      ]
+    },
+    {
+      "id": "W24", "dimension": "W5", "type": "forced_choice",
+      "question": { "zh-CN": "【二选一】你更难忍受哪种情况？" },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "收入不稳定但完全自由" }, "scoring": { "W5": 0.3, "W2": 1.5 } },
+        { "id": "B", "text": { "zh-CN": "收入稳定但每个决定都要审批" }, "scoring": { "W5": 2.0 } }
+      ]
+    },
+    {
+      "id": "W25", "dimension": "W7", "type": "scenario",
+      "question": { "zh-CN": "团队项目快截止，两名成员意见冲突导致工作停滞，你更可能：" },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "听双方想法，自己做最终决定并推动执行" }, "scoring": { "W7": 2.0 } },
+        { "id": "B", "text": { "zh-CN": "重新分工，绕开冲突保证项目推进" }, "scoring": { "W7": 1.6 } },
+        { "id": "C", "text": { "zh-CN": "让他们自己协商，我不适合介入" }, "scoring": { "W7": 0.8 } },
+        { "id": "D", "text": { "zh-CN": "专注自己的部分，冲突不是我的责任" }, "scoring": { "W7": 0.0 } }
+      ]
+    },
+    {
+      "id": "W26", "dimension": "W7", "type": "scenario",
+      "question": { "zh-CN": "你负责的项目出现重大问题，你更倾向于：" },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "立刻召集相关人，主导分析并推动解决" }, "scoring": { "W7": 2.0 } },
+        { "id": "B", "text": { "zh-CN": "先自己分析清楚原因，再带着方案找团队" }, "scoring": { "W7": 1.4 } },
+        { "id": "C", "text": { "zh-CN": "请更有经验的人来处理，我配合执行" }, "scoring": { "W7": 0.6 } },
+        { "id": "D", "text": { "zh-CN": "希望有人出来负责，自己不想扛这个压力" }, "scoring": { "W7": 0.0 } }
+      ]
+    },
+    {
+      "id": "W27", "dimension": "W7", "type": "scenario",
+      "question": { "zh-CN": "一个群体里没有明确负责人，你通常会：" },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "自然而然开始组织，把事情推动起来" }, "scoring": { "W7": 2.0 } },
+        { "id": "B", "text": { "zh-CN": "提出想法和建议，但不主动承担执行" }, "scoring": { "W7": 1.2 } },
+        { "id": "C", "text": { "zh-CN": "等别人安排，分配什么做什么" }, "scoring": { "W7": 0.4 } },
+        { "id": "D", "text": { "zh-CN": "专注自己那部分，不关心整体怎么组织" }, "scoring": { "W7": 0.0 } }
+      ]
+    },
+    {
+      "id": "W28", "dimension": "W7", "type": "scenario",
+      "question": { "zh-CN": "团队出现重大分歧，时间紧迫没有完美答案，你更倾向：" },
+      "options": [
+        { "id": "A", "text": { "zh-CN": "整合各方意见后拍板，承担这个决定的后果" }, "scoring": { "W7": 2.0 } },
+        { "id": "B", "text": { "zh-CN": "推动大家讨论达成共识，不强行主导结果" }, "scoring": { "W7": 1.6 } },
+        { "id": "C", "text": { "zh-CN": "让最有经验的人决定，我来执行" }, "scoring": { "W7": 0.6 } },
+        { "id": "D", "text": { "zh-CN": "避免卷入，这种情况让我很不舒服" }, "scoring": { "W7": 0.0 } }
+      ]
+    }
+  ]
+}
