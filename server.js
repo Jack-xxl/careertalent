@@ -8,9 +8,30 @@ const WxPay = require('wechatpay-node-v3');
 const CERT_PATH = path.join(__dirname, 'apiclient_cert.pem');
 const KEY_PATH = path.join(__dirname, 'apiclient_key.pem');
 
-if (!fs.existsSync(CERT_PATH) || !fs.existsSync(KEY_PATH)) {
+/** Render 等平台里 PEM 常写成一行，用 \n 表示换行 */
+function pemFromEnv(val) {
+  if (val == null || String(val).trim() === '') return null;
+  const normalized = String(val).replace(/\\n/g, '\n').trim();
+  return Buffer.from(normalized, 'utf8');
+}
+
+let publicKey;
+let privateKey;
+
+const certFromEnv = pemFromEnv(process.env.WECHAT_CERT);
+const keyFromEnv = pemFromEnv(process.env.WECHAT_KEY);
+
+if (certFromEnv && certFromEnv.length && keyFromEnv && keyFromEnv.length) {
+  publicKey = certFromEnv;
+  privateKey = keyFromEnv;
+  console.log('[TalentAI] 从环境变量加载证书');
+} else if (fs.existsSync(CERT_PATH) && fs.existsSync(KEY_PATH)) {
+  publicKey = fs.readFileSync(CERT_PATH);
+  privateKey = fs.readFileSync(KEY_PATH);
+  console.log('[TalentAI] 从文件加载证书');
+} else {
   console.error(
-    '[TalentAI] 缺少证书：请将 apiclient_cert.pem 与 apiclient_key.pem 放在项目根目录（与 server.js 同级）。'
+    '[TalentAI] 缺少证书：请配置 WECHAT_CERT / WECHAT_KEY（Render），或放置 apiclient_cert.pem / apiclient_key.pem（本地）'
   );
   process.exit(1);
 }
@@ -19,8 +40,8 @@ const pay = new WxPay({
   appid: process.env.WECHAT_APPID,
   mchid: process.env.WECHAT_MCHID,
   serial_no: process.env.WECHAT_SERIAL_NO,
-  publicKey: fs.readFileSync(CERT_PATH),
-  privateKey: fs.readFileSync(KEY_PATH),
+  publicKey,
+  privateKey,
   key: process.env.WECHAT_API_V3_KEY,
   userAgent:
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',

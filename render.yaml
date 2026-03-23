@@ -13,5 +13,9 @@ services:
         sync: false
       - key: WECHAT_API_V3_KEY
         sync: false
+      - key: WECHAT_CERT
+        sync: false
+      - key: WECHAT_KEY
+        sync: false
       - key: BASE_URL
         sync: false
