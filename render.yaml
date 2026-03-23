@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: talentai
+    runtime: node
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: WECHAT_APPID
+        sync: false
+      - key: WECHAT_MCHID
+        sync: false
+      - key: WECHAT_SERIAL_NO
+        sync: false
+      - key: WECHAT_API_V3_KEY
+        sync: false
+      - key: BASE_URL
+        sync: false

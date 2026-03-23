@@ -1,0 +1,6 @@
+node_modules/
+.env
+*.key
+apiclient_cert.pem
+apiclient_key.pem
+payment-store.json
