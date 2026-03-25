@@ -1,4 +1,9 @@
-node-v3');
+require('dotenv').config();
+
+const path = require('path');
+const fs = require('fs');
+const express = require('express');
+const WxPay = require('wechatpay-node-v3');
 const { Pool } = require('pg');
 
 const pool = new Pool({
