@@ -123,6 +123,7 @@ function renderQrToImg(codeUrl) {
 
 function handlePaid() {
   document.getElementById("payStatus").innerText = "已付款，正在跳转...";
+  stopOrderStatusPolling();
   const btnPaidHint = document.getElementById("btnPaidHint");
   if (btnPaidHint) btnPaidHint.style.display = 'block';
 
@@ -142,20 +143,31 @@ function handlePaid() {
   }, 300);
 }
 
-async function startPolling(phone) {
-  const packageType = 150;
-  const timer = setInterval(async () => {
+// ── 订单状态轮询机制（按 orderId + sessionToken 自动解锁）──
+let orderStatusTimer = null;
+function stopOrderStatusPolling() {
+  if (orderStatusTimer) clearInterval(orderStatusTimer);
+  orderStatusTimer = null;
+}
+
+function startOrderStatusPolling(orderIdValue, sessionTokenValue) {
+  stopOrderStatusPolling();
+  if (!orderIdValue || !sessionTokenValue) return;
+
+  orderStatusTimer = setInterval(async () => {
     try {
       const r = await fetch(
-        `/api/check-payment?phone=${encodeURIComponent(phone)}&packageType=${packageType}`
+        `/api/order-status?orderId=${encodeURIComponent(orderIdValue)}&sessionToken=${encodeURIComponent(
+          sessionTokenValue
+        )}`
       );
       const data = await r.json();
-      if (data && data.paid) {
-        clearInterval(timer);
+      if (data && data.status === 'paid') {
+        stopOrderStatusPolling();
         handlePaid();
       }
     } catch (e) {
-      // 忽略网络错误，下一轮继续
+      // ignore
     }
   }, 3000);
 }
@@ -184,45 +196,13 @@ async function startPolling(phone) {
     document.getElementById("payStatus").innerText = "请打开微信扫码支付";
     renderQrToImg(data.qrCodeUrl);
 
-    const cfgRes = await fetch('/api/payment-config');
-    const cfg = await cfgRes.json().catch(() => ({}));
+    // 保存 sessionToken 到 localStorage（后续轮询使用）
+    try {
+      if (data.sessionToken) localStorage.setItem('talentai_session_token', data.sessionToken);
+    } catch (e) {}
 
-    if (cfg.wechatNotifyEnabled) {
-      await startPolling(phone);
-    } else {
-      const btn = document.getElementById('btnManualConfirm');
-      if (btn) {
-        btn.style.display = 'block';
-        btn.onclick = async () => {
-          try {
-            btn.disabled = true;
-            btn.textContent = '正在校验...';
-            const markRes = await fetch('/api/local-mark-paid', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ phone, packageType: 150 }),
-            });
-            const markData = await markRes.json();
-            if (!markData.ok) throw new Error(markData.message || '本地标记失败');
-            const checkRes = await fetch(
-              `/api/check-payment?phone=${encodeURIComponent(phone)}&packageType=150`
-            );
-            const checkData = await checkRes.json();
-            if (checkData && checkData.paid) {
-              handlePaid();
-            } else {
-              btn.disabled = false;
-              btn.textContent = '我已完成支付（本地校验）';
-              alert('未检测到已付款');
-            }
-          } catch (err) {
-            btn.disabled = false;
-            btn.textContent = '我已完成支付（本地校验）';
-            alert(err.message || String(err));
-          }
-        };
-      }
-    }
+    // 用 orderId + sessionToken 轮询后端订单状态
+    startOrderStatusPolling(data.orderId, data.sessionToken);
   } catch (e) {
     console.error(e);
     document.getElementById("payStatus").innerText =

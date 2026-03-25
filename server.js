@@ -6,33 +6,25 @@ const express = require('express');
 const WxPay = require('wechatpay-node-v3');
 const { Pool } = require('pg');
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false,
+// 先保证服务启动监听端口（Render 需要探测 open port）
+const app = express();
+app.disable('x-powered-by');
+
+const PORT = process.env.PORT || 3000;
+console.log('ENV PORT =', process.env.PORT);
+console.log('Using PORT =', PORT);
+
+app.get('/', (req, res) => {
+  res.send('TalentAI server is running');
 });
 
-async function initDB() {
-  await pool.query(`
-    CREATE TABLE IF NOT EXISTS paid_users (
-      phone VARCHAR(20) NOT NULL,
-      package_type INTEGER NOT NULL,
-      created_at TIMESTAMP DEFAULT NOW(),
-      PRIMARY KEY (phone, package_type)
-    );
-    CREATE TABLE IF NOT EXISTS pending_orders (
-      order_id VARCHAR(50) PRIMARY KEY,
-      phone VARCHAR(20) NOT NULL,
-      package_type INTEGER NOT NULL,
-      created_at TIMESTAMP DEFAULT NOW()
-    );
-  `);
-  console.log('[TalentAI] 数据库初始化完成');
-}
+app.listen(PORT, () => {
+  console.log(`Server listening on port ${PORT}`);
+});
 
-initDB().catch(console.error);
-
-const CERT_PATH = path.join(__dirname, 'apiclient_cert.pem');
-const KEY_PATH = path.join(__dirname, 'apiclient_key.pem');
+// 其余初始化不能阻塞启动
+let pool = null;
+let pay = null;
 
 function pemFromEnv(val) {
   if (val == null || String(val).trim() === '') return null;
@@ -40,39 +32,95 @@ function pemFromEnv(val) {
   return Buffer.from(normalized, 'utf8');
 }
 
-let publicKey;
-let privateKey;
-
-const certFromEnv = pemFromEnv(process.env.WECHAT_CERT);
-const keyFromEnv = pemFromEnv(process.env.WECHAT_KEY);
-
-if (certFromEnv && certFromEnv.length && keyFromEnv && keyFromEnv.length) {
-  publicKey = certFromEnv;
-  privateKey = keyFromEnv;
-  console.log('[TalentAI] 从环境变量加载证书');
-} else if (fs.existsSync(CERT_PATH) && fs.existsSync(KEY_PATH)) {
-  publicKey = fs.readFileSync(CERT_PATH);
-  privateKey = fs.readFileSync(KEY_PATH);
-  console.log('[TalentAI] 从文件加载证书');
-} else {
-  console.error('[TalentAI] 缺少证书');
-  process.exit(1);
+// 微信配置调试（不打印敏感内容）
+try {
+  console.log('[WX CHECK]', {
+    WECHAT_APPID: !!process.env.WECHAT_APPID,
+    WECHAT_MCHID: !!process.env.WECHAT_MCHID,
+    WECHAT_SERIAL_NO: !!process.env.WECHAT_SERIAL_NO,
+    WECHAT_API_V3_KEY: !!process.env.WECHAT_API_V3_KEY,
+    WECHAT_CERT_LEN: process.env.WECHAT_CERT ? process.env.WECHAT_CERT.length : 0,
+    WECHAT_KEY_LEN: process.env.WECHAT_KEY ? process.env.WECHAT_KEY.length : 0,
+  });
+} catch (e) {
+  console.error('[INIT ERROR]', e && e.message ? e.message : String(e));
 }
 
-const pay = new WxPay({
-  appid: process.env.WECHAT_APPID,
-  mchid: process.env.WECHAT_MCHID,
-  serial_no: process.env.WECHAT_SERIAL_NO,
-  publicKey,
-  privateKey,
-  key: process.env.WECHAT_API_V3_KEY,
-  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-});
+// 支付初始化（缺证书不允许退出进程）
+try {
+  const CERT_PATH = path.join(__dirname, 'apiclient_cert.pem');
+  const KEY_PATH = path.join(__dirname, 'apiclient_key.pem');
 
-const app = express();
-app.disable('x-powered-by');
+  let publicKey = null;
+  let privateKey = null;
 
-const LISTEN_PORT = Number(process.env.PORT) || 10000;
+  const certFromEnv = pemFromEnv(process.env.WECHAT_CERT);
+  const keyFromEnv = pemFromEnv(process.env.WECHAT_KEY);
+
+  if (certFromEnv && keyFromEnv) {
+    publicKey = certFromEnv;
+    privateKey = keyFromEnv;
+    console.log('[TalentAI] 从环境变量加载证书');
+  } else if (fs.existsSync(CERT_PATH) && fs.existsSync(KEY_PATH)) {
+    publicKey = fs.readFileSync(CERT_PATH);
+    privateKey = fs.readFileSync(KEY_PATH);
+    console.log('[TalentAI] 从文件加载证书');
+  } else {
+    console.warn('[WARN] WeChat cert missing, skip payment init');
+  }
+
+  if (publicKey && privateKey) {
+    pay = new WxPay({
+      appid: process.env.WECHAT_APPID,
+      mchid: process.env.WECHAT_MCHID,
+      serial_no: process.env.WECHAT_SERIAL_NO,
+      publicKey,
+      privateKey,
+      key: process.env.WECHAT_API_V3_KEY,
+      userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+    });
+  }
+} catch (e) {
+  console.error('[INIT ERROR]', e && e.message ? e.message : String(e));
+}
+
+// 数据库初始化（无 DATABASE_URL 不允许阻塞启动）
+try {
+  pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false,
+  });
+
+  (async () => {
+    try {
+      if (!process.env.DATABASE_URL) {
+        console.warn('[WARN] DATABASE_URL missing, skip DB init');
+        return;
+      }
+      await pool.query(`
+        CREATE TABLE IF NOT EXISTS paid_users (
+          phone VARCHAR(20) NOT NULL,
+          package_type INTEGER NOT NULL,
+          created_at TIMESTAMP DEFAULT NOW(),
+          PRIMARY KEY (phone, package_type)
+        );
+        CREATE TABLE IF NOT EXISTS pending_orders (
+          order_id VARCHAR(50) PRIMARY KEY,
+          phone VARCHAR(20) NOT NULL,
+          package_type INTEGER NOT NULL,
+          created_at TIMESTAMP DEFAULT NOW()
+        );
+      `);
+      console.log('[TalentAI] 数据库初始化完成');
+    } catch (e) {
+      console.error('[INIT ERROR]', e && e.message ? e.message : String(e));
+    }
+  })();
+} catch (e) {
+  console.error('[INIT ERROR]', e && e.message ? e.message : String(e));
+}
+
+const LISTEN_PORT = PORT;
 
 function isWechatNotifyProduction() {
   return Boolean(String(process.env.RENDER_EXTERNAL_URL || '').trim());
@@ -227,17 +275,17 @@ app.get('/api/check-payment', async (req, res) => {
 
   if (!isValidPhone(phone)) return res.status(400).json({ ok: false, message: 'Invalid phone' });
 
-  const result = await pool.query(
-    'SELECT * FROM paid_users WHERE phone = $1 AND package_type = $2',
-    [phone, tier]
-  );
-
-  return res.json({ ok: true, paid: result.rows.length > 0, packageType: tier });
+  try {
+    if (!pool) return res.json({ ok: true, paid: false, packageType: tier });
+    const result = await pool.query(
+      'SELECT * FROM paid_users WHERE phone = $1 AND package_type = $2',
+      [phone, tier]
+    );
+    return res.json({ ok: true, paid: result.rows.length > 0, packageType: tier });
+  } catch (e) {
+    console.error('[INIT ERROR]', e && e.message ? e.message : String(e));
+    return res.json({ ok: true, paid: false, packageType: tier });
+  }
 });
 
 app.use(express.static(__dirname));
-app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
-
-app.listen(LISTEN_PORT, () => {
-  console.log(`[TalentAI] server listening on port ${LISTEN_PORT}`);
-});

@@ -781,6 +781,7 @@ function stopPolling() {
 
 function handlePaidSuccess() {
   stopPolling();
+  stopOrderStatusPolling();
   clearInterval(expireInterval);
 
   // 写入支付标记（供 p_assessment.html 防止未支付访问）
@@ -847,6 +848,39 @@ function startPolling(phone, packageType) {
       }
     } catch (e) {
       // 忽略网络错误，下一轮继续
+    }
+  }, 3000);
+}
+
+// ── 订单状态轮询机制（按 orderId 自动解锁）──
+let orderStatusTimer = null;
+function stopOrderStatusPolling() {
+  if (orderStatusTimer) clearInterval(orderStatusTimer);
+  orderStatusTimer = null;
+}
+
+function startOrderStatusPolling(orderIdValue) {
+  stopOrderStatusPolling();
+  if (!orderIdValue) return;
+
+  orderStatusTimer = setInterval(async () => {
+    try {
+      console.log('checking payment status...', orderIdValue);
+      const sessionTokenValue = localStorage.getItem('talentai_session_token');
+      const r = await fetch(
+        `/api/order-status?orderId=${encodeURIComponent(orderIdValue)}&sessionToken=${encodeURIComponent(
+          sessionTokenValue || ''
+        )}`
+      );
+      const data = await r.json();
+      console.log('status:', data.status);
+
+      if (data && data.status === 'paid') {
+        stopOrderStatusPolling();
+        handlePaidSuccess();
+      }
+    } catch (e) {
+      // ignore
     }
   }, 3000);
 }
@@ -1081,55 +1115,16 @@ function goBack() {
 
     // 2) 展示二维码 + 开始轮询
     orderId = data.orderId;
+    const sessionToken = data.sessionToken;
     if (orderEl) orderEl.textContent = '// ORDER_ID: ' + orderId;
+    try {
+      if (sessionToken) localStorage.setItem('talentai_session_token', sessionToken);
+    } catch (e) {}
 
     showQR();
     await renderQrToCanvas(data.qrCodeUrl);
-
-    const cfgRes = await fetch('/api/payment-config');
-    const cfg = await cfgRes.json().catch(() => ({}));
-
-    if (cfg.wechatNotifyEnabled) {
-      startPolling(phone, tierForPoll);
-    } else {
-      const btn = document.getElementById('btnConfirm');
-      if (btn) {
-        btn.style.display = 'block';
-        btn.classList.add('show');
-        btn.onclick = async () => {
-          try {
-            btn.disabled = true;
-            btn.textContent = '正在校验支付状态...';
-            const markRes = await fetch('/api/local-mark-paid', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ phone, packageType: tierForPoll }),
-            });
-            const markData = await markRes.json();
-            if (!markData.ok) {
-              throw new Error(markData.message || '本地标记失败');
-            }
-            const checkRes = await fetch(
-              `/api/check-payment?phone=${encodeURIComponent(phone)}&packageType=${encodeURIComponent(
-                tierForPoll
-              )}`
-            );
-            const checkData = await checkRes.json();
-            if (checkData && checkData.paid) {
-              handlePaidSuccess();
-            } else {
-              btn.disabled = false;
-              btn.textContent = '✅ 我已完成支付';
-              alert('未检测到已付款，请稍后再试或确认是否已支付成功');
-            }
-          } catch (err) {
-            btn.disabled = false;
-            btn.textContent = '✅ 我已完成支付';
-            alert(err.message || String(err));
-          }
-        };
-      }
-    }
+    // 3) 每 3 秒轮询订单状态：不再依赖手机号，只依赖 orderId + sessionToken
+    startOrderStatusPolling(orderId);
   } catch (e) {
     console.error(e);
     if (orderEl) orderEl.textContent = '// ORDER_ID: 创建失败';
