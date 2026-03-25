@@ -2,6 +2,7 @@ require('dotenv').config();
 
 const path = require('path');
 const fs = require('fs');
+const crypto = require('crypto');
 const express = require('express');
 const WxPay = require('wechatpay-node-v3');
 const { Pool } = require('pg');
@@ -79,9 +80,12 @@ try {
       key: process.env.WECHAT_API_V3_KEY,
       userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
     });
+    console.log('[WX INIT] WxPay initialized');
+  } else {
+    console.warn('[WX INIT] WxPay not initialized');
   }
 } catch (e) {
-  console.error('[INIT ERROR]', e && e.message ? e.message : String(e));
+  console.error('[WX INIT]', e && e.message ? e.message : String(e));
 }
 
 // 数据库初始化（无 DATABASE_URL 不允许阻塞启动）
@@ -94,7 +98,7 @@ try {
   (async () => {
     try {
       if (!process.env.DATABASE_URL) {
-        console.warn('[WARN] DATABASE_URL missing, skip DB init');
+        console.warn('[DB INIT] DATABASE_URL missing, skip DB init');
         return;
       }
       await pool.query(`
@@ -105,15 +109,103 @@ try {
           PRIMARY KEY (phone, package_type)
         );
         CREATE TABLE IF NOT EXISTS pending_orders (
-          order_id VARCHAR(50) PRIMARY KEY,
-          phone VARCHAR(20) NOT NULL,
-          package_type INTEGER NOT NULL,
+          order_id VARCHAR(64) PRIMARY KEY,
+          phone VARCHAR(20),
+          package_type VARCHAR(64) NOT NULL,
+          amount INTEGER,
+          status VARCHAR(32) DEFAULT 'pending',
           created_at TIMESTAMP DEFAULT NOW()
         );
+        CREATE TABLE IF NOT EXISTS paid_orders (
+          order_id VARCHAR(64) PRIMARY KEY,
+          session_token VARCHAR(128) NOT NULL,
+          phone VARCHAR(20),
+          package_type VARCHAR(64) NOT NULL,
+          amount INTEGER,
+          paid_at TIMESTAMP DEFAULT NOW()
+        );
       `);
-      console.log('[TalentAI] 数据库初始化完成');
+      await pool.query(`ALTER TABLE pending_orders ADD COLUMN IF NOT EXISTS amount INTEGER;`);
+      await pool.query(`ALTER TABLE pending_orders ADD COLUMN IF NOT EXISTS status VARCHAR(32) DEFAULT 'pending';`);
+      await pool.query(`ALTER TABLE pending_orders ADD COLUMN IF NOT EXISTS session_token VARCHAR(128);`);
+      await pool.query(`ALTER TABLE pending_orders ALTER COLUMN phone DROP NOT NULL;`);
+      await pool.query(`
+        DO $$
+        BEGIN
+          IF EXISTS (
+            SELECT 1 FROM information_schema.columns
+            WHERE table_schema = 'public' AND table_name = 'pending_orders'
+              AND column_name = 'package_type' AND data_type = 'integer'
+          ) THEN
+            ALTER TABLE pending_orders
+              ALTER COLUMN package_type TYPE VARCHAR(64) USING package_type::text;
+          END IF;
+        END $$;
+      `);
+      await pool.query(`ALTER TABLE paid_orders ADD COLUMN IF NOT EXISTS session_token VARCHAR(128);`);
+      await pool.query(`ALTER TABLE paid_orders ADD COLUMN IF NOT EXISTS phone VARCHAR(20);`);
+      await pool.query(`ALTER TABLE paid_orders ADD COLUMN IF NOT EXISTS package_type VARCHAR(64);`);
+      await pool.query(`ALTER TABLE paid_orders ADD COLUMN IF NOT EXISTS amount INTEGER;`);
+      await pool.query(`ALTER TABLE paid_orders ADD COLUMN IF NOT EXISTS paid_at TIMESTAMP DEFAULT NOW();`);
+      await pool.query(`
+        DO $$
+        BEGIN
+          IF NOT EXISTS (
+            SELECT 1 FROM information_schema.columns
+            WHERE table_schema = 'public' AND table_name = 'paid_users' AND column_name = 'id'
+          ) THEN
+            IF EXISTS (
+              SELECT 1 FROM information_schema.table_constraints
+              WHERE table_schema = 'public' AND table_name = 'paid_users'
+                AND constraint_type = 'PRIMARY KEY'
+            ) THEN
+              ALTER TABLE paid_users DROP CONSTRAINT paid_users_pkey;
+            END IF;
+            ALTER TABLE paid_users ADD COLUMN id BIGSERIAL PRIMARY KEY;
+          END IF;
+        END $$;
+      `);
+      await pool.query(`
+        DO $$
+        BEGIN
+          IF EXISTS (
+            SELECT 1 FROM information_schema.columns
+            WHERE table_schema = 'public' AND table_name = 'paid_users'
+              AND column_name = 'id'
+          ) AND NOT EXISTS (
+            SELECT 1 FROM pg_constraint
+            WHERE conrelid = 'paid_users'::regclass AND contype = 'p'
+          ) THEN
+            ALTER TABLE paid_users ADD PRIMARY KEY (id);
+          END IF;
+        END $$;
+      `);
+      await pool.query(`ALTER TABLE paid_users ADD COLUMN IF NOT EXISTS session_token VARCHAR(128);`);
+      await pool.query(`ALTER TABLE paid_users ALTER COLUMN phone DROP NOT NULL;`);
+      await pool.query(`
+        DO $$
+        BEGIN
+          IF EXISTS (
+            SELECT 1 FROM information_schema.columns
+            WHERE table_schema = 'public' AND table_name = 'paid_users'
+              AND column_name = 'package_type' AND data_type = 'integer'
+          ) THEN
+            ALTER TABLE paid_users
+              ALTER COLUMN package_type TYPE VARCHAR(64) USING package_type::text;
+          END IF;
+        END $$;
+      `);
+      await pool.query(`
+        CREATE UNIQUE INDEX IF NOT EXISTS paid_users_session_uq
+        ON paid_users (session_token) WHERE session_token IS NOT NULL;
+      `);
+      await pool.query(`
+        CREATE UNIQUE INDEX IF NOT EXISTS paid_users_phone_pkg_uq
+        ON paid_users (phone, package_type) WHERE phone IS NOT NULL AND phone <> '';
+      `);
+      console.log('[DB INIT] schema ready');
     } catch (e) {
-      console.error('[INIT ERROR]', e && e.message ? e.message : String(e));
+      console.error('[DB INIT]', e && e.message ? e.message : String(e));
     }
   })();
 } catch (e) {
@@ -173,14 +265,146 @@ function getClientIp(req) {
   return req.ip || '';
 }
 
+function newSessionToken() {
+  return crypto.randomBytes(24).toString('hex');
+}
+
 app.use(express.json({ limit: '2mb', verify: (req, res, buf) => { req.rawBody = buf; } }));
 app.use(express.urlencoded({ extended: false }));
+
+app.post('/api/pay/create-order', async (req, res) => {
+  const body = req.body || {};
+  const packageType = body.packageType;
+  const amountYuan = body.amount;
+  const description = body.description;
+
+  if (!pay) {
+    return res.status(503).json({ success: false, error: 'WxPay not initialized' });
+  }
+  if (!pool) {
+    return res.status(503).json({ success: false, error: 'Database not configured' });
+  }
+  const baseUrl = process.env.BASE_URL;
+  if (!baseUrl || !String(baseUrl).trim()) {
+    return res.status(500).json({ success: false, error: 'BASE_URL is not set' });
+  }
+  if (packageType == null || String(packageType).trim() === '') {
+    return res.status(400).json({ success: false, error: 'Missing packageType' });
+  }
+  if (description == null || String(description).trim() === '') {
+    return res.status(400).json({ success: false, error: 'Missing description' });
+  }
+
+  const totalFen = Math.round(Number(amountYuan) * 100);
+  if (!Number.isFinite(totalFen) || totalFen <= 0) {
+    return res.status(400).json({ success: false, error: 'Invalid amount' });
+  }
+
+  const orderId = `PAY${Date.now()}${Math.random().toString(36).slice(2, 8)}`.toUpperCase().slice(0, 32);
+  const sessionToken = newSessionToken();
+  const notify_url = `${String(baseUrl).replace(/\/$/, '')}/api/pay/notify`;
+
+  try {
+    await pool.query(
+      `INSERT INTO pending_orders (order_id, phone, package_type, amount, status, session_token)
+       VALUES ($1, $2, $3, $4, $5, $6)`,
+      [orderId, null, String(packageType).trim(), totalFen, 'pending', sessionToken]
+    );
+
+    const result = await pay.transactions_native({
+      description: String(description).trim(),
+      out_trade_no: orderId,
+      notify_url,
+      amount: { total: totalFen, currency: 'CNY' },
+      attach: sessionToken.slice(0, 120),
+      scene_info: { payer_client_ip: getClientIp(req) },
+    });
+
+    const { code_url, status } = pickNativeResult(result);
+    const okStatus = status === 200 || status === undefined;
+
+    console.log('[PAY CREATE] orderId', orderId);
+    console.log('[PAY CREATE] sessionToken', sessionToken);
+    console.log('[PAY CREATE] notify_url', notify_url);
+    console.log('[PAY CREATE] codeUrl exists:', !!(okStatus && code_url));
+
+    if (okStatus && code_url) {
+      return res.json({ success: true, orderId, sessionToken, codeUrl: code_url });
+    }
+
+    try {
+      await pool.query('DELETE FROM pending_orders WHERE order_id = $1', [orderId]);
+    } catch (delErr) {
+      console.error('[PAY CREATE]', delErr && delErr.message ? delErr.message : String(delErr));
+    }
+    return res.status(500).json({ success: false, error: 'WeChat did not return code_url' });
+  } catch (e) {
+    console.error('[PAY CREATE]', e && e.message ? e.message : String(e));
+    try {
+      await pool.query('DELETE FROM pending_orders WHERE order_id = $1', [orderId]);
+    } catch (delErr) {
+      console.error('[PAY CREATE]', delErr && delErr.message ? delErr.message : String(delErr));
+    }
+    return res.status(500).json({ success: false, error: e.message || String(e) });
+  }
+});
+
+app.get('/api/order-status', async (req, res) => {
+  const orderId = String(req.query.orderId || '').trim();
+  const sessionToken = String(req.query.sessionToken || '').trim();
+
+  console.log('[ORDER STATUS] orderId', orderId);
+  console.log('[ORDER STATUS] sessionToken exists:', sessionToken.length > 0);
+
+  if (!orderId || !sessionToken) {
+    console.log('[ORDER STATUS] status: not_found');
+    return res.json({ success: false, status: 'not_found' });
+  }
+
+  if (!pool) {
+    console.error('[ORDER STATUS] pool unavailable');
+    return res.status(503).json({ success: false, status: 'not_found', error: 'Database not configured' });
+  }
+
+  try {
+    const paid = await pool.query(
+      'SELECT 1 FROM paid_orders WHERE order_id = $1 AND session_token = $2 LIMIT 1',
+      [orderId, sessionToken]
+    );
+    if (paid.rows.length > 0) {
+      console.log('[ORDER STATUS] status: paid');
+      return res.json({ success: true, status: 'paid' });
+    }
+
+    const pend = await pool.query(
+      'SELECT 1 FROM pending_orders WHERE order_id = $1 AND session_token = $2 LIMIT 1',
+      [orderId, sessionToken]
+    );
+    if (pend.rows.length > 0) {
+      console.log('[ORDER STATUS] status: pending');
+      return res.json({ success: true, status: 'pending' });
+    }
+
+    console.log('[ORDER STATUS] status: not_found');
+    return res.json({ success: false, status: 'not_found' });
+  } catch (e) {
+    console.error('[ORDER STATUS]', e && e.message ? e.message : String(e));
+    return res.status(500).json({ success: false, status: 'not_found', error: e.message || String(e) });
+  }
+});
 
 app.post('/api/create-order', async (req, res) => {
   const { phone, packageType } = req.body || {};
   const ph = String(phone || '').trim();
   const amount = resolvePackageAmount(packageType);
   const tier = packageToTier(packageType);
+
+  if (!pay) {
+    return res.status(503).json({ ok: false, message: 'WxPay not initialized', error: 'WxPay not initialized' });
+  }
+  if (!pool) {
+    return res.status(503).json({ ok: false, message: 'Database not configured', error: 'Database not configured' });
+  }
 
   if (!isValidPhone(ph)) return res.status(400).json({ ok: false, message: '手机号无效' });
   if (!amount || !tier) return res.status(400).json({ ok: false, message: '套餐类型不正确' });
@@ -191,6 +415,7 @@ app.post('/api/create-order', async (req, res) => {
     : 'TalentAI领航者套餐·五层完整报告';
 
   const out_trade_no = `TALENT${Date.now()}${ph.slice(-4)}`;
+  const sessionToken = newSessionToken();
 
   try {
     const result = await pay.transactions_native({
@@ -207,21 +432,160 @@ app.post('/api/create-order', async (req, res) => {
 
     if (okStatus && code_url) {
       await pool.query(
-        'INSERT INTO pending_orders (order_id, phone, package_type) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING',
-        [out_trade_no, ph, tier]
+        `INSERT INTO pending_orders (order_id, phone, package_type, amount, status, session_token)
+         VALUES ($1, $2, $3, $4, $5, $6) ON CONFLICT DO NOTHING`,
+        [out_trade_no, ph, String(tier), amount, 'pending', sessionToken]
       );
-      return res.json({ ok: true, qrCodeUrl: code_url, orderId: out_trade_no });
+      return res.json({
+        ok: true,
+        qrCodeUrl: code_url,
+        orderId: out_trade_no,
+        sessionToken,
+      });
     }
 
     return res.status(500).json({ ok: false, error: '创建订单失败' });
   } catch (e) {
-    console.error(e);
+    console.error('[PAY CREATE]', e && e.message ? e.message : String(e));
     return res.status(500).json({ ok: false, error: e.message || String(e) });
+  }
+});
+
+app.post('/api/pay/notify', async (req, res) => {
+  const headers = req.headers || {};
+  const apiV3Key = process.env.WECHAT_API_V3_KEY;
+
+  try {
+    if (!pay) {
+      console.error('[PAY NOTIFY] WxPay not initialized');
+      return res.status(503).json({ code: 'FAIL', message: 'WxPay not initialized' });
+    }
+    if (!pool) {
+      console.error('[PAY NOTIFY] Database not configured');
+      return res.status(503).json({ code: 'FAIL', message: 'Database not configured' });
+    }
+
+    if (isWechatNotifyProduction()) {
+      const verified = await pay.verifySign({
+        apiSecret: apiV3Key,
+        body: req.body,
+        signature: headers['wechatpay-signature'],
+        serial: headers['wechatpay-serial'],
+        nonce: headers['wechatpay-nonce'],
+        timestamp: headers['wechatpay-timestamp'],
+      });
+      if (!verified) return res.status(401).json({ code: 'FAIL', message: '验签失败' });
+    }
+
+    const resource = req.body?.resource;
+    if (!resource) return res.status(400).json({ code: 'FAIL', message: '无 resource' });
+
+    let decrypted;
+    try {
+      decrypted = pay.decipher_gcm(resource.ciphertext, resource.associated_data, resource.nonce, apiV3Key);
+    } catch (decErr) {
+      console.error('[PAY NOTIFY] decrypt failed', decErr && decErr.message ? decErr.message : String(decErr));
+      return res.status(400).json({ code: 'FAIL', message: '解密失败' });
+    }
+
+    const orderId = decrypted.out_trade_no;
+    const tradeState = decrypted.trade_state;
+    console.log('[PAY NOTIFY] orderId', orderId);
+    console.log('[PAY NOTIFY] trade_state', tradeState);
+
+    if (tradeState !== 'SUCCESS') {
+      console.log('[PAY NOTIFY] already processed: false');
+      return res.json({ code: 'SUCCESS', message: '成功' });
+    }
+
+    const pendingResult = await pool.query('SELECT * FROM pending_orders WHERE order_id = $1', [orderId]);
+    const pending = pendingResult.rows[0];
+    if (!pending) {
+      console.warn('[PAY NOTIFY] pending_orders not found for orderId:', orderId);
+      console.log('[PAY NOTIFY] already processed: false');
+      return res.json({ code: 'SUCCESS', message: '成功' });
+    }
+
+    const sessionToken = pending.session_token;
+    if (!sessionToken) {
+      console.warn('[PAY NOTIFY] pending order missing session_token:', orderId);
+      console.log('[PAY NOTIFY] already processed: false');
+      return res.json({ code: 'SUCCESS', message: '成功' });
+    }
+
+    const pkg = String(pending.package_type);
+    const wxAmt = Number(
+      decrypted.amount?.total ?? decrypted.amount?.payer_total ?? 0
+    );
+    const amt = pending.amount != null ? pending.amount : Math.round(wxAmt) || 0;
+    const phoneVal = pending.phone || null;
+
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+      const insPo = await client.query(
+        `INSERT INTO paid_orders (order_id, session_token, phone, package_type, amount, paid_at)
+         VALUES ($1, $2, $3, $4, $5, NOW())
+         ON CONFLICT (order_id) DO NOTHING
+         RETURNING order_id`,
+        [orderId, sessionToken, phoneVal, pkg, amt]
+      );
+      const inserted = insPo.rows.length > 0;
+      console.log('[PAY NOTIFY] already processed:', inserted ? false : true);
+
+      if (!inserted) {
+        await client.query('COMMIT');
+        return res.json({ code: 'SUCCESS', message: '成功' });
+      }
+
+      const existsPu = await client.query(
+        'SELECT 1 FROM paid_users WHERE session_token = $1 LIMIT 1',
+        [sessionToken]
+      );
+      if (existsPu.rows.length === 0) {
+        await client.query(
+          `INSERT INTO paid_users (phone, session_token, package_type)
+           VALUES ($1, $2, $3)`,
+          [phoneVal, sessionToken, pkg]
+        );
+      }
+
+      await client.query(
+        `UPDATE pending_orders SET status = $2 WHERE order_id = $1`,
+        [orderId, 'paid']
+      );
+      await client.query('COMMIT');
+      console.log('[PAY NOTIFY] success migrated to paid_orders');
+    } catch (txErr) {
+      try {
+        await client.query('ROLLBACK');
+      } catch (rbErr) {
+        console.error('[PAY NOTIFY]', rbErr && rbErr.message ? rbErr.message : String(rbErr));
+      }
+      console.error('[PAY NOTIFY]', txErr && txErr.message ? txErr.message : String(txErr));
+      return res.status(500).json({ code: 'FAIL', message: txErr.message || String(txErr) });
+    } finally {
+      client.release();
+    }
+
+    return res.json({ code: 'SUCCESS', message: '成功' });
+  } catch (e) {
+    console.error('[PAY NOTIFY]', e && e.message ? e.message : String(e));
+    return res.status(500).json({ code: 'FAIL', message: e.message || String(e) });
   }
 });
 
 app.post('/api/payment-notify', async (req, res) => {
   try {
+    if (!pay) {
+      console.error('[PAY NOTIFY] legacy: WxPay not initialized');
+      return res.status(503).json({ code: 'FAIL', message: 'WxPay not initialized' });
+    }
+    if (!pool) {
+      console.error('[PAY NOTIFY] legacy: Database not configured');
+      return res.status(503).json({ code: 'FAIL', message: 'Database not configured' });
+    }
+
     const headers = req.headers || {};
     const apiV3Key = process.env.WECHAT_API_V3_KEY;
 
@@ -240,7 +604,13 @@ app.post('/api/payment-notify', async (req, res) => {
     const resource = req.body?.resource;
     if (!resource) return res.status(400).json({ code: 'FAIL', message: '无 resource' });
 
-    const decrypted = pay.decipher_gcm(resource.ciphertext, resource.associated_data, resource.nonce, apiV3Key);
+    let decrypted;
+    try {
+      decrypted = pay.decipher_gcm(resource.ciphertext, resource.associated_data, resource.nonce, apiV3Key);
+    } catch (decErr) {
+      console.error('[PAY NOTIFY] legacy decrypt failed', decErr && decErr.message ? decErr.message : String(decErr));
+      return res.status(400).json({ code: 'FAIL', message: '解密失败' });
+    }
 
     if (decrypted.trade_state === 'SUCCESS') {
       const phone = decrypted.attach;
@@ -249,18 +619,25 @@ app.post('/api/payment-notify', async (req, res) => {
       const pending = pendingResult.rows[0];
 
       if (phone && pending) {
-        await pool.query(
-          'INSERT INTO paid_users (phone, package_type) VALUES ($1, $2) ON CONFLICT DO NOTHING',
-          [phone, pending.package_type]
+        const pkg = String(pending.package_type);
+        const exists = await pool.query(
+          'SELECT 1 FROM paid_users WHERE phone = $1 AND package_type = $2 LIMIT 1',
+          [phone, pkg]
         );
+        if (exists.rows.length === 0) {
+          await pool.query(
+            'INSERT INTO paid_users (phone, package_type, session_token) VALUES ($1, $2, NULL)',
+            [phone, pkg]
+          );
+        }
         await pool.query('DELETE FROM pending_orders WHERE order_id = $1', [outNo]);
-        console.log(`用户 ${phone} 套餐 ${pending.package_type} 付款成功`);
+        console.log(`用户 ${phone} 套餐 ${pkg} 付款成功`);
       }
     }
 
     return res.json({ code: 'SUCCESS', message: '成功' });
   } catch (e) {
-    console.error(e);
+    console.error('[PAY NOTIFY] legacy', e && e.message ? e.message : String(e));
     return res.status(500).json({ code: 'FAIL', message: e.message || String(e) });
   }
 });
@@ -279,7 +656,7 @@ app.get('/api/check-payment', async (req, res) => {
     if (!pool) return res.json({ ok: true, paid: false, packageType: tier });
     const result = await pool.query(
       'SELECT * FROM paid_users WHERE phone = $1 AND package_type = $2',
-      [phone, tier]
+      [phone, String(tier)]
     );
     return res.json({ ok: true, paid: result.rows.length > 0, packageType: tier });
   } catch (e) {
