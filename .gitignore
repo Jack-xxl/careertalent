@@ -1,5 +1,11 @@
 node_modules/
 .env
+.render/
+dist/
+build/
+.DS_Store
+coverage/
+*.log
 *.key
 apiclient_cert.pem
 apiclient_key.pem
