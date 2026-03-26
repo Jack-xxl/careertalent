@@ -16,7 +16,7 @@ console.log('ENV PORT =', process.env.PORT);
 console.log('Using PORT =', PORT);
 
 app.get('/', (req, res) => {
-  res.send('TalentAI server is running');
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 app.listen(PORT, () => {
@@ -665,4 +665,5 @@ app.get('/api/check-payment', async (req, res) => {
   }
 });
 
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(__dirname));

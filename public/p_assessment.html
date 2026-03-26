@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>P层性格深度测评</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+  background:#0b0f1c;
+  color:#fff;
+  display:flex;
+  justify-content:center;
+  padding:40px 20px;
+}
+.container{ max-width:720px;width:100%; }
+.progress{
+  height:6px;
+  background:#222;
+  border-radius:999px;
+  margin-bottom:20px;
+  overflow:hidden;
+}
+.progress-bar{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,#22c55e,#3b82f6);
+  transition:.3s;
+}
+.question-box{
+  background:#111827;
+  padding:24px;
+  border-radius:16px;
+}
+.question-title{
+  font-size:18px;
+  margin-bottom:20px;
+  white-space:pre-line;
+}
+.option{
+  padding:12px 16px;
+  margin-bottom:12px;
+  background:#1f2937;
+  border-radius:10px;
+  cursor:pointer;
+  transition:0.2s;
+}
+.option:hover{ background:#374151;}
+.option.selected{ background:#2563eb;}
+.btn{
+  margin-top:20px;
+  padding:10px 20px;
+  background:#22c55e;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:600;
+}
+.btn:disabled{ background:#444;}
+</style>
+</head>
+<body>
+<div class="container">
+<h2>P层性格深度测评</h2>
+<div id="testSection">
+  <div class="progress">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+  <div class="question-box">
+    <div id="questionTitle" class="question-title"></div>
+    <div id="options"></div>
+    <div style="display:flex;gap:12px;margin-top:20px;justify-content:center;flex-wrap:wrap;">
+      <button id="prevBtn" class="btn" style="background:#374151;" disabled>上一步</button>
+      <button id="nextBtn" class="btn" disabled>下一步</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+
+// 防止未支付直接访问
+if (!localStorage.getItem('talentai_premium')) {
+  window.location.href = 'payment.html';
+}
+
+let questions = [];
+let currentIndex = 0;
+let answers = [];
+
+// 加载题目
+async function loadQuestions(){
+  const res = await fetch("data/p-layer-questions.json");
+  const data = await res.json();
+  questions = data.questions;
+  renderQuestion();
+}
+
+// 渲染题目
+function renderQuestion(){
+  const q = questions[currentIndex];
+
+  document.getElementById("questionTitle").innerText =
+    `第 ${currentIndex+1} 题 / ${questions.length}\n` +
+    (q.scenario ? q.scenario + "\n\n" : "") +
+    q.text;
+
+  const optionsDiv = document.getElementById("options");
+  optionsDiv.innerHTML = "";
+  document.getElementById("nextBtn").disabled = true;
+
+  q.options.forEach(opt=>{
+    const div = document.createElement("div");
+    div.className = "option";
+    div.innerText = opt.text;
+
+    div.onclick = ()=>{
+      document.querySelectorAll(".option")
+        .forEach(o=>o.classList.remove("selected"));
+      div.classList.add("selected");
+
+      answers[currentIndex] = {
+        questionId: q.id,
+        dim: q.dim,
+        selectedOption: opt
+      };
+
+      document.getElementById("nextBtn").disabled = false;
+      setTimeout(goNext, 400);
+    };
+
+    optionsDiv.appendChild(div);
+  });
+
+  document.getElementById("prevBtn").disabled = currentIndex === 0;
+  updateProgress();
+}
+
+function goNext(){
+  if(currentIndex < questions.length-1){
+    currentIndex++;
+    renderQuestion();
+  }else{
+    calculateResult();
+  }
+}
+
+// 更新进度条
+function updateProgress(){
+  const percent = ((currentIndex+1) / questions.length) * 100;
+  document.getElementById("progressBar").style.width = percent + "%";
+}
+
+// 下一步
+document.getElementById("nextBtn").onclick = goNext;
+
+// 上一步
+document.getElementById("prevBtn").onclick = ()=>{
+  if(currentIndex > 0){
+    currentIndex--;
+    renderQuestion();
+  }
+};
+
+// ==============================
+// ⭐ 商业级 Big5 正确算法 ⭐
+// ==============================
+function calculateResult(){
+
+  const dimsRaw = { O:0, C:0, E:0, A:0, N:0 };
+  const counts = { O:0, C:0, E:0, A:0, N:0 };
+  const rawAnswers = [];
+
+  answers.forEach(a=>{
+    if(!a) return;
+
+    const dim = a.dim;
+    const score = Number(a.selectedOption.score) || 0;
+
+    dimsRaw[dim] += score;
+    counts[dim] += 1;
+
+    rawAnswers.push({
+      questionId: a.questionId,
+      dimension: dim,
+      selectedOptionId: a.selectedOption.id,
+      selectedText: a.selectedOption.text,
+      score: score
+    });
+  });
+
+  const dimsNorm = {};
+
+  Object.keys(dimsRaw).forEach(key=>{
+    if(counts[key] > 0){
+
+      const maxScore = counts[key] * 5;
+      let percent = (dimsRaw[key] / maxScore) * 100;
+
+      // 🔴 N维度反转（情绪稳定度）
+      if(key === "N"){
+        percent = 100 - percent;
+      }
+
+      dimsNorm[key] = Math.round(percent);
+
+    }else{
+      dimsNorm[key] = 50;
+    }
+  });
+
+  const finalResult = {
+    version: "P_v3.1",
+    completedAt: new Date().toISOString(),
+    totalQuestions: questions.length,
+    dims: dimsNorm,
+    rawAnswers: rawAnswers
+  };
+
+  localStorage.setItem("talentai_p_result",
+    JSON.stringify(finalResult)
+  );
+
+  localStorage.setItem("talentai_p_dims",
+    JSON.stringify(dimsNorm)
+  );
+
+  localStorage.setItem("talentai_p_completed","1");
+
+  window.location.href = "talentai_v3.html";
+}
+
+loadQuestions();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<title>TalentAI · 五层终极报告解锁</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<style>
+:root{
+--bg:#050711;
+--card:#0c101d;
+--accent:#22c55e;
+--accent-soft:rgba(34,197,94,0.15);
+--text:#f9fafb;
+--sub:#9ca3af;
+--line:rgba(148,163,184,0.25);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",system-ui;
+background:radial-gradient(circle at top,#111827 0,#020617 60%);
+color:var(--text);
+padding:30px 16px 80px;
+}
+.shell{
+max-width:900px;
+margin:auto;
+}
+h1{
+font-size:26px;
+margin-bottom:10px;
+}
+.subtitle{
+color:var(--sub);
+font-size:14px;
+margin-bottom:28px;
+}
+.card{
+background:linear-gradient(145deg,#0f172a,#020617);
+border-radius:18px;
+border:1px solid var(--line);
+padding:22px 20px;
+margin-bottom:18px;
+box-shadow:0 18px 40px rgba(0,0,0,0.6);
+}
+.sec-title{
+font-size:18px;
+font-weight:600;
+margin-bottom:10px;
+}
+.sec-sub{
+font-size:13px;
+color:var(--sub);
+margin-bottom:14px;
+}
+.grid{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:14px;
+}
+.item{
+background:#020617;
+border:1px solid var(--line);
+border-radius:14px;
+padding:12px 12px;
+font-size:13px;
+color:var(--sub);
+}
+.item strong{
+color:#fff;
+display:block;
+margin-bottom:4px;
+}
+.highlight{
+background:linear-gradient(90deg,#22c55e,#34d399);
+color:#022c22;
+padding:14px 26px;
+border:none;
+border-radius:999px;
+font-weight:600;
+font-size:16px;
+cursor:pointer;
+box-shadow:0 12px 30px rgba(34,197,94,0.5);
+transition:all .2s ease;
+}
+.highlight:hover{
+transform:translateY(-2px);
+box-shadow:0 18px 40px rgba(34,197,94,0.7);
+}
+.price{
+font-size:22px;
+margin-bottom:6px;
+}
+.small{
+font-size:12px;
+color:var(--sub);
+margin-top:6px;
+}
+.center{
+text-align:center;
+margin-top:18px;
+}
+@media(max-width:720px){
+.grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+
+<body>
+
+<div class="shell">
+
+<h1>五层终极人生导航系统</h1>
+<div class="subtitle">
+你已经完成 T × P 测评。<br>
+现在我们进入真正决定人生走向的核心三层：W × M × A。
+</div>
+
+<!-- 五层模型说明 -->
+<div class="card">
+<div class="sec-title">五层完整结构</div>
+<div class="sec-sub">
+真正的职业匹配 = 天赋 × 性格 × 价值观 × 动机 × 行动力
+</div>
+
+<div class="grid">
+<div class="item"><strong>T · 天赋</strong>你天生擅长什么</div>
+<div class="item"><strong>P · 性格</strong>你适合什么环境</div>
+<div class="item"><strong>W · 价值观</strong>你真正追求什么</div>
+<div class="item"><strong>M · 动机</strong>什么会驱动你持续投入</div>
+<div class="item"><strong>A · 行动力</strong>你最有效的行动模式</div>
+</div>
+</div>
+
+<!-- WMA三层介绍 -->
+<div class="card">
+<div class="sec-title">W × M × A 深度长测评</div>
+<div class="sec-sub">
+共 72 道题，约 18 分钟完成
+</div>
+
+<div class="grid">
+<div class="item">
+<strong>W · 价值观冲突分析</strong>
+安全 vs 自由？<br>
+成就 vs 影响力？<br>
+家庭 vs 自我实现？
+</div>
+
+<div class="item">
+<strong>M · 动机结构解析</strong>
+挑战驱动？<br>
+认可驱动？<br>
+控制感驱动？
+</div>
+
+<div class="item">
+<strong>A · 行动力模型</strong>
+规划型？<br>
+执行型？<br>
+试错型？
+</div>
+
+<div class="item">
+<strong>冲突地图生成</strong>
+找出你内部真正的矛盾来源
+</div>
+</div>
+</div>
+
+<!-- 最终输出 -->
+<div class="card">
+<div class="sec-title">终极报告将包含</div>
+
+<div class="grid">
+<div class="item">五层冲突热力图</div>
+<div class="item">职业终极路径</div>
+<div class="item">三年成长行动蓝图</div>
+<div class="item">高风险行为预警</div>
+<div class="item">家庭支持模型</div>
+<div class="item">AI时代发展策略</div>
+</div>
+</div>
+
+<!-- 支付模块 -->
+<div class="card center">
+<div class="price">¥150</div>
+<div>一次解锁 · 永久查看</div>
+<button class="highlight" onclick="payAndEnter()">立即解锁并开始测评 →</button>
+<div class="small">
+支付成功后自动进入 WMA 长测评页面
+</div>
+</div>
+
+</div>
+
+<script>
+
+function payAndEnter(){
+if(localStorage.getItem("talentai_wma_paid")){
+window.location.href="wma_payment.html";
+return;
+}
+
+if(confirm("确认支付 ¥150 解锁五层终极报告？")){
+localStorage.setItem("talentai_wma_paid","1");
+alert("支付成功！现在进入 WMA 长测评");
+window.location.href="wma_payment.html";
+}
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TalentAI · 安全支付</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --void: #f5f7fa;
+  --deep: #eef1f7;
+  --ink: #e4e9f3;
+  --surface: #ffffff;
+  --neon-gold: #c07800;
+  --neon-cyan: #0066cc;
+  --neon-jade: #007a40;
+  --neon-rose: #ff4488;
+  --wechat: #07c160;
+  --text: #1a2540;
+  --sub: #4a5878;
+  --faint: #8a9ab8;
+  --mono: 'JetBrains Mono', monospace;
+  --serif: 'Noto Serif SC', serif;
+  --sans: 'Noto Sans SC', sans-serif;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { height:100%; }
+body {
+  font-family: var(--sans);
+  background: var(--void);
+  color: #d0d8f0;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── Starfield ── */
+#stars { position:fixed; inset:0; z-index:0; pointer-events:none; }
+
+/* ── Layout ── */
+.page {
+  position: relative; z-index: 1;
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 32px 16px;
+}
+
+/* ── Header bar ── */
+.pay-header {
+  position: fixed; top:0; left:0; right:0; z-index:100;
+  background: rgba(255,255,255,0.97);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(0,0,50,0.08);
+  padding: 14px 24px;
+  display: flex; align-items:center; justify-content:space-between;
+}
+.pay-logo { font-family:var(--mono); font-size:13px; color:#0066cc; letter-spacing:1px; }
+.pay-secure {
+  display:flex; align-items:center; gap:6px;
+  font-family:var(--mono); font-size:11px; color:var(--neon-jade);
+  letter-spacing:0.5px;
+}
+.secure-dot { width:6px; height:6px; border-radius:50%; background:var(--neon-jade);
+  animation: pulse 1.5s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.7)} }
+
+/* ── Main card ── */
+.pay-card {
+  width:100%; max-width:480px;
+  background: #ffffff;
+  backdrop-filter: none;
+  border: 1px solid rgba(0,0,60,0.1);
+  border-radius: 28px;
+  overflow: hidden;
+  margin-top: 60px;
+  box-shadow: 0 8px 40px rgba(0,0,60,0.1);
+}
+
+/* Card top gradient strip */
+.card-strip {
+  height: 4px;
+  background: linear-gradient(90deg, var(--wechat), var(--neon-cyan), var(--neon-gold));
+  background-size: 200% 100%;
+  animation: stripFlow 3s linear infinite;
+}
+@keyframes stripFlow { 0%{background-position:0%} 100%{background-position:200%} }
+
+.card-body { padding: 36px 32px 32px; }
+
+/* Order summary */
+.order-badge {
+  display:inline-flex; align-items:center; gap:7px;
+  font-family:var(--mono); font-size:10px; letter-spacing:2px;
+  color:#0055cc; border:1px solid rgba(0,85,204,0.2);
+  border-radius:20px; padding:4px 14px; margin-bottom:20px;
+  background:rgba(0,85,204,0.04);
+}
+.order-title {
+  font-family:var(--serif); font-size:22px; color:var(--text);
+  margin-bottom:6px; line-height:1.4;
+}
+.order-sub { font-size:13px; color:var(--sub); margin-bottom:24px; line-height:1.6; }
+
+/* What you get */
+.get-list { margin-bottom:24px; }
+.get-item {
+  display:flex; align-items:flex-start; gap:10px;
+  font-size:13px; color:#2a3a60;
+  padding:7px 0; border-bottom:1px solid rgba(255,255,255,0.04);
+  line-height:1.5;
+}
+.get-item:last-child { border-bottom:none; }
+.get-dot { width:16px; height:16px; border-radius:50%; flex-shrink:0;
+  background:rgba(0,255,136,0.15); border:1px solid var(--neon-jade);
+  display:flex; align-items:center; justify-content:center;
+  font-size:9px; color:var(--neon-jade); margin-top:2px; }
+
+/* Price block */
+.price-block {
+  background:#0f1220;
+  border:1px solid rgba(0,0,60,0.08);
+  border-radius:16px; padding:20px; margin-bottom:24px;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.price-left {}
+.price-label { font-family:var(--mono); font-size:10px; letter-spacing:2px; color:var(--sub); }
+.price-val {
+  font-family:var(--mono); font-size:40px; font-weight:700;
+  color:var(--neon-gold); line-height:1.1; margin-top:4px;
+}
+.price-val span { font-size:18px; }
+.price-right { text-align:right; }
+.price-orig { font-family:var(--mono); font-size:13px; color:var(--faint); text-decoration:line-through; }
+.price-save {
+  display:inline-block; padding:3px 10px; border-radius:20px;
+  font-family:var(--mono); font-size:11px;
+  background:rgba(0,150,80,0.08); color:#007a40;
+  border:1px solid rgba(0,150,80,0.2); margin-top:4px;
+}
+
+/* ── QR Section ── */
+#qr-section { display:none; }
+#qr-section.show { display:block; animation:fadeIn 0.5s ease; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+.qr-wrap {
+  background: #fff;
+  border-radius: 16px;
+  padding: 16px;
+  width: fit-content;
+  margin: 0 auto 16px;
+  position: relative;
+  box-shadow: 0 0 40px rgba(7,193,96,0.15);
+}
+
+/* Fake QR code using CSS */
+.fake-qr {
+  width: 180px; height: 180px;
+  position: relative; overflow: hidden;
+}
+.qr-inner {
+  width: 100%; height: 100%;
+  display: grid; grid-template-columns: repeat(21, 1fr); grid-template-rows: repeat(21, 1fr);
+  gap: 0;
+}
+.qr-cell { background: #fff; }
+.qr-cell.b { background: #000; }
+
+/* WeChat logo overlay on QR */
+.qr-logo {
+  position: absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  width:36px; height:36px; border-radius:8px;
+  background: var(--wechat);
+  display:flex; align-items:center; justify-content:center;
+  font-size:20px; box-shadow:0 2px 8px rgba(0,0,0,0.2);
+}
+
+/* Scan pulse ring */
+.scan-ring {
+  position:absolute; inset:-8px; border-radius:24px;
+  border:2px solid var(--wechat);
+  animation:scanPulse 2s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes scanPulse {
+  0%,100%{opacity:0.3;transform:scale(1);}
+  50%{opacity:0.8;transform:scale(1.02);}
+}
+
+/* Scan line animation */
+.scan-line {
+  position:absolute; left:0; right:0; height:2px;
+  background:linear-gradient(90deg, transparent, var(--wechat), transparent);
+  animation:scanLine 2s linear infinite;
+  top:0;
+}
+@keyframes scanLine { 0%{top:0;opacity:0.7} 100%{top:100%;opacity:0.3} }
+
+.qr-hint {
+  text-align:center; font-family:var(--mono); font-size:12px;
+  color:var(--sub); letter-spacing:0.5px; margin-bottom:20px;
+}
+.qr-hint strong { color:var(--wechat); }
+
+/* Expire countdown */
+.expire-bar {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:20px;
+}
+.expire-label { font-family:var(--mono); font-size:11px; color:var(--sub); }
+.expire-time { font-family:var(--mono); font-size:14px; font-weight:700; color:var(--neon-gold); }
+.expire-track {
+  height:2px; background:rgba(255,255,255,0.06); border-radius:1px;
+  margin-bottom:24px; overflow:hidden;
+}
+.expire-fill {
+  height:100%; background:linear-gradient(90deg, var(--neon-gold), var(--neon-cyan));
+  border-radius:1px; width:100%;
+  transition:width 1s linear;
+}
+
+/* ── Buttons ── */
+.btn-pay {
+  width:100%; padding:18px;
+  background:linear-gradient(135deg, rgba(7,193,96,0.15), rgba(7,193,96,0.08));
+  border:1px solid rgba(7,193,96,0.5);
+  border-radius:14px; cursor:pointer;
+  font-family:var(--mono); font-size:16px; font-weight:700;
+  color:var(--wechat); letter-spacing:1px;
+  transition:all 0.3s; margin-bottom:12px;
+  display:flex; align-items:center; justify-content:center; gap:10px;
+  position:relative; overflow:hidden;
+}
+.btn-pay::before {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(90deg,transparent,rgba(7,193,96,0.06),transparent);
+  transform:translateX(-100%); transition:transform 0.6s;
+}
+.btn-pay:hover::before { transform:translateX(100%); }
+.btn-pay:hover {
+  background:linear-gradient(135deg,rgba(7,193,96,0.25),rgba(7,193,96,0.12));
+  box-shadow:0 0 30px rgba(7,193,96,0.2);
+  transform:translateY(-1px);
+}
+
+.btn-confirm {
+  width:100%; padding:18px;
+  background:linear-gradient(135deg, rgba(240,192,96,0.15), rgba(0,229,255,0.08));
+  border:1px solid rgba(240,192,96,0.5);
+  border-radius:14px; cursor:pointer;
+  font-family:var(--mono); font-size:16px; font-weight:700;
+  color:var(--neon-gold); letter-spacing:1px;
+  transition:all 0.3s; margin-bottom:12px;
+  display:none;
+}
+.btn-confirm.show { display:block; animation:fadeIn 0.4s ease; }
+.btn-confirm:hover {
+  box-shadow:0 0 30px rgba(240,192,96,0.2);
+  transform:translateY(-1px);
+}
+
+.btn-cancel {
+  width:100%; padding:12px;
+  background:transparent; border:1px solid var(--faint);
+  border-radius:10px; cursor:pointer;
+  font-family:var(--mono); font-size:13px; color:var(--sub);
+  transition:all 0.2s; letter-spacing:0.5px;
+}
+.btn-cancel:hover { border-color:var(--sub); color:var(--text); }
+
+/* Trust footer */
+.trust-row {
+  display:flex; gap:20px; justify-content:center;
+  margin-top:20px; flex-wrap:wrap;
+}
+.trust-item {
+  display:flex; align-items:center; gap:5px;
+  font-family:var(--mono); font-size:10px; color:var(--faint);
+  letter-spacing:0.3px;
+}
+
+/* ── SUCCESS STATE ── */
+#success-screen {
+  display:none; width:100%; max-width:480px; text-align:center;
+  margin-top:60px;
+}
+#success-screen.show { display:block; animation:fadeIn 0.6s ease; }
+
+.success-orb {
+  width:100px; height:100px; border-radius:50%; margin:0 auto 24px;
+  background:conic-gradient(var(--neon-jade), var(--neon-cyan), var(--neon-gold), var(--neon-jade));
+  display:flex; align-items:center; justify-content:center;
+  font-size:46px; animation:orbSpin 4s linear infinite;
+  box-shadow:0 0 50px rgba(0,255,136,0.3);
+}
+@keyframes orbSpin { to{filter:hue-rotate(360deg)} }
+
+.success-title {
+  font-family:var(--serif); font-size:30px;
+  background:linear-gradient(135deg,var(--neon-jade),var(--neon-cyan));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  background-clip:text; margin-bottom:8px;
+}
+.success-sub { font-size:15px; color:#8899bb; margin-bottom:32px; line-height:1.7; }
+
+/* Unlock animation cards */
+.unlock-cards { display:flex; gap:14px; margin-bottom:32px; }
+.u-card {
+  flex:1; border-radius:16px; padding:20px 14px; text-align:center;
+  background:#13172b;
+  border:1px solid #252a40;
+  transition:all 0.6s cubic-bezier(0.4,0,0.2,1);
+  position:relative; overflow:hidden;
+}
+.u-card.lit {
+  border-color:rgba(240,192,96,0.5);
+  box-shadow:0 0 30px rgba(240,192,96,0.12);
+}
+.u-rank { font-family:var(--mono); font-size:10px; letter-spacing:2px; color:var(--sub); margin-bottom:8px; }
+.u-lock { font-size:28px; transition:all 0.4s; }
+.u-name {
+  font-family:var(--serif); font-size:16px; color:var(--neon-gold);
+  opacity:0; transform:translateY(6px); max-height:0; overflow:hidden;
+  transition:all 0.6s cubic-bezier(0.4,0,0.2,1);
+}
+.u-name.show { opacity:1; transform:translateY(0); max-height:50px; }
+.u-match { font-family:var(--mono); font-size:11px; color:var(--neon-jade); opacity:0; transition:all 0.4s 0.3s; }
+.u-match.show { opacity:1; }
+
+/* Mosaic over unlock cards */
+.u-mosaic {
+  position:absolute; inset:0; z-index:1;
+  display:grid; grid-template-columns:repeat(7,1fr); grid-template-rows:repeat(5,1fr);
+}
+.u-cell {
+  background:rgba(10,22,80,0.88);
+  border:1px solid rgba(0,0,0,0.2);
+  animation:mb 2s ease-in-out infinite;
+}
+.u-cell:nth-child(odd){animation-delay:0.3s}
+.u-cell:nth-child(3n){animation-delay:0.7s}
+@keyframes mb{0%,100%{opacity:0.95}50%{opacity:0.7}}
+.u-card-content { position:relative; z-index:2; }
+
+/* CTA button */
+.btn-start {
+  width:100%; padding:20px;
+  background:linear-gradient(135deg,rgba(240,192,96,0.15),rgba(0,229,255,0.08));
+  border:1px solid rgba(240,192,96,0.5);
+  border-radius:16px; cursor:pointer;
+  font-family:var(--mono); font-size:17px; font-weight:700;
+  color:var(--neon-gold); letter-spacing:1px;
+  transition:all 0.3s; margin-bottom:12px;
+  opacity:0; transform:translateY(8px);
+  transition:all 0.5s cubic-bezier(0.4,0,0.2,1);
+}
+.btn-start.show { opacity:1; transform:translateY(0); }
+.btn-start:hover { box-shadow:0 0 40px rgba(240,192,96,0.2); transform:translateY(-2px) !important; }
+
+.step-hint {
+  font-family:var(--mono); font-size:11px; color:#8a9ab8;
+  text-align:center; letter-spacing:0.5px;
+}
+
+/* Order ID */
+.order-id {
+  font-family:var(--mono); font-size:10px; color:var(--faint);
+  text-align:center; margin-top:16px; letter-spacing:1px;
+}
+
+/* Responsive */
+@media(max-width:480px){
+  .card-body { padding:24px 20px 20px; }
+  .price-val { font-size:32px; }
+  .unlock-cards { flex-direction:column; }
+}
+
+/* ── Full Career Cards in success screen ── */
+.success-career-card {
+  background: linear-gradient(145deg, #131828, #0f1220);
+  border: 1px solid #252a40;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+}
+.scc-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 12px;
+}
+.scc-rank-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: linear-gradient(135deg, #1a2540, #2a3a60);
+  color: #f0c060; border-radius: 20px; padding: 6px 14px;
+  font-size: 12px; font-weight: 700; letter-spacing: 1px;
+}
+.scc-match {
+  font-size: 22px; font-weight: 800;
+  background: linear-gradient(135deg, #00c070, #00e5ff);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.scc-name {
+  font-size: 20px; font-weight: 700; color: #d8e0f8; margin-bottom: 6px;
+}
+.scc-desc { font-size: 14px; color: #8899bb; line-height: 1.6; margin-bottom: 14px; }
+.scc-meta {
+  display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 14px;
+  padding: 12px; background: #0a0d14; border-radius: 10px;
+}
+.scc-meta-item { display: flex; flex-direction: column; align-items: center; flex: 1; min-width: 80px; }
+.scc-meta-label { font-size: 11px; color: #556688; margin-bottom: 4px; }
+.scc-meta-value { font-size: 15px; font-weight: 700; color: #d0d8f0; }
+.scc-section { margin-top: 12px; }
+.scc-section-title { font-size: 13px; font-weight: 700; color: #aab8d8; margin-bottom: 6px; }
+.scc-section p, .scc-section li { font-size: 13px; color: #8899bb; line-height: 1.7; }
+.scc-section ul { padding-left: 16px; }
+.scc-ai-box {
+  background: #0d1020; border-radius: 10px; padding: 12px 14px;
+  font-size: 12px; color: #6688aa; line-height: 1.7; margin-top: 12px;
+  font-family: var(--mono); white-space: pre-wrap; border: 1px solid #1e2540;
+}
+.scc-match-breakdown {
+  display: flex; gap: 8px; margin-top: 10px;
+}
+.scc-mb-item {
+  flex: 1; background: #0f1220; border: 1px solid #1e2338; border-radius: 8px; padding: 8px 10px; text-align: center;
+}
+.scc-mb-label { font-size: 10px; color: #556688; }
+.scc-mb-val { font-size: 14px; font-weight: 700; color: #d0d8f0; margin-top: 2px; }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<canvas id="stars" style="display:none"></canvas>
+
+<div class="pay-header">
+  <div class="pay-logo">TALENT_AI // PAYMENT</div>
+  <div class="pay-secure">
+    <div class="secure-dot"></div>
+    SSL 256-BIT ENCRYPTED
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- ── PAYMENT CARD ── -->
+  <div class="pay-card" id="payCard">
+    <div class="card-strip"></div>
+    <div class="card-body">
+
+      <div class="order-badge">
+        <div style="width:5px;height:5px;border-radius:50%;background:var(--neon-cyan)"></div>
+        ORDER · PATHFINDER · ¥49
+      </div>
+
+      <div class="order-title">寻路者套餐 · T层完整解锁</div>
+      <div class="order-sub">支付后立即解锁 T层第1名和第3名职业，并开始P层性格深度测评</div>
+
+      <!-- What you get -->
+      <div class="get-list">
+        <div class="get-item"><div class="get-dot">✓</div>T层 Top1 & Top3 职业完整详解（当前隐藏）</div>
+        <div class="get-item"><div class="get-dot">✓</div>P层性格深度测评（30题 · 约15分钟）</div>
+        <div class="get-item"><div class="get-dot">✓</div>T×P 综合职业匹配报告（6屏深度分析）</div>
+        <div class="get-item"><div class="get-dot">✓</div>个人化风险地图 + 家长行动指令手册</div>
+      </div>
+
+      <!-- Price -->
+      <div class="price-block">
+        <div class="price-left">
+          <div class="price-label">// TOTAL_AMOUNT</div>
+          <div class="price-val"><span>¥</span>49</div>
+        </div>
+        <div class="price-right">
+          <div class="price-orig">原价 ¥99</div>
+          <div class="price-save">省 ¥50</div>
+        </div>
+      </div>
+
+      <!-- Step 1: Show QR button -->
+      <button class="btn-pay" id="btnShowQR" onclick="showQR()">
+        <span style="font-size:22px">💚</span>
+        微信扫码支付 ¥49
+      </button>
+
+      <!-- Step 2: QR Code section -->
+      <div id="qr-section">
+        <div class="qr-hint">打开微信 → 扫一扫 → 确认支付 <strong>¥49</strong></div>
+        <div class="qr-wrap">
+          <div class="scan-ring"></div>
+          <div class="scan-line"></div>
+          <canvas id="qrCanvas" width="180" height="180"></canvas>
+          <div class="qr-logo">💚</div>
+        </div>
+
+        <div class="expire-bar">
+          <span class="expire-label">// 二维码有效期</span>
+          <span class="expire-time" id="expireTime">04:59</span>
+        </div>
+        <div class="expire-track"><div class="expire-fill" id="expireFill"></div></div>
+
+        <!-- Render 生产环境：微信回调后轮询自动跳转。本地：点按钮模拟已付后用 check-payment 校验 -->
+        <button class="btn-confirm" id="btnConfirm" type="button" style="display:none">
+          ✅ &nbsp;我已完成支付
+        </button>
+      </div>
+
+      <button class="btn-cancel" onclick="goBack()">← 返回结果页</button>
+
+      <div class="trust-row">
+        <div class="trust-item">🔒 支付数据加密</div>
+        <div class="trust-item">⚡ 支付后立即解锁</div>
+        <div class="trust-item">🔄 7天无理由退款</div>
+      </div>
+
+      <div class="order-id" id="orderId"></div>
+    </div>
+  </div>
+
+  <!-- ── SUCCESS SCREEN ── -->
+  <div id="success-screen">
+    <div class="success-orb">🎉</div>
+    <div class="success-title">支付成功！</div>
+    <div class="success-sub">
+      T层第1名和第3名职业已解锁<br>
+      现在开始P层性格深度测评，获得你的专属路径图
+    </div>
+
+    <!-- Mini unlock cards (used for animation only, hidden after reveal) -->
+    <div class="unlock-cards" id="unlockCardsAnim">
+      <div class="u-card" id="uc1">
+        <div class="u-mosaic" id="um1"></div>
+        <div class="u-card-content">
+          <div class="u-rank">🏆 RANK · 01</div>
+          <div class="u-lock" id="ul1">🔒</div>
+          <div class="u-name" id="un1">加载中...</div>
+          <div class="u-match" id="um1txt">▲ 匹配度 --</div>
+        </div>
+      </div>
+      <div class="u-card" id="uc3">
+        <div class="u-mosaic" id="um3"></div>
+        <div class="u-card-content">
+          <div class="u-rank">🥉 RANK · 03</div>
+          <div class="u-lock" id="ul3">🔒</div>
+          <div class="u-name" id="un3">加载中...</div>
+          <div class="u-match" id="um3txt">▲ 匹配度 --</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Full career detail cards (shown after unlock animation) -->
+    <div id="fullCareerCards" style="display:none;width:100%;max-width:600px;margin:0 auto 24px;text-align:left;"></div>
+
+    <!-- P-layer intro banner -->
+    <div id="pLayerBanner" style="display:none;background:linear-gradient(135deg,rgba(0,229,255,0.1),rgba(240,192,96,0.08));border:1px solid rgba(0,229,255,0.25);border-radius:16px;padding:20px 24px;margin-bottom:20px;width:100%;max-width:600px;text-align:left;">
+      <div style="font-size:13px;color:#4a5878;font-family:var(--mono);letter-spacing:1px;margin-bottom:8px;">// 下一步</div>
+      <div style="font-size:18px;font-weight:700;color:#1a2540;margin-bottom:10px;">P层性格深度测评</div>
+      <div style="display:flex;gap:20px;flex-wrap:wrap;margin-bottom:12px;">
+        <span style="font-size:13px;color:#4a5878;">📋 30题情境测评</span>
+        <span style="font-size:13px;color:#4a5878;">⏱ 约15分钟</span>
+        <span style="font-size:13px;color:#4a5878;">🎯 解锁T×P综合报告</span>
+      </div>
+      <div style="font-size:13px;color:#6a7898;line-height:1.6;">完成后将生成你的专属职业路径图，结合天赋与性格双维度分析，找到真正适合你的职业方向。</div>
+    </div>
+
+    <button class="btn-start" id="btnStart" onclick="goToAssess()">
+      开始 P层 性格深度测评 →
+    </button>
+    <div class="order-id" id="successOrderId"></div>
+  </div>
+
+</div><!-- end .page -->
+
+<script>
+// ── Stars background ──
+(function(){
+  const c=document.getElementById('stars'), ctx=c.getContext('2d');
+  let W,H,stars=[];
+  function resize(){ W=c.width=innerWidth; H=c.height=innerHeight;
+    stars=[]; for(let i=0;i<100;i++) stars.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.1+0.2,tw:Math.random()*Math.PI*2,sp:Math.random()*0.12+0.04}); }
+  resize(); window.addEventListener('resize',resize);
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    stars.forEach(s=>{
+      s.tw+=0.02; s.y-=s.sp; if(s.y<0){s.y=H;s.x=Math.random()*W;}
+      ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(200,220,255,${(0.6+0.4*Math.sin(s.tw))*0.4})`; ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ── Order ID（来自后端）──
+let orderId = null;
+let pollTimer = null;
+const orderEl = document.getElementById('orderId');
+if (orderEl) orderEl.textContent = '// ORDER_ID: 正在创建...';
+
+// ── 页面加载时立即读取最新T层职业数据 ──
+(function loadCareersOnInit() {
+  try {
+    const raw = localStorage.getItem('talentai_careers');
+    if (!raw) return;
+    const careers = JSON.parse(raw);
+    if (careers[0]) {
+      const el = document.getElementById('un1');
+      const em = document.getElementById('um1txt');
+      if (el) el.setAttribute('data-real-name', careers[0].name);
+      if (em) em.setAttribute('data-real-match', '\u25b2 \u5339\u914d\u5ea6 ' + careers[0].matchScore + '%');
+    }
+    if (careers[2]) {
+      const el = document.getElementById('un3');
+      const em = document.getElementById('um3txt');
+      if (el) el.setAttribute('data-real-name', careers[2].name);
+      if (em) em.setAttribute('data-real-match', '\u25b2 \u5339\u914d\u5ea6 ' + careers[2].matchScore + '%');
+    }
+    console.log('\u2705 \u9884\u52a0\u8f7dT\u5c42\u804c\u4e1a\u6570\u636e:', careers[0]?.name, careers[2]?.name);
+  } catch(e) {}
+})();
+
+// ── Draw QR code (CSS grid pattern) ──
+function drawQR() {
+  const canvas = document.getElementById('qrCanvas');
+  const ctx = canvas.getContext('2d');
+  const size = 180, cells = 25, cell = size / cells;
+
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(0, 0, size, size);
+
+  // Seeded pseudo-random for consistent QR look
+  let seed = 12345;
+  function rand() { seed=(seed*1664525+1013904223)&0xffffffff; return (seed>>>0)/0xffffffff; }
+
+  ctx.fillStyle = '#000';
+
+  // Finder patterns (three corners)
+  [[0,0],[cells-7,0],[0,cells-7]].forEach(([col,row]) => {
+    // Outer square
+    for(let r=row;r<row+7;r++) for(let c=col;c<col+7;c++) {
+      if(r===row||r===row+6||c===col||c===col+6) {
+        ctx.fillRect(c*cell,r*cell,cell,cell);
+      }
+    }
+    // Inner square
+    for(let r=row+2;r<row+5;r++) for(let c=col+2;c<col+5;c++) {
+      ctx.fillRect(c*cell,r*cell,cell,cell);
+    }
+  });
+
+  // Data modules
+  for(let r=0;r<cells;r++) for(let c=0;c<cells;c++) {
+    // Skip finder pattern areas
+    if((r<9&&c<9)||(r<9&&c>cells-9)||(r>cells-9&&c<9)) continue;
+    if(rand() > 0.55) ctx.fillRect(c*cell,r*cell,cell,cell);
+  }
+
+  // Timing patterns
+  for(let i=8;i<cells-8;i++) {
+    if(i%2===0) {
+      ctx.fillRect(i*cell,6*cell,cell,cell);
+      ctx.fillRect(6*cell,i*cell,cell,cell);
+    }
+  }
+}
+// 等后端返回 code_url 后再渲染真实微信支付二维码
+
+// ── Show QR ──
+function showQR() {
+  document.getElementById('btnShowQR').style.display = 'none';
+  const qrSec = document.getElementById('qr-section');
+  qrSec.classList.add('show');
+  startExpireTimer();
+}
+
+// ── Expire timer (5 min) ──
+let expireInterval = null;
+function startExpireTimer() {
+  let total = 299; // 4:59
+  const fill = document.getElementById('expireFill');
+  const timeEl = document.getElementById('expireTime');
+
+  expireInterval = setInterval(() => {
+    total--;
+    if (total <= 0) {
+      clearInterval(expireInterval);
+      // 过期后停止轮询，避免一直请求
+      if (pollTimer) clearInterval(pollTimer);
+      pollTimer = null;
+      timeEl.textContent = '已过期';
+      timeEl.style.color = 'var(--neon-rose)';
+      fill.style.width = '0%';
+      return;
+    }
+    const m = Math.floor(total/60);
+    const s = total%60;
+    timeEl.textContent = `0${m}:${String(s).padStart(2,'0')}`;
+    fill.style.width = ((total/299)*100) + '%';
+    // Turn yellow when < 60s
+    if (total < 60) timeEl.style.color = 'var(--neon-rose)';
+  }, 1000);
+}
+
+// ── Simulate payment success ──
+function simulateSuccess() {
+  clearInterval(expireInterval);
+
+  // Play unlock sound
+  playSFX();
+
+  // Write premium flag
+  localStorage.setItem('talentai_premium', '1');
+  localStorage.setItem('talentai_order', orderId);
+
+  // ── 读取真实T层职业数据（优先用预加载的data属性，再兜底读localStorage）──
+  let career1Name = '第1名职业', career1Match = '--';
+  let career3Name = '第3名职业', career3Match = '--';
+  try {
+    // 先用页面初始化时已存好的data属性
+    const el1 = document.getElementById('un1');
+    const em1 = document.getElementById('um1txt');
+    const el3 = document.getElementById('un3');
+    const em3 = document.getElementById('um3txt');
+    if (el1?.getAttribute('data-real-name')) {
+      career1Name = el1.getAttribute('data-real-name');
+      career1Match = '';
+    }
+    if (em1?.getAttribute('data-real-match')) {
+      // match text already formatted
+    }
+    if (el3?.getAttribute('data-real-name')) {
+      career3Name = el3.getAttribute('data-real-name');
+      career3Match = '';
+    }
+    // 兜底：重新读localStorage
+    const raw = localStorage.getItem('talentai_careers');
+    if (raw) {
+      const careers = JSON.parse(raw);
+      if (careers[0]) { career1Name = careers[0].name; career1Match = careers[0].matchScore + '%'; }
+      if (careers[2]) { career3Name = careers[2].name; career3Match = careers[2].matchScore + '%'; }
+    }
+  } catch(e) { console.warn('读取职业数据失败', e); }
+
+  document.getElementById('un1').textContent = career1Name;
+  document.getElementById('um1txt').textContent = career1Match ? '▲ 匹配度 ' + career1Match : (document.getElementById('um1txt').getAttribute('data-real-match') || '▲ 匹配度 --');
+  document.getElementById('un3').textContent = career3Name;
+  document.getElementById('um3txt').textContent = career3Match ? '▲ 匹配度 ' + career3Match : (document.getElementById('um3txt').getAttribute('data-real-match') || '▲ 匹配度 --');
+
+  // Hide payment card, show success
+  const payCard = document.getElementById('payCard');
+  payCard.style.transition = 'all 0.5s ease';
+  payCard.style.opacity = '0';
+  payCard.style.transform = 'scale(0.95)';
+
+  setTimeout(() => {
+    payCard.style.display = 'none';
+    const ss = document.getElementById('success-screen');
+    ss.classList.add('show');
+    document.getElementById('successOrderId').textContent = '// ORDER_ID: ' + orderId + ' · PAID ✓';
+
+    // Build mosaics
+    buildMosaic('um1'); buildMosaic('um3');
+
+    // Start unlock sequence
+    setTimeout(() => unlockCard('uc1','ul1','un1','um1txt','um1'), 600);
+    setTimeout(() => unlockCard('uc3','ul3','un3','um3txt','um3'), 1400);
+    setTimeout(() => {
+      document.getElementById('btnStart').classList.add('show');
+    }, 2600);
+    setTimeout(() => {
+      buildFullCareerCards();
+    }, 3200);
+  }, 500);
+}
+
+function stopPolling() {
+  if (pollTimer) clearInterval(pollTimer);
+  pollTimer = null;
+}
+
+function handlePaidSuccess() {
+  stopPolling();
+  stopOrderStatusPolling();
+  try {
+    if (expireInterval) clearInterval(expireInterval);
+  } catch (e) {}
+
+  // 写入支付标记（供 p_assessment.html / WMA 流程防止未支付访问）
+  try {
+    localStorage.setItem('talentai_premium', '1');
+    if (orderId) {
+      localStorage.setItem('talentai_order', orderId);
+      localStorage.setItem('talentai_order_id', orderId);
+    }
+    localStorage.setItem('talentai_p_enter_time', String(Date.now()));
+  } catch (e) {}
+
+  const pkg = (localStorage.getItem('talentai_paid_package_type') || '').toLowerCase();
+  let dest = 'p_assessment.html';
+  if (pkg === 'navigator' || pkg === '150') {
+    dest = 'wma_upgrade.html';
+  }
+
+  setTimeout(() => {
+    window.location.href = dest;
+  }, 300);
+}
+
+async function renderQrToCanvas(codeUrl) {
+  // codeUrl 常见形态：weixin://wxpay/bizpayurl?pr=...
+  // 用第三方二维码渲染为图片，再画到 canvas 上。
+  const canvas = document.getElementById('qrCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const size = 180;
+
+  try {
+    const qrService =
+      'https://api.qrserver.com/v1/create-qr-code/?size=' +
+      encodeURIComponent(String(size + 'x' + size)) +
+      '&data=' +
+      encodeURIComponent(codeUrl);
+
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+
+    await new Promise((resolve, reject) => {
+      img.onload = () => {
+        ctx.clearRect(0, 0, size, size);
+        ctx.drawImage(img, 0, 0, size, size);
+        resolve();
+      };
+      img.onerror = reject;
+      img.src = qrService;
+    });
+  } catch (e) {
+    // 回退：仍然显示一个“占位二维码”（避免 canvas 空白）
+    try {
+      drawQR();
+    } catch {}
+  }
+}
+
+function startPolling(phone, packageType) {
+  stopPolling();
+
+  pollTimer = setInterval(async () => {
+    try {
+      const r = await fetch(
+        `/api/check-payment?phone=${encodeURIComponent(phone)}&packageType=${encodeURIComponent(
+          packageType
+        )}`
+      );
+      const data = await r.json();
+      if (data && data.paid) {
+        handlePaidSuccess();
+      }
+    } catch (e) {
+      // 忽略网络错误，下一轮继续
+    }
+  }, 3000);
+}
+
+// ── 订单状态轮询机制（按 orderId 自动解锁）──
+let orderStatusTimer = null;
+function stopOrderStatusPolling() {
+  if (orderStatusTimer) clearInterval(orderStatusTimer);
+  orderStatusTimer = null;
+}
+
+function startOrderStatusPolling(orderIdValue) {
+  stopOrderStatusPolling();
+  if (!orderIdValue) return;
+
+  orderStatusTimer = setInterval(async () => {
+    try {
+      console.log('checking payment status...', orderIdValue);
+      const sessionTokenValue = localStorage.getItem('talentai_session_token');
+      const r = await fetch(
+        `/api/order-status?orderId=${encodeURIComponent(orderIdValue)}&sessionToken=${encodeURIComponent(
+          sessionTokenValue || ''
+        )}`
+      );
+      const data = await r.json();
+      console.log('status:', data.status);
+
+      if (data && data.success === true && data.status === 'paid') {
+        stopOrderStatusPolling();
+        handlePaidSuccess();
+      }
+    } catch (e) {
+      // ignore
+    }
+  }, 3000);
+}
+
+function buildMosaic(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.innerHTML = '';
+  for (let i = 0; i < 35; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'u-cell';
+    cell.style.animationDelay = (Math.random()*1.5)+'s';
+    el.appendChild(cell);
+  }
+}
+
+function unlockCard(cardId, lockId, nameId, matchId, mosaicId) {
+  // Dissolve mosaic
+  const mosaic = document.getElementById(mosaicId);
+  if (mosaic) {
+    mosaic.style.transition = 'opacity 0.8s ease';
+    mosaic.style.opacity = '0';
+    setTimeout(() => mosaic.remove(), 900);
+  }
+  // Lock → unlock icon
+  const lock = document.getElementById(lockId);
+  if (lock) {
+    lock.textContent = '🔓';
+    lock.style.filter = 'drop-shadow(0 0 12px #00ff88)';
+  }
+  // Reveal name
+  setTimeout(() => {
+    document.getElementById(nameId).classList.add('show');
+    document.getElementById(matchId).classList.add('show');
+    document.getElementById(cardId).classList.add('lit');
+  }, 700);
+}
+
+function playSFX() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const p = (f,t,s,d,v) => {
+      const o=ctx.createOscillator(), g=ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.type=t; o.frequency.value=f;
+      const st=ctx.currentTime+s;
+      g.gain.setValueAtTime(0,st);
+      g.gain.linearRampToValueAtTime(v,st+0.01);
+      g.gain.exponentialRampToValueAtTime(0.001,st+d);
+      o.start(st); o.stop(st+d);
+    };
+    p(440,'square',0.0,0.06,0.08);
+    p(880,'square',0.08,0.06,0.08);
+    p(1320,'square',0.16,0.08,0.10);
+    p(1760,'sine',0.26,0.15,0.12);
+    [523,659,784,1047].forEach((f,i)=>p(f,'sine',0.44+i*0.04,0.4,0.06));
+  } catch(e) {}
+}
+
+function goToAssess() {
+
+  // ─────────────────────────────
+  // 1️⃣ 支付状态验证
+  // ─────────────────────────────
+  const isPremium = localStorage.getItem('talentai_premium');
+  const orderId = localStorage.getItem('talentai_order');
+
+  if (!isPremium || isPremium !== '1') {
+    alert('⚠ 请先完成支付后再开始测评');
+    return;
+  }
+
+  // ─────────────────────────────
+  // 2️⃣ 防止重复点击
+  // ─────────────────────────────
+  const btn = document.getElementById('btnStart');
+  if (btn) {
+    btn.disabled = true;
+    btn.style.opacity = '0.6';
+    btn.textContent = '正在进入测评...';
+  }
+
+  // ─────────────────────────────
+  // 3️⃣ 记录进入P层时间（未来可用于数据分析）
+  // ─────────────────────────────
+  localStorage.setItem('talentai_p_enter_time', Date.now());
+
+  // ─────────────────────────────
+  // 4️⃣ 延迟跳转（让UI更自然）
+  // ─────────────────────────────
+  setTimeout(() => {
+    window.location.href = 'p_assessment.html';
+  }, 600);
+}
+// Build full career detail cards after unlock animation completes
+function buildFullCareerCards() {
+  const container = document.getElementById('fullCareerCards');
+  const banner = document.getElementById('pLayerBanner');
+  const animCards = document.getElementById('unlockCardsAnim');
+  if (!container) return;
+
+  let career1 = null, career3 = null;
+  try {
+    const raw = localStorage.getItem('talentai_careers_full');
+    if (raw) {
+      const careers = JSON.parse(raw);
+      career1 = careers[0];
+      career3 = careers[2];
+    }
+    // fallback to simple data
+    if (!career1) {
+      const simple = JSON.parse(localStorage.getItem('talentai_careers') || '[]');
+      if (simple[0]) career1 = { name: simple[0].name, matchScore: simple[0].matchScore };
+      if (simple[2]) career3 = { name: simple[2].name, matchScore: simple[2].matchScore };
+    }
+  } catch(e) {}
+
+  function makeCard(c, rank, medal) {
+    if (!c) return '';
+    const aiR = c.aiImpact?.replacementRisk ?? '--';
+    const newbie = c.aiImpact?.newbieAdvantage ?? '--';
+    const salary = c.aiImpact?.salaryRange ?? '--';
+    const aiGrowth = c.aiImpact?.growthRate ?? '--';
+    const ms = c.matchScore ?? '--';
+    const skills = Array.isArray(c.keySkills) ? c.keySkills.slice(0,3).join('、') : '';
+    const aiSim = `如果选择 ${c.name || '该职业'}：
+• 5年替代风险：${aiR}${aiR!='--'?'%':''}
+• 收入波动性：${aiR >= 55 ? '高' : aiR >= 35 ? '中' : '低'}
+• 成长阶段：${aiGrowth}`;
+    return `
+    <div class="success-career-card">
+      <div class="scc-header">
+        <div class="scc-rank-badge">${medal} 第${rank}名</div>
+        <div class="scc-match">${ms}%</div>
+      </div>
+      <div class="scc-name">${c.name || '—'}</div>
+      <p class="scc-desc">${c.description || '—'}</p>
+      <div class="scc-meta">
+        <div class="scc-meta-item">
+          <div class="scc-meta-label">AI替代风险</div>
+          <div class="scc-meta-value">${aiR}${aiR!='--'?'%':''}</div>
+        </div>
+        <div class="scc-meta-item">
+          <div class="scc-meta-label">新人优势</div>
+          <div class="scc-meta-value">${newbie}${newbie!='--'?'%':''}</div>
+        </div>
+        <div class="scc-meta-item">
+          <div class="scc-meta-label">薪资范围</div>
+          <div class="scc-meta-value">${salary}</div>
+        </div>
+      </div>
+      <div class="scc-match-breakdown">
+        <div class="scc-mb-item"><div class="scc-mb-label">天赋匹配</div><div class="scc-mb-val">${Math.min(99, ms+4)}%</div></div>
+        <div class="scc-mb-item"><div class="scc-mb-label">家族匹配</div><div class="scc-mb-val">${Math.max(50, ms-8)}%</div></div>
+        <div class="scc-mb-item"><div class="scc-mb-label">能力结构</div><div class="scc-mb-val">${Math.max(55, ms-6)}%</div></div>
+      </div>
+      ${skills ? `<div class="scc-section"><div class="scc-section-title">关键技能</div><p>${skills}</p></div>` : ''}
+      ${c.whyNewbieCanWin ? `<div class="scc-section"><div class="scc-section-title">💡 为什么新人有优势？</div><p>${c.whyNewbieCanWin}</p></div>` : ''}
+      <div class="scc-ai-box">${aiSim}</div>
+    </div>`;
+  }
+
+  container.innerHTML = makeCard(career1, 1, '🥇') + makeCard(career3, 3, '🥉');
+  container.style.display = 'block';
+  if (banner) banner.style.display = 'block';
+
+  // Smoothly fade out the mini animation cards
+  if (animCards) {
+    animCards.style.transition = 'opacity 0.5s, max-height 0.5s';
+    animCards.style.opacity = '0';
+    setTimeout(() => animCards.style.display = 'none', 500);
+  }
+}
+
+function goBack() {
+  window.location.href = 'result.html'; // ← 改成你的T层结果页路径
+}
+
+// ── Create order + Auto poll payment ──
+// e.g. payment.html?package=pathfinder | navigator | 49 | 150
+(async function initPaymentIntegration() {
+  try {
+    const params = new URLSearchParams(location.search);
+    const rawPkg = String(params.get('package') || '').trim().toLowerCase();
+
+    let packageTypeForApi = rawPkg;
+    let displayYuan = null;
+    let description = '';
+
+    if (rawPkg === 'pathfinder' || rawPkg === '49') {
+      packageTypeForApi = rawPkg === '49' ? '49' : 'pathfinder';
+      displayYuan = 49;
+      description = 'TalentAI Pathfinder · T层完整解锁';
+    } else if (rawPkg === 'navigator' || rawPkg === '150') {
+      packageTypeForApi = rawPkg === '150' ? '150' : 'navigator';
+      displayYuan = 150;
+      description = 'TalentAI Navigator · 五层完整报告';
+    }
+
+    if (!displayYuan) {
+      alert('套餐类型不正确（pathfinder / navigator，或 49 / 150）');
+      return;
+    }
+
+    // 更新页面显示价格（不影响支付流程）
+    const priceVal = document.querySelector('.price-val');
+    if (priceVal) priceVal.innerHTML = '<span>¥</span>' + displayYuan;
+    const qrHintStrong = document.querySelector('.qr-hint strong');
+    if (qrHintStrong) qrHintStrong.textContent = '¥' + displayYuan;
+    const btnShowQR = document.getElementById('btnShowQR');
+    if (btnShowQR) {
+      btnShowQR.innerHTML =
+        '<span style="font-size:22px">💚</span>微信扫码支付 ¥' + displayYuan;
+    }
+
+    // 1) 新链路：不依赖手机号，仅 orderId + sessionToken 解锁
+    const resp = await fetch('/api/pay/create-order', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        packageType: packageTypeForApi,
+        amount: displayYuan,
+        description,
+      }),
+    });
+    const data = await resp.json();
+    if (!data || !data.success) {
+      throw new Error(data?.error || '创建微信订单失败');
+    }
+
+    orderId = data.orderId;
+    const sessionToken = data.sessionToken;
+    if (orderEl) orderEl.textContent = '// ORDER_ID: ' + orderId;
+    try {
+      localStorage.setItem('talentai_paid_package_type', packageTypeForApi);
+      localStorage.setItem('talentai_order_id', orderId);
+      if (sessionToken) localStorage.setItem('talentai_session_token', sessionToken);
+    } catch (e) {}
+
+    showQR();
+    await renderQrToCanvas(data.codeUrl);
+    startOrderStatusPolling(orderId);
+  } catch (e) {
+    console.error(e);
+    if (orderEl) orderEl.textContent = '// ORDER_ID: 创建失败';
+    alert('付款初始化失败：' + (e?.message || String(e)));
+  }
+})();
+</script>
+</body>
+</html>
+
