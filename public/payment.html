@@ -1080,14 +1080,17 @@ function goBack() {
     let displayYuan = null;
     let description = '';
 
+    const PATHFINDER_DESC = 'TalentAI Pathfinder · T层完整解锁';
+    const NAVIGATOR_DESC = 'TalentAI Navigator · 五层完整报告';
+
     if (rawPkg === 'pathfinder' || rawPkg === '49') {
       packageTypeForApi = rawPkg === '49' ? '49' : 'pathfinder';
       displayYuan = 49;
-      description = 'TalentAI Pathfinder · T层完整解锁';
+      description = PATHFINDER_DESC;
     } else if (rawPkg === 'navigator' || rawPkg === '150') {
       packageTypeForApi = rawPkg === '150' ? '150' : 'navigator';
       displayYuan = 150;
-      description = 'TalentAI Navigator · 五层完整报告';
+      description = NAVIGATOR_DESC;
     }
 
     if (!displayYuan) {
@@ -1095,7 +1098,52 @@ function goBack() {
       return;
     }
 
-    // 更新页面显示价格（不影响支付流程）
+    // 套餐展示与支付金额、create-order 描述完全一致
+    const badgeEl = document.querySelector('.order-badge');
+    const titleEl = document.querySelector('.order-title');
+    const subEl = document.querySelector('.order-sub');
+    const getListEl = document.querySelector('.get-list');
+    const priceOrigEl = document.querySelector('.price-orig');
+    const priceSaveEl = document.querySelector('.price-save');
+
+    if (displayYuan === 49) {
+      if (badgeEl) {
+        badgeEl.innerHTML =
+          '<div style="width:5px;height:5px;border-radius:50%;background:var(--neon-cyan)"></div> ORDER · PATHFINDER · ¥49';
+      }
+      if (titleEl) titleEl.textContent = '寻路者套餐 · T层完整解锁';
+      if (subEl) subEl.textContent = description;
+      if (getListEl) {
+        getListEl.innerHTML =
+          '<div class="get-item"><div class="get-dot">✓</div>T层 Top1 & Top3 职业完整详解（当前隐藏）</div>' +
+          '<div class="get-item"><div class="get-dot">✓</div>P层性格深度测评（30题 · 约15分钟）</div>' +
+          '<div class="get-item"><div class="get-dot">✓</div>T×P 综合职业匹配报告（6屏深度分析）</div>' +
+          '<div class="get-item"><div class="get-dot">✓</div>个人化风险地图 + 家长行动指令手册</div>';
+      }
+      if (priceOrigEl) priceOrigEl.textContent = '原价 ¥99';
+      if (priceSaveEl) priceSaveEl.textContent = '省 ¥50';
+    } else {
+      if (badgeEl) {
+        badgeEl.innerHTML =
+          '<div style="width:5px;height:5px;border-radius:50%;background:var(--neon-cyan)"></div> ORDER · NAVIGATOR · ¥150';
+      }
+      if (titleEl) titleEl.textContent = '导航者套餐 · 五层完整报告';
+      if (subEl) {
+        subEl.textContent =
+          '支付后解锁 T/P/W/M/A 五层完整解读、Top 5 职业与路径规划（与微信订单描述一致）';
+      }
+      if (getListEl) {
+        getListEl.innerHTML =
+          '<div class="get-item"><div class="get-dot">✓</div>T层完整报告（天赋DNA）</div>' +
+          '<div class="get-item"><div class="get-dot">✓</div>P/W/M/A 四层完整报告</div>' +
+          '<div class="get-item"><div class="get-dot">✓</div>Top 5 职业完整解读与 AI 风险分析</div>' +
+          '<div class="get-item"><div class="get-dot">✓</div>职业路径规划 · 实付 ¥150</div>';
+      }
+      if (priceOrigEl) priceOrigEl.textContent = '原价 ¥199';
+      if (priceSaveEl) priceSaveEl.textContent = '省 ¥49';
+    }
+
+    // 更新页面显示价格（与 create-order amount 一致）
     const priceVal = document.querySelector('.price-val');
     if (priceVal) priceVal.innerHTML = '<span>¥</span>' + displayYuan;
     const qrHintStrong = document.querySelector('.qr-hint strong');
