@@ -26,6 +26,9 @@ app.listen(PORT, () => {
 // 其余初始化不能阻塞启动
 let pool = null;
 let pay = null;
+let wxPrivateKeyPem = null;
+let wxMchid = null;
+let wxSerialNo = null;
 
 function pemFromEnv(val) {
   if (val == null || String(val).trim() === '') return null;
@@ -85,6 +88,10 @@ try {
   }
 
   if (publicKey && privateKey) {
+    wxPrivateKeyPem = privateKey.toString('utf8');
+    wxMchid = String(process.env.WECHAT_MCHID || '').trim();
+    wxSerialNo = String(process.env.WECHAT_SERIAL_NO || '').trim();
+
     pay = new WxPay({
       appid: process.env.WECHAT_APPID,
       mchid: process.env.WECHAT_MCHID,
@@ -283,6 +290,27 @@ function newSessionToken() {
   return crypto.randomBytes(24).toString('hex');
 }
 
+function buildWechatV3Authorization(method, pathWithQuery, requestBody) {
+  const nonceStr = crypto.randomBytes(16).toString('hex');
+  const timestamp = Math.floor(Date.now() / 1000).toString();
+  const bodyText = typeof requestBody === 'string' ? requestBody : JSON.stringify(requestBody || {});
+  const message = `${method}\n${pathWithQuery}\n${timestamp}\n${nonceStr}\n${bodyText}\n`;
+
+  const signature = crypto
+    .createSign('RSA-SHA256')
+    .update(message)
+    .sign(wxPrivateKeyPem, 'base64');
+
+  const token =
+    `mchid="${wxMchid}",` +
+    `nonce_str="${nonceStr}",` +
+    `timestamp="${timestamp}",` +
+    `serial_no="${wxSerialNo}",` +
+    `signature="${signature}"`;
+
+  return `WECHATPAY2-SHA256-RSA2048 ${token}`;
+}
+
 app.use(express.json({ limit: '2mb', verify: (req, res, buf) => { req.rawBody = buf; } }));
 app.use(express.urlencoded({ extended: false }));
 
@@ -292,7 +320,7 @@ app.post('/api/pay/create-order', async (req, res) => {
   const amountYuan = body.amount;
   const description = body.description;
 
-  if (!pay) {
+  if (!pay || !wxPrivateKeyPem || !wxMchid || !wxSerialNo) {
     return res.status(503).json({ success: false, error: 'WxPay not initialized' });
   }
   if (!pool) {
@@ -348,19 +376,45 @@ app.post('/api/pay/create-order', async (req, res) => {
       })
     );
 
-    const result = await pay.transactions_native({
+    const wxRequestBody = {
       description: String(description).trim(),
       out_trade_no: orderId,
       notify_url,
       amount: { total: totalFen, currency: 'CNY' },
-      attach: sessionToken.slice(0, 120),
-      scene_info: { payer_client_ip: getClientIp(req) },
+    };
+    console.log('[WX NATIVE REQUEST BODY]', JSON.stringify(wxRequestBody));
+
+    const wxPath = '/v3/pay/transactions/native';
+    const authorization = buildWechatV3Authorization('POST', wxPath, wxRequestBody);
+
+    const wxResp = await fetch(`https://api.mch.weixin.qq.com${wxPath}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: authorization,
+      },
+      body: JSON.stringify(wxRequestBody),
     });
 
-    console.log('[PAY CREATE WX RAW RESULT]', JSON.stringify(result));
+    const status = wxResp.status;
+    const rawText = await wxResp.text();
+    console.log('[WX NATIVE RESPONSE STATUS]', status);
+    console.log('[WX NATIVE RESPONSE TEXT]', rawText);
 
-    const { code_url, status } = pickNativeResult(result);
-    const okStatus = status === 200 || status === undefined;
+    let parsed = null;
+    try {
+      parsed = rawText ? JSON.parse(rawText) : null;
+    } catch (_) {
+      parsed = null;
+    }
+    if (parsed) {
+      console.log('[WX NATIVE RESPONSE JSON]', parsed);
+    }
+    console.log('[PAY CREATE WX RAW RESULT]', parsed || rawText);
+
+    const code_url = parsed && parsed.code_url ? parsed.code_url : undefined;
+    const okStatus = status >= 200 && status < 300;
 
     console.log('[PAY CREATE] orderId', orderId);
     console.log('[PAY CREATE] sessionToken', sessionToken);
@@ -376,7 +430,10 @@ app.post('/api/pay/create-order', async (req, res) => {
     } catch (delErr) {
       console.error('[PAY CREATE]', delErr && delErr.message ? delErr.message : String(delErr));
     }
-    return res.status(500).json({ success: false, error: 'WeChat did not return code_url' });
+    return res.status(500).json({
+      success: false,
+      error: rawText || (parsed && parsed.message) || 'create order failed',
+    });
   } catch (err) {
     console.error('[PAY CREATE ERROR]', err);
     console.error('[PAY CREATE ERROR FULL]', err);
