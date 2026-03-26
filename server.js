@@ -298,7 +298,7 @@ app.post('/api/pay/create-order', async (req, res) => {
   if (!pool) {
     return res.status(503).json({ success: false, error: 'Database not configured' });
   }
-  const BASE_URL = String(process.env.BASE_URL || 'https://www.careertalentai.com').replace(/\/$/, '');
+  const BASE_URL = String(process.env.BASE_URL || 'https://careertalent-1.onrender.com').replace(/\/$/, '');
   if (packageType == null || String(packageType).trim() === '') {
     return res.status(400).json({ success: false, error: 'Missing packageType' });
   }

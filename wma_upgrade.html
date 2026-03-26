@@ -198,14 +198,14 @@ margin-top:18px;
 
 function payAndEnter(){
 if(localStorage.getItem("talentai_wma_paid")){
-window.location.href="wma_payment.html";
+window.location.href="https://careertalent-1.onrender.com/wma_payment.html";
 return;
 }
 
 if(confirm("确认支付 ¥150 解锁五层终极报告？")){
 localStorage.setItem("talentai_wma_paid","1");
 alert("支付成功！现在进入 WMA 长测评");
-window.location.href="wma_payment.html";
+window.location.href="https://careertalent-1.onrender.com/wma_payment.html";
 }
 }
 

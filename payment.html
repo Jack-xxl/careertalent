@@ -592,8 +592,9 @@ body {
   draw();
 })();
 
-// 后端 API 基址（Render）
+// 后端/前端统一域名（Render）
 const API_BASE = 'https://careertalent-1.onrender.com';
+const SITE_BASE = 'https://careertalent-1.onrender.com';
 
 // ── Order ID（来自后端）──
 let orderId = null;
@@ -806,7 +807,7 @@ function handlePaidSuccess() {
   }
 
   setTimeout(() => {
-    window.location.href = dest;
+    window.location.href = `${SITE_BASE}/${dest}`;
   }, 300);
 }
 
@@ -1062,7 +1063,7 @@ function buildFullCareerCards() {
 }
 
 function goBack() {
-  window.location.href = 'result.html'; // ← 改成你的T层结果页路径
+  window.location.href = `${SITE_BASE}/result.html`; // ← 改成你的T层结果页路径
 }
 
 // ── Create order + Auto poll payment ──
@@ -1149,7 +1150,7 @@ function goBack() {
     }
 
     // 1) 新链路：不依赖手机号，仅 orderId + sessionToken 解锁
-    const resp = await fetch('https://careertalent-1.onrender.com/api/pay/create-order', {
+    const resp = await fetch(`${API_BASE}/api/pay/create-order`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

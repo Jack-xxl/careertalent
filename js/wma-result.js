@@ -236,7 +236,8 @@ function showWmaError(msg) {
 
 // 暴露给 HTML 按钮调用
 function buyPackage(type) {
-  window.location.href = 'payment.html?package=' + encodeURIComponent(type);
+  window.location.href =
+    'https://careertalent-1.onrender.com/payment.html?package=' + encodeURIComponent(type);
 }
 if (typeof window !== 'undefined') window.buyPackage = buyPackage;
 

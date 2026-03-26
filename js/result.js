@@ -113,7 +113,8 @@ function showError(message) {
 
 function buyPackage(packageType) {
   console.log('购买套餐:', packageType);
-  window.location.href = 'payment.html?package=' + encodeURIComponent(packageType);
+  window.location.href =
+    'https://careertalent-1.onrender.com/payment.html?package=' + encodeURIComponent(packageType);
 }
 
 
