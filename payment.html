@@ -1066,13 +1066,14 @@ function goBack() {
 }
 
 // ── Create order + Auto poll payment ──
-// e.g. payment.html?package=pathfinder | navigator | 49 | 150
+// e.g. payment.html?package=pathfinder | navigator | 49 | 150（create-order 仅传 pathfinder | navigator）
 (async function initPaymentIntegration() {
   try {
     const params = new URLSearchParams(location.search);
     const rawPkg = String(params.get('package') || '').trim().toLowerCase();
 
-    let packageTypeForApi = rawPkg;
+    /** 仅用于 POST /api/pay/create-order，必须是 pathfinder | navigator */
+    let createOrderPackageType = '';
     let displayYuan = null;
     let description = '';
 
@@ -1080,11 +1081,11 @@ function goBack() {
     const NAVIGATOR_DESC = 'TalentAI Navigator · 五层完整报告';
 
     if (rawPkg === 'pathfinder' || rawPkg === '49') {
-      packageTypeForApi = rawPkg === '49' ? '49' : 'pathfinder';
+      createOrderPackageType = 'pathfinder';
       displayYuan = 49;
       description = PATHFINDER_DESC;
     } else if (rawPkg === 'navigator' || rawPkg === '150') {
-      packageTypeForApi = rawPkg === '150' ? '150' : 'navigator';
+      createOrderPackageType = 'navigator';
       displayYuan = 150;
       description = NAVIGATOR_DESC;
     }
@@ -1152,7 +1153,7 @@ function goBack() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        packageType: packageTypeForApi,
+        packageType: createOrderPackageType,
         amount: displayYuan,
         description,
       }),
@@ -1166,7 +1167,7 @@ function goBack() {
     const sessionToken = data.sessionToken;
     if (orderEl) orderEl.textContent = '// ORDER_ID: ' + orderId;
     try {
-      localStorage.setItem('talentai_paid_package_type', packageTypeForApi);
+      localStorage.setItem('talentai_paid_package_type', createOrderPackageType);
       localStorage.setItem('talentai_order_id', orderId);
       if (sessionToken) localStorage.setItem('talentai_session_token', sessionToken);
     } catch (e) {}
