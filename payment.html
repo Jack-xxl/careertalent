@@ -1178,10 +1178,11 @@ function goBack() {
     showQR();
     await renderQrToCanvas(data.codeUrl);
     startOrderStatusPolling(orderId);
-  } catch (e) {
-    console.error(e);
+  } catch (err) {
+    console.error('[PAYMENT INIT ERROR FULL]', err);
+    if (err && err.errors) console.error('[PAYMENT INIT SUB ERRORS]', err.errors);
     if (orderEl) orderEl.textContent = '// ORDER_ID: 创建失败';
-    alert('付款初始化失败：' + (e?.message || String(e)));
+    alert(err?.error || err?.message || String(err));
   }
 })();
 </script>

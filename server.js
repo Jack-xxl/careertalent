@@ -273,8 +273,6 @@ app.use(express.json({ limit: '2mb', verify: (req, res, buf) => { req.rawBody = 
 app.use(express.urlencoded({ extended: false }));
 
 app.post('/api/pay/create-order', async (req, res) => {
-  console.log('[PAY CREATE REQUEST]', req.body);
-
   const body = req.body || {};
   const packageType = body.packageType;
   const amountYuan = body.amount;
@@ -306,6 +304,8 @@ app.post('/api/pay/create-order', async (req, res) => {
   const sessionToken = newSessionToken();
   const notify_url = `${String(baseUrl).replace(/\/$/, '')}/api/pay/notify`;
 
+  console.log('[PAY CREATE REQUEST BODY]', JSON.stringify(req.body));
+
   try {
     await pool.query(
       `INSERT INTO pending_orders (order_id, phone, package_type, amount, status, session_token)
@@ -313,12 +313,22 @@ app.post('/api/pay/create-order', async (req, res) => {
       [orderId, null, String(packageType).trim(), totalFen, 'pending', sessionToken]
     );
 
-    const amount = amountYuan;
-    console.log('[PAY CREATE PARAM]', {
-      description,
-      amount,
-      packageType,
+    console.log('[PAY CREATE DB INSERT OK]', {
+      orderId,
+      packageType: String(packageType).trim(),
+      totalFen,
     });
+
+    console.log(
+      '[PAY CREATE WX PARAM]',
+      JSON.stringify({
+        description: String(description).trim(),
+        out_trade_no: orderId,
+        notify_url,
+        amount: { total: totalFen, currency: 'CNY' },
+        scene_info: { payer_client_ip: getClientIp(req) },
+      })
+    );
 
     const result = await pay.transactions_native({
       description: String(description).trim(),
@@ -329,7 +339,7 @@ app.post('/api/pay/create-order', async (req, res) => {
       scene_info: { payer_client_ip: getClientIp(req) },
     });
 
-    console.log('[WX RESULT]', result);
+    console.log('[PAY CREATE WX RAW RESULT]', JSON.stringify(result));
 
     const { code_url, status } = pickNativeResult(result);
     const okStatus = status === 200 || status === undefined;
@@ -351,6 +361,19 @@ app.post('/api/pay/create-order', async (req, res) => {
     return res.status(500).json({ success: false, error: 'WeChat did not return code_url' });
   } catch (err) {
     console.error('[PAY CREATE ERROR]', err);
+    console.error('[PAY CREATE ERROR NAME]', err && err.name);
+    console.error('[PAY CREATE ERROR MESSAGE]', err && err.message);
+    console.error('[PAY CREATE ERROR STRING]', String(err));
+    if (err && err.errors) {
+      console.error(
+        '[PAY CREATE SUB ERRORS]',
+        err.errors.map((e) => ({
+          name: e && e.name,
+          message: e && e.message,
+          stack: e && e.stack,
+        }))
+      );
+    }
     if (err && err.response) {
       console.error('[WX ERROR RESPONSE]', err.response);
     }

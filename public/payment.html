@@ -1128,10 +1128,7 @@ function goBack() {
           '<div style="width:5px;height:5px;border-radius:50%;background:var(--neon-cyan)"></div> ORDER · NAVIGATOR · ¥150';
       }
       if (titleEl) titleEl.textContent = '导航者套餐 · 五层完整报告';
-      if (subEl) {
-        subEl.textContent =
-          '支付后解锁 T/P/W/M/A 五层完整解读、Top 5 职业与路径规划（与微信订单描述一致）';
-      }
+      if (subEl) subEl.textContent = description;
       if (getListEl) {
         getListEl.innerHTML =
           '<div class="get-item"><div class="get-dot">✓</div>T层完整报告（天赋DNA）</div>' +
@@ -1181,10 +1178,11 @@ function goBack() {
     showQR();
     await renderQrToCanvas(data.codeUrl);
     startOrderStatusPolling(orderId);
-  } catch (e) {
-    console.error(e);
+  } catch (err) {
+    console.error('[PAYMENT INIT ERROR FULL]', err);
+    if (err && err.errors) console.error('[PAYMENT INIT SUB ERRORS]', err.errors);
     if (orderEl) orderEl.textContent = '// ORDER_ID: 创建失败';
-    alert('付款初始化失败：' + (e?.message || String(e)));
+    alert(err?.error || err?.message || String(err));
   }
 })();
 </script>
