@@ -815,31 +815,24 @@ async function renderQrToCanvas(codeUrl) {
   const ctx = canvas.getContext('2d');
   const size = 180;
 
-  try {
-    const qrService =
-      'https://api.qrserver.com/v1/create-qr-code/?size=' +
-      encodeURIComponent(String(size + 'x' + size)) +
-      '&data=' +
-      encodeURIComponent(codeUrl);
+  const qrService =
+    'https://api.qrserver.com/v1/create-qr-code/?size=' +
+    encodeURIComponent(String(size + 'x' + size)) +
+    '&data=' +
+    encodeURIComponent(codeUrl);
 
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
 
-    await new Promise((resolve, reject) => {
-      img.onload = () => {
-        ctx.clearRect(0, 0, size, size);
-        ctx.drawImage(img, 0, 0, size, size);
-        resolve();
-      };
-      img.onerror = reject;
-      img.src = qrService;
-    });
-  } catch (e) {
-    // 回退：仍然显示一个“占位二维码”（避免 canvas 空白）
-    try {
-      drawQR();
-    } catch {}
-  }
+  await new Promise((resolve, reject) => {
+    img.onload = () => {
+      ctx.clearRect(0, 0, size, size);
+      ctx.drawImage(img, 0, 0, size, size);
+      resolve();
+    };
+    img.onerror = reject;
+    img.src = qrService;
+  });
 }
 
 function startPolling(phone, packageType) {
@@ -1175,8 +1168,14 @@ function goBack() {
       if (sessionToken) localStorage.setItem('talentai_session_token', sessionToken);
     } catch (e) {}
 
+    const codeUrl = data && (data.code_url || data.codeUrl);
+    if (!codeUrl) {
+      alert('下单失败，请重试');
+      return;
+    }
+
     showQR();
-    await renderQrToCanvas(data.codeUrl);
+    await renderQrToCanvas(codeUrl);
     startOrderStatusPolling(orderId);
   } catch (err) {
     console.error('[PAYMENT INIT ERROR FULL]', err);

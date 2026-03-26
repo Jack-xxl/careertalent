@@ -40,6 +40,7 @@ try {
     WECHAT_MCHID: !!process.env.WECHAT_MCHID,
     WECHAT_SERIAL_NO: !!process.env.WECHAT_SERIAL_NO,
     WECHAT_API_V3_KEY: !!process.env.WECHAT_API_V3_KEY,
+    WECHAT_PRIVATE_KEY_LEN: process.env.WECHAT_PRIVATE_KEY ? process.env.WECHAT_PRIVATE_KEY.length : 0,
     WECHAT_CERT_LEN: process.env.WECHAT_CERT ? process.env.WECHAT_CERT.length : 0,
     WECHAT_KEY_LEN: process.env.WECHAT_KEY ? process.env.WECHAT_KEY.length : 0,
   });
@@ -49,6 +50,19 @@ try {
 
 // 支付初始化（缺证书不允许退出进程）
 try {
+  // 启动时强校验（避免 TLS / AggregateError 隐性失败）
+  const hasWeChatConfig =
+    Boolean(String(process.env.WECHAT_APPID || '').trim()) &&
+    Boolean(String(process.env.WECHAT_MCHID || '').trim()) &&
+    Boolean(String(process.env.WECHAT_SERIAL_NO || '').trim()) &&
+    Boolean(String(process.env.WECHAT_API_V3_KEY || '').trim()) &&
+    Boolean(String(process.env.WECHAT_PRIVATE_KEY || process.env.WECHAT_KEY || '').trim());
+
+  if (!hasWeChatConfig) {
+    console.error('❌ Missing WeChat config');
+    process.exit(1);
+  }
+
   const CERT_PATH = path.join(__dirname, 'apiclient_cert.pem');
   const KEY_PATH = path.join(__dirname, 'apiclient_key.pem');
 
@@ -56,7 +70,7 @@ try {
   let privateKey = null;
 
   const certFromEnv = pemFromEnv(process.env.WECHAT_CERT);
-  const keyFromEnv = pemFromEnv(process.env.WECHAT_KEY);
+  const keyFromEnv = pemFromEnv(process.env.WECHAT_PRIVATE_KEY || process.env.WECHAT_KEY);
 
   if (certFromEnv && keyFromEnv) {
     publicKey = certFromEnv;
@@ -284,10 +298,7 @@ app.post('/api/pay/create-order', async (req, res) => {
   if (!pool) {
     return res.status(503).json({ success: false, error: 'Database not configured' });
   }
-  const baseUrl = process.env.BASE_URL;
-  if (!baseUrl || !String(baseUrl).trim()) {
-    return res.status(500).json({ success: false, error: 'BASE_URL is not set' });
-  }
+  const BASE_URL = String(process.env.BASE_URL || 'https://www.careertalentai.com').replace(/\/$/, '');
   if (packageType == null || String(packageType).trim() === '') {
     return res.status(400).json({ success: false, error: 'Missing packageType' });
   }
@@ -302,9 +313,10 @@ app.post('/api/pay/create-order', async (req, res) => {
 
   const orderId = `PAY${Date.now()}${Math.random().toString(36).slice(2, 8)}`.toUpperCase().slice(0, 32);
   const sessionToken = newSessionToken();
-  const notify_url = `${String(baseUrl).replace(/\/$/, '')}/api/pay/notify`;
+  const notify_url = `${BASE_URL}/api/pay/notify`;
 
   console.log('[PAY CREATE REQUEST BODY]', JSON.stringify(req.body));
+  console.log('[FINAL NOTIFY URL]', notify_url);
 
   try {
     await pool.query(
@@ -319,6 +331,12 @@ app.post('/api/pay/create-order', async (req, res) => {
       totalFen,
     });
 
+    console.log('[PAY CREATE WX PARAM FULL]', {
+      description: String(description).trim(),
+      out_trade_no: orderId,
+      notify_url,
+      totalFen,
+    });
     console.log(
       '[PAY CREATE WX PARAM]',
       JSON.stringify({
@@ -361,6 +379,7 @@ app.post('/api/pay/create-order', async (req, res) => {
     return res.status(500).json({ success: false, error: 'WeChat did not return code_url' });
   } catch (err) {
     console.error('[PAY CREATE ERROR]', err);
+    console.error('[PAY CREATE ERROR FULL]', err);
     console.error('[PAY CREATE ERROR NAME]', err && err.name);
     console.error('[PAY CREATE ERROR MESSAGE]', err && err.message);
     console.error('[PAY CREATE ERROR STRING]', String(err));
@@ -376,6 +395,9 @@ app.post('/api/pay/create-order', async (req, res) => {
     }
     if (err && err.response) {
       console.error('[WX ERROR RESPONSE]', err.response);
+    }
+    if (err && err.response && err.response.data) {
+      console.error('[WX ERROR RESPONSE DATA]', err.response.data);
     }
     if (err && err.stack) {
       console.error('[STACK]', err.stack);
