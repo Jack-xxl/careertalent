@@ -273,6 +273,8 @@ app.use(express.json({ limit: '2mb', verify: (req, res, buf) => { req.rawBody = 
 app.use(express.urlencoded({ extended: false }));
 
 app.post('/api/pay/create-order', async (req, res) => {
+  console.log('[PAY CREATE REQUEST]', req.body);
+
   const body = req.body || {};
   const packageType = body.packageType;
   const amountYuan = body.amount;
@@ -311,6 +313,13 @@ app.post('/api/pay/create-order', async (req, res) => {
       [orderId, null, String(packageType).trim(), totalFen, 'pending', sessionToken]
     );
 
+    const amount = amountYuan;
+    console.log('[PAY CREATE PARAM]', {
+      description,
+      amount,
+      packageType,
+    });
+
     const result = await pay.transactions_native({
       description: String(description).trim(),
       out_trade_no: orderId,
@@ -319,6 +328,8 @@ app.post('/api/pay/create-order', async (req, res) => {
       attach: sessionToken.slice(0, 120),
       scene_info: { payer_client_ip: getClientIp(req) },
     });
+
+    console.log('[WX RESULT]', result);
 
     const { code_url, status } = pickNativeResult(result);
     const okStatus = status === 200 || status === undefined;
@@ -338,14 +349,23 @@ app.post('/api/pay/create-order', async (req, res) => {
       console.error('[PAY CREATE]', delErr && delErr.message ? delErr.message : String(delErr));
     }
     return res.status(500).json({ success: false, error: 'WeChat did not return code_url' });
-  } catch (e) {
-    console.error('[PAY CREATE]', e && e.message ? e.message : String(e));
+  } catch (err) {
+    console.error('[PAY CREATE ERROR]', err);
+    if (err && err.response) {
+      console.error('[WX ERROR RESPONSE]', err.response);
+    }
+    if (err && err.stack) {
+      console.error('[STACK]', err.stack);
+    }
     try {
       await pool.query('DELETE FROM pending_orders WHERE order_id = $1', [orderId]);
     } catch (delErr) {
       console.error('[PAY CREATE]', delErr && delErr.message ? delErr.message : String(delErr));
     }
-    return res.status(500).json({ success: false, error: e.message || String(e) });
+    return res.status(500).json({
+      success: false,
+      error: err && err.message ? err.message : 'create order failed',
+    });
   }
 });
 
