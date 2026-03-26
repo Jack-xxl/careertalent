@@ -592,6 +592,9 @@ body {
   draw();
 })();
 
+// 后端 API 基址（Render）
+const API_BASE = 'https://careertalent-1.onrender.com';
+
 // ── Order ID（来自后端）──
 let orderId = null;
 let pollTimer = null;
@@ -841,7 +844,7 @@ function startPolling(phone, packageType) {
   pollTimer = setInterval(async () => {
     try {
       const r = await fetch(
-        `/api/check-payment?phone=${encodeURIComponent(phone)}&packageType=${encodeURIComponent(
+        `${API_BASE}/api/check-payment?phone=${encodeURIComponent(phone)}&packageType=${encodeURIComponent(
           packageType
         )}`
       );
@@ -871,7 +874,7 @@ function startOrderStatusPolling(orderIdValue) {
       console.log('checking payment status...', orderIdValue);
       const sessionTokenValue = localStorage.getItem('talentai_session_token');
       const r = await fetch(
-        `/api/order-status?orderId=${encodeURIComponent(orderIdValue)}&sessionToken=${encodeURIComponent(
+        `${API_BASE}/api/order-status?orderId=${encodeURIComponent(orderIdValue)}&sessionToken=${encodeURIComponent(
           sessionTokenValue || ''
         )}`
       );
@@ -1145,7 +1148,7 @@ function goBack() {
     }
 
     // 1) 新链路：不依赖手机号，仅 orderId + sessionToken 解锁
-    const resp = await fetch('/api/pay/create-order', {
+    const resp = await fetch('https://careertalent-1.onrender.com/api/pay/create-order', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
