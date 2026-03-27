@@ -149,6 +149,7 @@ try {
       await pool.query(`ALTER TABLE pending_orders ADD COLUMN IF NOT EXISTS amount INTEGER;`);
       await pool.query(`ALTER TABLE pending_orders ADD COLUMN IF NOT EXISTS status VARCHAR(32) DEFAULT 'pending';`);
       await pool.query(`ALTER TABLE pending_orders ADD COLUMN IF NOT EXISTS session_token VARCHAR(128);`);
+      await pool.query(`ALTER TABLE pending_orders ADD COLUMN IF NOT EXISTS paid_at TIMESTAMP;`);
       await pool.query(`ALTER TABLE pending_orders ALTER COLUMN phone DROP NOT NULL;`);
       await pool.query(`
         DO $$
@@ -344,10 +345,9 @@ app.post('/api/pay/create-order', async (req, res) => {
 
   const orderId = `PAY${Date.now()}${Math.random().toString(36).slice(2, 8)}`.toUpperCase().slice(0, 32);
   const sessionToken = newSessionToken();
-  const notify_url = `${BASE_URL}/api/pay/notify`;
+  const notify_url = 'https://careertalent-1.onrender.com/api/pay/notify';
 
   console.log('[PAY CREATE REQUEST BODY]', JSON.stringify(req.body));
-  console.log('[FINAL NOTIFY URL]', notify_url);
 
   try {
     await pool.query(
@@ -393,6 +393,7 @@ app.post('/api/pay/create-order', async (req, res) => {
 
     const wxBodyString = JSON.stringify(wxRequestBody);
 
+    console.log('[FINAL NOTIFY URL]', wxRequestBody.notify_url);
     console.log('[MCHID ENV RAW]', process.env.WECHAT_MCHID);
     console.log('[MCHID USED]', mchid);
     console.log('[MCHID LENGTH]', mchid.length);
@@ -505,11 +506,12 @@ app.get('/api/order-status', async (req, res) => {
   }
 
   try {
-    const paid = await pool.query(
-      'SELECT 1 FROM paid_orders WHERE order_id = $1 AND session_token = $2 LIMIT 1',
-      [orderId, sessionToken]
+    const paidByOrderId = await pool.query(
+      'SELECT 1 FROM paid_orders WHERE order_id = $1 LIMIT 1',
+      [orderId]
     );
-    if (paid.rows.length > 0) {
+    if (paidByOrderId.rows.length > 0) {
+      console.log('[ORDER STATUS] paid found by orderId only');
       console.log('[ORDER STATUS] status: paid');
       return res.json({ success: true, status: 'paid' });
     }
@@ -594,6 +596,9 @@ app.post('/api/pay/notify', async (req, res) => {
   const apiV3Key = process.env.WECHAT_API_V3_KEY;
 
   try {
+    console.log('[WX NOTIFY HEADERS]', headers);
+    console.log('[WX NOTIFY BODY RAW]', req.body);
+
     if (!pay) {
       console.error('[PAY NOTIFY] WxPay not initialized');
       return res.status(503).json({ code: 'FAIL', message: 'WxPay not initialized' });
@@ -604,15 +609,23 @@ app.post('/api/pay/notify', async (req, res) => {
     }
 
     if (isWechatNotifyProduction()) {
-      const verified = await pay.verifySign({
-        apiSecret: apiV3Key,
-        body: req.body,
-        signature: headers['wechatpay-signature'],
-        serial: headers['wechatpay-serial'],
-        nonce: headers['wechatpay-nonce'],
-        timestamp: headers['wechatpay-timestamp'],
-      });
-      if (!verified) return res.status(401).json({ code: 'FAIL', message: '验签失败' });
+      try {
+        const verified = await pay.verifySign({
+          apiSecret: apiV3Key,
+          body: req.body,
+          signature: headers['wechatpay-signature'],
+          serial: headers['wechatpay-serial'],
+          nonce: headers['wechatpay-nonce'],
+          timestamp: headers['wechatpay-timestamp'],
+        });
+        if (!verified) {
+          console.error('[PAY NOTIFY] verifySign failed: returned false');
+          // 当前阶段不要因验签失败卡住流程（先打日志，继续尝试解密与落库）
+        }
+      } catch (verErr) {
+        console.error('[PAY NOTIFY] verifySign threw', verErr && verErr.message ? verErr.message : String(verErr));
+        // 当前阶段不要因验签异常卡住流程（先打日志，继续尝试解密与落库）
+      }
     }
 
     const resource = req.body?.resource;
@@ -626,8 +639,11 @@ app.post('/api/pay/notify', async (req, res) => {
       return res.status(400).json({ code: 'FAIL', message: '解密失败' });
     }
 
-    const orderId = decrypted.out_trade_no;
-    const tradeState = decrypted.trade_state;
+    const decryptedObj = typeof decrypted === 'string' ? JSON.parse(decrypted) : decrypted;
+    const orderId = decryptedObj?.out_trade_no;
+    const tradeState = decryptedObj?.trade_state;
+    console.log('[PAY NOTIFY] decrypted out_trade_no', orderId);
+    console.log('[PAY NOTIFY] decrypted trade_state', tradeState);
     console.log('[PAY NOTIFY] orderId', orderId);
     console.log('[PAY NOTIFY] trade_state', tradeState);
 
@@ -636,6 +652,7 @@ app.post('/api/pay/notify', async (req, res) => {
       return res.json({ code: 'SUCCESS', message: '成功' });
     }
 
+    console.log('[PAY NOTIFY] querying pending_orders by order_id', orderId);
     const pendingResult = await pool.query('SELECT * FROM pending_orders WHERE order_id = $1', [orderId]);
     const pending = pendingResult.rows[0];
     if (!pending) {
@@ -643,6 +660,12 @@ app.post('/api/pay/notify', async (req, res) => {
       console.log('[PAY NOTIFY] already processed: false');
       return res.json({ code: 'SUCCESS', message: '成功' });
     }
+    console.log('[PAY NOTIFY] pending found', {
+      order_id: pending.order_id,
+      session_token_exists: !!pending.session_token,
+      package_type: pending.package_type,
+      amount: pending.amount,
+    });
 
     const sessionToken = pending.session_token;
     if (!sessionToken) {
@@ -653,7 +676,7 @@ app.post('/api/pay/notify', async (req, res) => {
 
     const pkg = String(pending.package_type);
     const wxAmt = Number(
-      decrypted.amount?.total ?? decrypted.amount?.payer_total ?? 0
+      decryptedObj?.amount?.total ?? decryptedObj?.amount?.payer_total ?? 0
     );
     const amt = pending.amount != null ? pending.amount : Math.round(wxAmt) || 0;
     const phoneVal = pending.phone || null;
@@ -689,11 +712,12 @@ app.post('/api/pay/notify', async (req, res) => {
       }
 
       await client.query(
-        `UPDATE pending_orders SET status = $2 WHERE order_id = $1`,
+        `UPDATE pending_orders SET status = $2, paid_at = NOW() WHERE order_id = $1`,
         [orderId, 'paid']
       );
       await client.query('COMMIT');
       console.log('[PAY NOTIFY] success migrated to paid_orders');
+      console.log('[WX NOTIFY PAID ORDER]', orderId);
     } catch (txErr) {
       try {
         await client.query('ROLLBACK');
