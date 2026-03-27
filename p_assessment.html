@@ -62,6 +62,10 @@ body{
 <body>
 <div class="container">
 <h2>P层性格深度测评</h2>
+<div id="attemptInfo" style="margin:10px 0 16px;color:#93c5fd;font-size:14px;"></div>
+<div id="attemptExhausted" style="display:none;margin-bottom:16px;padding:12px 14px;background:#1f2937;border:1px solid #374151;border-radius:10px;color:#fca5a5;">
+  你的测试次数已用完。如需再次测试，请升级或重新购买。
+</div>
 <div id="testSection">
   <div class="progress">
     <div class="progress-bar" id="progressBar"></div>
@@ -79,17 +83,69 @@ body{
 
 <script>
 
-// 防止未支付直接访问
-if (!localStorage.getItem('talentai_premium')) {
+// 防止未支付直接访问（49元链路统一判定）
+const paid =
+  localStorage.getItem('talentai_paid') === '1' ||
+  localStorage.getItem('talentai_p_paid') === '1';
+
+if (!paid) {
   window.location.href = 'https://careertalent-1.onrender.com/payment.html?package=pathfinder';
+}
+
+function getPRemaining() {
+  return parseInt(localStorage.getItem('talentai_p_remaining') || '0', 10);
+}
+
+function setPRemaining(v) {
+  localStorage.setItem('talentai_p_remaining', String(Math.max(0, v)));
+}
+
+function isPAttemptActive() {
+  return localStorage.getItem('talentai_p_attempt_active') === '1';
+}
+
+function setPAttemptActive(v) {
+  if (v) {
+    localStorage.setItem('talentai_p_attempt_active', '1');
+  } else {
+    localStorage.removeItem('talentai_p_attempt_active');
+  }
+}
+
+function updateAttemptInfo() {
+  const infoEl = document.getElementById('attemptInfo');
+  const left = getPRemaining();
+  if (infoEl) {
+    infoEl.innerText = `你当前还剩 ${left} 次测试机会`;
+  }
 }
 
 let questions = [];
 let currentIndex = 0;
 let answers = [];
 
+// 进入测评前仅检查次数；不立刻扣减（防刷新误扣）
+const pRemaining = getPRemaining();
+const pActive = isPAttemptActive();
+if (!pActive && pRemaining <= 0) {
+  const exhaustedEl = document.getElementById('attemptExhausted');
+  const sectionEl = document.getElementById('testSection');
+  if (exhaustedEl) exhaustedEl.style.display = 'block';
+  if (sectionEl) sectionEl.style.display = 'none';
+}
+updateAttemptInfo();
+
 // 加载题目
 async function loadQuestions(){
+  // 真正开始本次测评（进入第一题）时才扣减一次
+  if (!isPAttemptActive()) {
+    const remaining = getPRemaining();
+    if (remaining <= 0) return;
+    setPRemaining(remaining - 1);
+    setPAttemptActive(true);
+    updateAttemptInfo();
+  }
+
   const res = await fetch("data/p-layer-questions.json");
   const data = await res.json();
   questions = data.questions;
@@ -226,11 +282,14 @@ function calculateResult(){
   );
 
   localStorage.setItem("talentai_p_completed","1");
+  setPAttemptActive(false);
 
   window.location.href = "talentai_v3.html";
 }
 
-loadQuestions();
+if (document.getElementById('testSection').style.display !== 'none') {
+  loadQuestions();
+}
 
 </script>
 </body>

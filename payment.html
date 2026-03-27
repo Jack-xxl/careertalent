@@ -793,6 +793,7 @@ function handlePaidSuccess() {
   // 写入支付标记（供 p_assessment.html / WMA 流程防止未支付访问）
   try {
     localStorage.setItem('talentai_premium', '1');
+    localStorage.setItem('talentai_paid', '1');
     if (orderId) {
       localStorage.setItem('talentai_order', orderId);
       localStorage.setItem('talentai_order_id', orderId);
@@ -801,6 +802,15 @@ function handlePaidSuccess() {
   } catch (e) {}
 
   const pkg = (localStorage.getItem('talentai_paid_package_type') || '').toLowerCase();
+  try {
+    if (pkg === 'pathfinder' || pkg === '49') {
+      localStorage.setItem('talentai_p_paid', '1');
+      localStorage.setItem('talentai_p_remaining', '3');
+    }
+    if (pkg === 'navigator' || pkg === '150') {
+      localStorage.setItem('talentai_wma_remaining', '3');
+    }
+  } catch (e) {}
   let dest = 'p_assessment.html';
   if (pkg === 'navigator' || pkg === '150') {
     dest = 'wma_upgrade.html';

@@ -131,6 +131,7 @@ function handlePaidSuccess() {
   localStorage.setItem('talentai_wma_unlocked','1');
   localStorage.setItem('talentai_paid_package_type','navigator');
   localStorage.setItem('talentai_wma_paid_at', new Date().toISOString());
+  localStorage.setItem('talentai_wma_remaining', '3');
 
   // 清除旧测评数据
   localStorage.removeItem('talentai_wma_completed_at');
