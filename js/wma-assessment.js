@@ -86,13 +86,22 @@ let isSubmitting  = false;   // 防止重复触发结算
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 window.addEventListener('DOMContentLoaded', async () => {
-    restoreProgress();
+    const qs = new URLSearchParams(window.location.search);
+    const forceRestart = qs.get('restart') === '1';
 
-    // 已完成过 → 直接跳完成页
-    if (localStorage.getItem('talentai_wma_completed_at')) {
-        showScreen('done-screen');
-        return;
+    if (forceRestart) {
+        try {
+            localStorage.removeItem('talentai_wma_completed_at');
+            localStorage.removeItem('talentai_wma_answers');
+            localStorage.removeItem('talentai_wma_layer');
+            localStorage.removeItem('talentai_wma_q');
+            localStorage.removeItem('talentai_wma_timer');
+            localStorage.removeItem('talentai_wma_scores');
+            localStorage.removeItem('talentai_wma_result');
+        } catch (e) {}
     }
+
+    restoreProgress();
 
     // 已付费 + 有进度 → 跳过付费页直接回到答题
     const paid = localStorage.getItem('talentai_wma_paid');
