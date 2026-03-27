@@ -85,6 +85,7 @@ body{
 
 // 防止未支付直接访问（49元链路统一判定）
 const paid =
+  localStorage.getItem('talentai_premium') === '1' ||
   localStorage.getItem('talentai_paid') === '1' ||
   localStorage.getItem('talentai_p_paid') === '1';
 
