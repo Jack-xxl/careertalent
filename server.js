@@ -290,10 +290,10 @@ function newSessionToken() {
   return crypto.randomBytes(24).toString('hex');
 }
 
-function buildWechatV3Authorization(method, pathWithQuery, requestBody) {
+function buildWechatV3Authorization(method, pathWithQuery, requestBodyText, mchid) {
   const nonceStr = crypto.randomBytes(16).toString('hex');
   const timestamp = Math.floor(Date.now() / 1000).toString();
-  const bodyText = typeof requestBody === 'string' ? requestBody : JSON.stringify(requestBody || {});
+  const bodyText = typeof requestBodyText === 'string' ? requestBodyText : JSON.stringify(requestBodyText || {});
   const message = `${method}\n${pathWithQuery}\n${timestamp}\n${nonceStr}\n${bodyText}\n`;
 
   const signature = crypto
@@ -302,7 +302,7 @@ function buildWechatV3Authorization(method, pathWithQuery, requestBody) {
     .sign(wxPrivateKeyPem, 'base64');
 
   const token =
-    `mchid="${wxMchid}",` +
+    `mchid="${mchid}",` +
     `nonce_str="${nonceStr}",` +
     `timestamp="${timestamp}",` +
     `serial_no="${wxSerialNo}",` +
@@ -320,7 +320,10 @@ app.post('/api/pay/create-order', async (req, res) => {
   const amountYuan = body.amount;
   const description = body.description;
 
-  if (!pay || !wxPrivateKeyPem || !wxMchid || !wxSerialNo) {
+  const mchid = String(process.env.WECHAT_MCHID || '').trim();
+  const appid = String(process.env.WECHAT_APPID || '').trim();
+
+  if (!pay || !wxPrivateKeyPem || !wxSerialNo || !mchid || !appid) {
     return res.status(503).json({ success: false, error: 'WxPay not initialized' });
   }
   if (!pool) {
@@ -377,15 +380,28 @@ app.post('/api/pay/create-order', async (req, res) => {
     );
 
     const wxRequestBody = {
+      appid,
+      mchid,
       description: String(description).trim(),
       out_trade_no: orderId,
       notify_url,
-      amount: { total: totalFen, currency: 'CNY' },
+      amount: {
+        total: totalFen,
+        currency: 'CNY',
+      },
     };
-    console.log('[WX NATIVE REQUEST BODY]', JSON.stringify(wxRequestBody));
+
+    const wxBodyString = JSON.stringify(wxRequestBody);
+
+    console.log('[MCHID ENV RAW]', process.env.WECHAT_MCHID);
+    console.log('[MCHID USED]', mchid);
+    console.log('[MCHID LENGTH]', mchid.length);
+    console.log('[APPID USED]', appid);
+    console.log('[WX NATIVE REQUEST BODY]', wxBodyString);
 
     const wxPath = '/v3/pay/transactions/native';
-    const authorization = buildWechatV3Authorization('POST', wxPath, wxRequestBody);
+    const authorization = buildWechatV3Authorization('POST', wxPath, wxBodyString, mchid);
+    console.log('[AUTH HEADER]', authorization);
 
     const wxResp = await fetch(`https://api.mch.weixin.qq.com${wxPath}`, {
       method: 'POST',
@@ -394,7 +410,7 @@ app.post('/api/pay/create-order', async (req, res) => {
         Accept: 'application/json',
         Authorization: authorization,
       },
-      body: JSON.stringify(wxRequestBody),
+      body: wxBodyString,
     });
 
     const status = wxResp.status;
