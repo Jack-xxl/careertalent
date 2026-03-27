@@ -1423,8 +1423,8 @@
 
 
   <!-- 付费跳转 -->
-  <div style="padding:32px 20px 60px;text-align:center;">
-    <div style="background:#111827;border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:28px 20px;">
+  <div id="navigatorPaywallWrap" style="padding:32px 20px 60px;text-align:center;">
+    <div id="navigatorPaywallCard" style="background:#111827;border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:28px 20px;">
       <div style="font-size:13px;color:rgba(255,255,255,0.45);margin-bottom:6px;">你现在看到的是 P层报告（第2层）</div>
       <div style="font-size:19px;font-weight:800;color:#fff;margin-bottom:16px;">解锁五层终极人生导航报告</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;text-align:left;">
@@ -1433,13 +1433,42 @@
         <div style="font-size:12px;color:rgba(255,255,255,0.55);">③ A · 行动力模型<br><span style="color:rgba(255,255,255,0.3);font-size:11px;">拖延/执行/试错三种模式</span></div>
         <div style="font-size:12px;color:rgba(255,255,255,0.55);">④ 五层终极路线报告<br><span style="color:rgba(255,255,255,0.3);font-size:11px;">T+P+W+M+A 全面建议</span></div>
       </div>
-      <a href="wma_payment.html"
+      <a id="navigatorUnlockBtn" href="https://careertalent-1.onrender.com/wma_payment.html"
          style="display:block;background:#22c55e;color:#fff;text-decoration:none;border-radius:50px;padding:16px;font-size:16px;font-weight:800;letter-spacing:0.5px;box-shadow:0 4px 20px rgba(34,197,94,0.35);">
         解锁·五层终极报告 ¥150
+      </a>
+      <div id="navigatorUnlockedHint" style="display:none;margin-top:12px;font-size:13px;color:#86efac;">
+        已解锁 Navigator / 五层报告，可直接继续后续内容。
+      </div>
+      <a id="navigatorFullReportLink"
+         href="https://careertalent-1.onrender.com/wma_upgrade.html"
+         style="display:none;margin-top:10px;background:#2563eb;color:#fff;text-decoration:none;border-radius:50px;padding:12px 16px;font-size:14px;font-weight:700;">
+        进入完整五层报告
       </a>
     </div>
   </div>
   <!-- /付费跳转 -->
+
+  <script>
+    (function syncNavigatorUnlockState() {
+      const unlockBtn = document.getElementById('navigatorUnlockBtn');
+      const hint = document.getElementById('navigatorUnlockedHint');
+      const card = document.getElementById('navigatorPaywallCard');
+      const fullReportLink = document.getElementById('navigatorFullReportLink');
+
+      const wmaUnlocked =
+        localStorage.getItem('talentai_wma_unlocked') === '1' ||
+        localStorage.getItem('talentai_wma_paid') === '1' ||
+        String(localStorage.getItem('talentai_paid_package_type') || '').toLowerCase() === 'navigator';
+
+      if (!wmaUnlocked) return;
+
+      if (unlockBtn) unlockBtn.style.display = 'none';
+      if (hint) hint.style.display = 'block';
+      if (fullReportLink) fullReportLink.style.display = 'inline-block';
+      if (card) card.style.borderColor = 'rgba(34,197,94,0.45)';
+    })();
+  </script>
 
 </body>
 </html>
