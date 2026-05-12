@@ -4,6 +4,7 @@ const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
 const express = require('express');
+const cors = require('cors');
 const WxPay = require('wechatpay-node-v3');
 const { Pool } = require('pg');
 
@@ -14,6 +15,13 @@ app.disable('x-powered-by');
 const PORT = process.env.PORT || 3000;
 console.log('ENV PORT =', process.env.PORT);
 console.log('Using PORT =', PORT);
+
+// CORS：允许任意来源（含 file:// -> Origin: null）
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -314,6 +322,14 @@ function buildWechatV3Authorization(method, pathWithQuery, requestBodyText, mchi
 
 app.use(express.json({ limit: '2mb', verify: (req, res, buf) => { req.rawBody = buf; } }));
 app.use(express.urlencoded({ extended: false }));
+
+// 发送短信验证码（占位：后续接真实短信服务）
+app.post('/api/send_code', (req, res) => {
+  const phone = String((req.body && req.body.phone) || '').trim();
+  console.log('[SEND CODE] request body:', req.body);
+  console.log('收到发送验证码请求，手机号：', phone);
+  return res.json({ success: true, message: '验证码已发送' });
+});
 
 app.post('/api/pay/create-order', async (req, res) => {
   const body = req.body || {};

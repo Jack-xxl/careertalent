@@ -343,13 +343,7 @@
       submitBtn.disabled = !ok;
     }
 
-    // Simulated SMS code (demo)
-    sendCodeBtn.addEventListener('click', function(){
-      clearErrors();
-      if(!isPhoneValidStrict(phone.value)){
-        setError(errPhone, '请输入正确的手机号');
-        return;
-      }
+    function startSendCodeCountdown(){
       sendCodeBtn.disabled = true;
       sendCodeBtn.textContent = '已发送（60s）';
       let left = 60;
@@ -363,6 +357,50 @@
         }
         sendCodeBtn.textContent = `已发送（${left}s）`;
       }, 1000);
+    }
+
+    // Send SMS code
+    sendCodeBtn.addEventListener('click', async function(){
+      clearErrors();
+
+      if(!isPhoneValidStrict(phone.value)){
+        setError(errPhone, '请输入正确的手机号');
+        return;
+      }
+
+      // 点击反馈：立即置灰并显示发送中
+      sendCodeBtn.disabled = true;
+      sendCodeBtn.textContent = '发送中...';
+
+      const API_BASE = 'https://careertalent-1.onrender.com';
+      const url = (window.location.protocol === 'file:')
+        ? `${API_BASE}/api/send_code`
+        : '/api/send_code';
+
+      try{
+        // 真实环境下，请将该接口指向你的后端短信服务
+        const resp = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phone: String(phone.value || '').trim() })
+        });
+
+        if(!resp.ok){
+          let detail = '';
+          try{
+            const ct = resp.headers.get('content-type') || '';
+            detail = ct.includes('application/json') ? JSON.stringify(await resp.json()) : await resp.text();
+          }catch(_e){}
+          throw new Error(`HTTP ${resp.status} ${resp.statusText}${detail ? ` - ${detail}` : ''}`);
+        }
+
+        startSendCodeCountdown();
+      }catch(err){
+        const msg = (err && err.message) ? err.message : String(err || '发送失败');
+        setError(errCode, `验证码发送失败：${msg}`);
+        sendCodeBtn.disabled = false;
+        sendCodeBtn.textContent = '发送验证码';
+      }
     });
 
     qsa('input').forEach(function(el){
