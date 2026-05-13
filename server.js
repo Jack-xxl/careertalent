@@ -474,7 +474,7 @@ app.post('/api/auth', async (req, res) => {
   smsCodeStore.delete(phone);
 
   if (!pool) {
-    return res.status(503).json({ ok: false, message: 'Database not configured' });
+    return res.status(503).json({ ok: false, message: '服务暂时不可用，请稍后再试' });
   }
 
   try {
@@ -489,8 +489,8 @@ app.post('/api/auth', async (req, res) => {
     );
     return res.json({ ok: true, user: q.rows[0] });
   } catch (e) {
-    console.error('[AUTH]', e && e.message ? e.message : String(e));
-    return res.status(500).json({ ok: false, message: e.message || String(e) });
+    console.error('[AUTH]', e);
+    return res.status(503).json({ ok: false, message: '服务暂时不可用，请稍后再试' });
   }
 });
 
@@ -498,7 +498,7 @@ app.post('/api/auth', async (req, res) => {
 app.get('/api/profile', async (req, res) => {
   const phone = String(req.query.phone || '').trim();
   if (!isValidPhone(phone)) return res.status(400).json({ ok: false, message: '手机号无效' });
-  if (!pool) return res.status(503).json({ ok: false, message: 'Database not configured' });
+  if (!pool) return res.status(503).json({ ok: false, message: '服务暂时不可用，请稍后再试' });
   try {
     const q = await pool.query(
       'SELECT phone, nickname, age_group, role, created_at FROM users WHERE phone = $1 LIMIT 1',
@@ -507,8 +507,8 @@ app.get('/api/profile', async (req, res) => {
     if (q.rows.length === 0) return res.json({ ok: true, user: null });
     return res.json({ ok: true, user: q.rows[0] });
   } catch (e) {
-    console.error('[PROFILE GET]', e && e.message ? e.message : String(e));
-    return res.status(500).json({ ok: false, message: e.message || String(e) });
+    console.error('[PROFILE GET]', e);
+    return res.status(503).json({ ok: false, message: '服务暂时不可用，请稍后再试' });
   }
 });
 
@@ -523,7 +523,7 @@ app.post('/api/profile', async (req, res) => {
   if (!isValidPhone(phone)) return res.status(400).json({ ok: false, message: '手机号无效' });
   if (!ageGroup) return res.status(400).json({ ok: false, message: '缺少年龄段' });
   if (!role) return res.status(400).json({ ok: false, message: '缺少身份' });
-  if (!pool) return res.status(503).json({ ok: false, message: 'Database not configured' });
+  if (!pool) return res.status(503).json({ ok: false, message: '服务暂时不可用，请稍后再试' });
 
   try {
     const q = await pool.query(
@@ -541,8 +541,8 @@ app.post('/api/profile', async (req, res) => {
     );
     return res.json({ ok: true, user: q.rows[0] });
   } catch (e) {
-    console.error('[PROFILE POST]', e && e.message ? e.message : String(e));
-    return res.status(500).json({ ok: false, message: e.message || String(e) });
+    console.error('[PROFILE POST]', e);
+    return res.status(503).json({ ok: false, message: '服务暂时不可用，请稍后再试' });
   }
 });
 
@@ -550,7 +550,7 @@ app.post('/api/profile', async (req, res) => {
 app.get('/admin/users', async (req, res) => {
   const key = String(req.query.key || '').trim();
   if (key !== 'admin888') return res.status(401).json({ ok: false, message: 'Unauthorized' });
-  if (!pool) return res.status(503).json({ ok: false, message: 'Database not configured' });
+  if (!pool) return res.status(503).json({ ok: false, message: '服务暂时不可用，请稍后再试' });
 
   try {
     const q = await pool.query(
@@ -560,8 +560,8 @@ app.get('/admin/users', async (req, res) => {
     );
     return res.json({ ok: true, users: q.rows });
   } catch (e) {
-    console.error('[ADMIN USERS]', e && e.message ? e.message : String(e));
-    return res.status(500).json({ ok: false, message: e.message || String(e) });
+    console.error('[ADMIN USERS]', e);
+    return res.status(503).json({ ok: false, message: '服务暂时不可用，请稍后再试' });
   }
 });
 
