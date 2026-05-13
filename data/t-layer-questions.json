@@ -746,8 +746,8 @@
  "difficulty": "medium",
  "track_time": true,
  "question": {
- "en": "Parking lot spaces: [1][2][3][4][5][6]\n\nNow 4 cars need to park:\n🔴 Red car parks in space 3\n🔵 Blue car parks right next to red car\n⚪ White car parks in leftmost space\n🟡 Yellow car parks right of blue car, with one empty space between\n\nQuestion: Which space does yellow car park in?",
- "zh-CN": "停车场车位排列：[1][2][3][4][5][6]\n\n现在有4辆车要停：\n🔴 红车停在3号位\n🔵 蓝车停在红车右边，紧挨着红车\n⚪ 白车停在最左边\n🟡 黄车停在蓝车右边，中间隔了一个空位\n\n问：黄车停在几号位？"
+ "en": "Parking lot spaces:\n\nNow 4 cars need to park:\n🔴 Red car parks in space 3\n🔵 Blue car parks right next to red car\n⚪ White car parks in leftmost space\n🟡 Yellow car parks right of blue car, with one empty space between\n\nQuestion: Which space does yellow car park in?",
+ "zh-CN": "停车场车位排列：\n\n现在有4辆车要停：\n🔴 红车停在3号位\n🔵 蓝车停在红车右边，紧挨着红车\n⚪ 白车停在最左边\n🟡 黄车停在蓝车右边，中间隔了一个空位\n\n问：黄车停在几号位？"
  },
  "options": [
  {
