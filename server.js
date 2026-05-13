@@ -5,6 +5,8 @@ const fs = require('fs');
 const crypto = require('crypto');
 const express = require('express');
 const cors = require('cors');
+const Dysmsapi = require('@alicloud/dysmsapi20170525');
+const OpenApi = require('@alicloud/openapi-client');
 const WxPay = require('wechatpay-node-v3');
 const { Pool } = require('pg');
 
@@ -37,6 +39,9 @@ let pay = null;
 let wxPrivateKeyPem = null;
 let wxMchid = null;
 let wxSerialNo = null;
+
+// 短信验证码：phone -> { code, expiresAt }
+const smsCodeStore = new Map();
 
 function pemFromEnv(val) {
   if (val == null || String(val).trim() === '') return null;
@@ -323,12 +328,117 @@ function buildWechatV3Authorization(method, pathWithQuery, requestBodyText, mchi
 app.use(express.json({ limit: '2mb', verify: (req, res, buf) => { req.rawBody = buf; } }));
 app.use(express.urlencoded({ extended: false }));
 
-// 发送短信验证码（占位：后续接真实短信服务）
-app.post('/api/send_code', (req, res) => {
+function getAliyunSmsClient() {
+  const accessKeyId = String(process.env.ALI_ACCESS_KEY_ID || '').trim();
+  const accessKeySecret = String(process.env.ALI_ACCESS_KEY_SECRET || '').trim();
+  const endpoint = 'dysmsapi.aliyuncs.com';
+
+  if (!accessKeyId || !accessKeySecret) {
+    throw new Error('Missing ALI_ACCESS_KEY_ID / ALI_ACCESS_KEY_SECRET');
+  }
+
+  const ConfigCtor = OpenApi.Config || OpenApi.default || OpenApi;
+  const cfg = new ConfigCtor({
+    accessKeyId,
+    accessKeySecret,
+    endpoint,
+  });
+
+  const ClientCtor = Dysmsapi.default || Dysmsapi;
+  return new ClientCtor(cfg);
+}
+
+function new6DigitCode() {
+  return String(Math.floor(Math.random() * 1000000)).padStart(6, '0');
+}
+
+function getStoredCode(phone) {
+  const rec = smsCodeStore.get(phone);
+  if (!rec) return null;
+  if (Date.now() > rec.expiresAt) {
+    smsCodeStore.delete(phone);
+    return null;
+  }
+  return rec;
+}
+
+// 发送短信验证码（阿里云短信）
+app.post('/api/send_code', async (req, res) => {
   const phone = String((req.body && req.body.phone) || '').trim();
   console.log('[SEND CODE] request body:', req.body);
   console.log('收到发送验证码请求，手机号：', phone);
-  return res.json({ success: true, message: '验证码已发送' });
+
+  if (!isValidPhone(phone)) {
+    return res.status(400).json({ success: false, message: '手机号无效' });
+  }
+
+  const signName = String(process.env.ALI_SMS_SIGN_NAME || '').trim();
+  const templateCode = String(process.env.ALI_SMS_TEMPLATE_CODE || '').trim();
+  if (!signName || !templateCode) {
+    return res.status(500).json({ success: false, message: 'Missing ALI_SMS_SIGN_NAME / ALI_SMS_TEMPLATE_CODE' });
+  }
+
+  const code = new6DigitCode();
+  smsCodeStore.set(phone, { code, expiresAt: Date.now() + 5 * 60 * 1000 });
+
+  try {
+    const client = getAliyunSmsClient();
+    const SendSmsReqCtor =
+      (Dysmsapi.SendSmsRequest) ||
+      (Dysmsapi.default && Dysmsapi.default.SendSmsRequest);
+
+    const payload = {
+      phoneNumbers: phone,
+      signName,
+      templateCode,
+      templateParam: JSON.stringify({ code }),
+    };
+
+    const resp = SendSmsReqCtor
+      ? await client.sendSms(new SendSmsReqCtor(payload))
+      : await client.sendSms(payload);
+
+    console.log('[ALI SMS] sent:', {
+      phone,
+      signName,
+      templateCode,
+      aliCode: resp && resp.body && resp.body.code,
+      aliMessage: resp && resp.body && resp.body.message,
+      requestId: resp && resp.body && resp.body.requestId,
+    });
+
+    const ok = resp && resp.body && String(resp.body.code || '').toUpperCase() === 'OK';
+    if (!ok) {
+      return res.status(500).json({
+        success: false,
+        message: (resp && resp.body && resp.body.message) ? resp.body.message : '短信发送失败',
+        aliCode: resp && resp.body && resp.body.code,
+        requestId: resp && resp.body && resp.body.requestId,
+      });
+    }
+
+    return res.json({ success: true, message: '验证码已发送' });
+  } catch (e) {
+    console.error('[ALI SMS] error:', e && e.message ? e.message : String(e));
+    return res.status(500).json({ success: false, message: e && e.message ? e.message : String(e) });
+  }
+});
+
+// 校验短信验证码
+app.post('/api/verify_code', (req, res) => {
+  const phone = String((req.body && req.body.phone) || '').trim();
+  const code = String((req.body && req.body.code) || '').trim();
+
+  if (!isValidPhone(phone)) return res.status(400).json({ success: false, message: '手机号无效' });
+  if (!/^\d{6}$/.test(code)) return res.status(400).json({ success: false, message: '验证码格式不正确' });
+
+  const rec = getStoredCode(phone);
+  if (!rec || rec.code !== code) {
+    return res.json({ success: false });
+  }
+
+  smsCodeStore.delete(phone);
+  return res.json({ success: true });
 });
 
 app.post('/api/pay/create-order', async (req, res) => {
