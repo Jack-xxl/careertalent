@@ -64,6 +64,12 @@ try {
   console.error('[INIT ERROR]', e && e.message ? e.message : String(e));
 }
 
+console.log('[ALI SMS CHECK]', {
+  ALI_ACCESS_KEY_ID: !!process.env.ALI_ACCESS_KEY_ID,
+  ALI_SMS_SIGN_NAME: !!process.env.ALI_SMS_SIGN_NAME,
+  ALI_SMS_TEMPLATE_CODE: !!process.env.ALI_SMS_TEMPLATE_CODE,
+});
+
 // 支付初始化（缺证书不允许退出进程）
 try {
   // 启动时强校验（避免 TLS / AggregateError 隐性失败）
