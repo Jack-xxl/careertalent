@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TalentAI - 完善你的资料</title>
+  <style>
+    :root{
+      --bg:#0d1117;
+      --bg2:#1a1f2e;
+      --panel:rgba(255,255,255,0.05);
+      --border:rgba(255,255,255,0.10);
+      --text:#eef2ff;
+      --muted:rgba(238,242,255,0.72);
+      --primary1:#f59e0b;
+      --primary2:#fbbf24;
+      --shadow:0 14px 40px rgba(0,0,0,0.22);
+      --radius:20px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      min-height:100vh;
+      color:var(--text);
+      font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Segoe UI",sans-serif;
+      line-height:1.65;
+      background:linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%);
+      overflow-x:hidden;
+    }
+    .container{max-width:1140px;margin:0 auto;padding:26px 16px 72px}
+    .wrap{min-height:calc(100vh - 98px);display:flex;align-items:center;justify-content:center}
+    .card{
+      width:min(560px, 100%);
+      padding:22px 20px;
+      border-radius:var(--radius);
+      background:var(--panel);
+      border:1px solid rgba(255,255,255,0.09);
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(8px);
+    }
+    h1{
+      font-size:28px;
+      font-weight:1000;
+      letter-spacing:-0.2px;
+      margin-bottom:8px;
+      background:linear-gradient(135deg, #fbbf24, #f59e0b, #8b5cf6);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+    }
+    .sub{color:var(--muted);font-weight:800;font-size:14px;margin-bottom:18px}
+    .field{margin-bottom:14px}
+    .label{
+      display:flex;align-items:flex-end;justify-content:space-between;gap:10px;
+      margin-bottom:8px;font-weight:1000;font-size:13px;color:rgba(238,242,255,0.88);
+    }
+    .optional{font-size:12px;font-weight:900;color:rgba(238,242,255,0.45)}
+    .input{
+      width:100%;
+      padding:12px 14px;
+      border-radius:14px;
+      background:rgba(255,255,255,0.03);
+      border:1px solid rgba(255,255,255,0.10);
+      color:var(--text);
+      outline:none;
+      font-weight:900;
+    }
+    .input::placeholder{color:rgba(238,242,255,0.35);font-weight:800}
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:10px;
+      padding:11px 16px;border-radius:14px;cursor:pointer;
+      transition:transform .15s ease, background .2s ease, border-color .2s ease, opacity .2s ease;
+      user-select:none;
+      border:1px solid rgba(255,255,255,0.12);
+      background:rgba(255,255,255,0.03);
+      color:var(--text);
+      font-weight:1000;font-size:14px;white-space:nowrap;
+    }
+    .btn:hover{transform:translateY(-1px)}
+    .btn:active{transform:translateY(0px)}
+    .btn-primary{
+      border:none;
+      background:linear-gradient(135deg, var(--primary1) 0%, var(--primary2) 100%);
+      color:#1b1305;
+      box-shadow:0 10px 28px rgba(245,158,11,0.18);
+    }
+    .btn-primary:disabled{opacity:.55;cursor:not-allowed;transform:none;box-shadow:none}
+    .btn-full{width:100%}
+
+    .opt-group{display:flex;flex-wrap:wrap;gap:10px}
+    .opt{position:relative}
+    .opt input{position:absolute;opacity:0;pointer-events:none}
+    .opt label{
+      display:inline-flex;align-items:center;justify-content:center;
+      padding:10px 14px;border-radius:999px;
+      border:1px solid rgba(255,255,255,0.12);
+      background:rgba(255,255,255,0.02);
+      color:rgba(238,242,255,0.86);
+      font-weight:1000;font-size:13px;cursor:pointer;
+      transition:border-color .2s ease, background .2s ease, transform .15s ease;
+      user-select:none;white-space:nowrap;
+    }
+    .opt label:hover{transform:translateY(-1px);border-color:rgba(245,158,11,0.45)}
+    .opt input:checked + label{
+      border-color:rgba(245,158,11,0.95);
+      box-shadow:0 0 0 6px rgba(245,158,11,0.08) inset;
+      background:linear-gradient(135deg, rgba(245,158,11,0.18), rgba(255,255,255,0.03));
+      color:rgba(255,244,220,0.98);
+    }
+
+    .hint{margin-top:8px;font-size:12px;font-weight:900;color:rgba(238,242,255,0.45)}
+    .hint.error{display:none;margin-top:8px;color:rgba(254,226,226,0.95)}
+
+    @media (max-width: 520px){
+      h1{font-size:24px}
+      .card{padding:18px 16px}
+      .opt label{padding:10px 12px}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="wrap">
+      <div class="card">
+        <h1>完善你的资料</h1>
+        <div class="sub">只需 10 秒，帮助我们给你更准确的报告</div>
+
+        <form id="profileForm" novalidate>
+          <div class="field">
+            <div class="label">
+              <span>昵称</span>
+              <span class="optional">选填</span>
+            </div>
+            <input class="input" id="nickname" type="text" placeholder="名字、英文名或随便起个" />
+          </div>
+
+          <div class="field">
+            <div class="label"><span>年龄段</span></div>
+            <div class="opt-group" role="radiogroup" aria-label="年龄段">
+              <div class="opt"><input id="age_12_15" name="age_group" type="radio" value="12-15岁" /><label for="age_12_15">12-15岁</label></div>
+              <div class="opt"><input id="age_16_18" name="age_group" type="radio" value="16-18岁" /><label for="age_16_18">16-18岁</label></div>
+              <div class="opt"><input id="age_19_22" name="age_group" type="radio" value="19-22岁" /><label for="age_19_22">19-22岁</label></div>
+              <div class="opt"><input id="age_23_25" name="age_group" type="radio" value="23-25岁" /><label for="age_23_25">23-25岁</label></div>
+              <div class="opt"><input id="age_25_plus" name="age_group" type="radio" value="25岁以上" /><label for="age_25_plus">25岁以上</label></div>
+            </div>
+            <div class="hint error" id="err-age"></div>
+          </div>
+
+          <div class="field">
+            <div class="label"><span>身份</span></div>
+            <div class="opt-group" role="radiogroup" aria-label="身份">
+              <div class="opt"><input id="role_student" name="role" type="radio" value="学生" /><label for="role_student">学生</label></div>
+              <div class="opt"><input id="role_grad" name="role" type="radio" value="应届毕业生" /><label for="role_grad">应届毕业生</label></div>
+              <div class="opt"><input id="role_worker" name="role" type="radio" value="职场人士" /><label for="role_worker">职场人士</label></div>
+              <div class="opt"><input id="role_parent" name="role" type="radio" value="家长帮孩子测" /><label for="role_parent">家长帮孩子测</label></div>
+            </div>
+            <div class="hint error" id="err-role"></div>
+          </div>
+
+          <button class="btn btn-primary btn-full" id="submitBtn" type="submit" disabled>开始测评</button>
+          <div class="hint" id="hint"></div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function qs(sel){ return document.querySelector(sel); }
+    function qsa(sel){ return Array.from(document.querySelectorAll(sel)); }
+
+    const phone = String(localStorage.getItem('talentai_user_phone') || '').trim();
+    if (!/^1[3-9]\d{9}$/.test(phone)) {
+      window.location.href = 'login.html';
+    }
+
+    const form = qs('#profileForm');
+    const nickname = qs('#nickname');
+    const submitBtn = qs('#submitBtn');
+    const errAge = qs('#err-age');
+    const errRole = qs('#err-role');
+    const hint = qs('#hint');
+
+    function getCheckedValue(name){
+      const el = qs(`input[name="${name}"]:checked`);
+      return el ? el.value : '';
+    }
+    function clearErrors(){
+      [errAge, errRole].forEach(function(el){
+        if(!el) return;
+        el.textContent = '';
+        el.style.display = 'none';
+      });
+    }
+    function setError(el, msg){
+      if(!el) return;
+      el.textContent = msg || '';
+      el.style.display = msg ? 'block' : 'none';
+    }
+
+    function updateSubmitEnabled(){
+      const age = getCheckedValue('age_group');
+      const role = getCheckedValue('role');
+      submitBtn.disabled = !(age && role);
+    }
+
+    async function prefillOrSkip(){
+      hint.textContent = '正在检查资料...';
+      const API_BASE = 'https://careertalent-1.onrender.com';
+      const url = (window.location.protocol === 'file:')
+        ? `${API_BASE}/api/profile?phone=${encodeURIComponent(phone)}`
+        : `/api/profile?phone=${encodeURIComponent(phone)}`;
+
+      try{
+        const resp = await fetch(url);
+        const data = await resp.json().catch(() => ({}));
+        if(!resp.ok || !data.ok) throw new Error(data && data.message ? data.message : '加载失败');
+
+        const u = data.user;
+        if (u && u.nickname) {
+          nickname.value = u.nickname;
+          localStorage.setItem('talentai_user_nickname', u.nickname);
+        }
+        if (u && u.age_group) {
+          const ageEl = qs(`input[name="age_group"][value="${u.age_group}"]`);
+          if (ageEl) ageEl.checked = true;
+          localStorage.setItem('talentai_user_age_group', u.age_group);
+        }
+        if (u && u.role) {
+          const roleEl = qs(`input[name="role"][value="${u.role}"]`);
+          if (roleEl) roleEl.checked = true;
+          localStorage.setItem('talentai_user_role', u.role);
+        }
+
+        updateSubmitEnabled();
+
+        if (u && u.age_group && u.role) {
+          hint.textContent = '已完善资料，正在进入测评...';
+          window.location.href = 'assessment.html';
+          return;
+        }
+
+        hint.textContent = '';
+      }catch(_e){
+        hint.textContent = '';
+      }
+    }
+
+    async function handleSubmit(){
+      clearErrors();
+      const ageGroup = getCheckedValue('age_group');
+      const role = getCheckedValue('role');
+      const nick = String(nickname.value || '').trim();
+
+      if (!ageGroup) {
+        setError(errAge, '请选择年龄段');
+        return;
+      }
+      if (!role) {
+        setError(errRole, '请选择身份');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = '提交中...';
+
+      const API_BASE = 'https://careertalent-1.onrender.com';
+      const url = (window.location.protocol === 'file:')
+        ? `${API_BASE}/api/profile`
+        : '/api/profile';
+
+      try{
+        const resp = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            phone,
+            nickname: nick,
+            age_group: ageGroup,
+            role
+          })
+        });
+        const data = await resp.json().catch(() => ({}));
+        if(!resp.ok || !data.ok){
+          throw new Error(data && data.message ? data.message : `提交失败（HTTP ${resp.status}）`);
+        }
+
+        if (nick) localStorage.setItem('talentai_user_nickname', nick);
+        localStorage.setItem('talentai_user_age_group', ageGroup);
+        localStorage.setItem('talentai_user_role', role);
+
+        submitBtn.textContent = '正在进入测评...';
+        window.location.href = 'assessment.html';
+      }catch(err){
+        const msg = (err && err.message) ? err.message : String(err || '提交失败');
+        hint.textContent = msg;
+        submitBtn.textContent = '开始测评';
+        updateSubmitEnabled();
+      }
+    }
+
+    qsa('input').forEach(function(el){
+      el.addEventListener('input', updateSubmitEnabled);
+      el.addEventListener('change', updateSubmitEnabled);
+    });
+
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      handleSubmit();
+    });
+
+    updateSubmitEnabled();
+    prefillOrSkip();
+  </script>
+</body>
+</html>
+

@@ -136,6 +136,15 @@ try {
         return;
       }
       await pool.query(`
+        CREATE TABLE IF NOT EXISTS users (
+          id BIGSERIAL PRIMARY KEY,
+          phone VARCHAR(20) NOT NULL UNIQUE,
+          nickname VARCHAR(64),
+          age_group VARCHAR(32),
+          role VARCHAR(32),
+          created_at TIMESTAMP DEFAULT NOW(),
+          updated_at TIMESTAMP DEFAULT NOW()
+        );
         CREATE TABLE IF NOT EXISTS paid_users (
           phone VARCHAR(20) NOT NULL,
           package_type INTEGER NOT NULL,
@@ -158,6 +167,15 @@ try {
           amount INTEGER,
           paid_at TIMESTAMP DEFAULT NOW()
         );
+      `);
+      await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS nickname VARCHAR(64);`);
+      await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS age_group VARCHAR(32);`);
+      await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS role VARCHAR(32);`);
+      await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT NOW();`);
+      await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT NOW();`);
+      await pool.query(`
+        CREATE UNIQUE INDEX IF NOT EXISTS users_phone_uq
+        ON users (phone);
       `);
       await pool.query(`ALTER TABLE pending_orders ADD COLUMN IF NOT EXISTS amount INTEGER;`);
       await pool.query(`ALTER TABLE pending_orders ADD COLUMN IF NOT EXISTS status VARCHAR(32) DEFAULT 'pending';`);
@@ -439,6 +457,112 @@ app.post('/api/verify_code', (req, res) => {
 
   smsCodeStore.delete(phone);
   return res.json({ success: true });
+});
+
+// 登录/注册：校验验证码后自动创建用户（无账号自动注册）
+app.post('/api/auth', async (req, res) => {
+  const phone = String((req.body && req.body.phone) || '').trim();
+  const code = String((req.body && req.body.code) || '').trim();
+
+  if (!isValidPhone(phone)) return res.status(400).json({ ok: false, message: '手机号无效' });
+  if (!/^\d{6}$/.test(code)) return res.status(400).json({ ok: false, message: '验证码格式不正确' });
+
+  const rec = getStoredCode(phone);
+  if (!rec || rec.code !== code) {
+    return res.json({ ok: false, message: '验证码错误或已过期' });
+  }
+  smsCodeStore.delete(phone);
+
+  if (!pool) {
+    return res.status(503).json({ ok: false, message: 'Database not configured' });
+  }
+
+  try {
+    const q = await pool.query(
+      `
+        INSERT INTO users (phone, created_at, updated_at)
+        VALUES ($1, NOW(), NOW())
+        ON CONFLICT (phone) DO UPDATE SET updated_at = NOW()
+        RETURNING phone, nickname, age_group, role, created_at
+      `,
+      [phone]
+    );
+    return res.json({ ok: true, user: q.rows[0] });
+  } catch (e) {
+    console.error('[AUTH]', e && e.message ? e.message : String(e));
+    return res.status(500).json({ ok: false, message: e.message || String(e) });
+  }
+});
+
+// 获取用户资料（用于“已填过则跳过”）
+app.get('/api/profile', async (req, res) => {
+  const phone = String(req.query.phone || '').trim();
+  if (!isValidPhone(phone)) return res.status(400).json({ ok: false, message: '手机号无效' });
+  if (!pool) return res.status(503).json({ ok: false, message: 'Database not configured' });
+  try {
+    const q = await pool.query(
+      'SELECT phone, nickname, age_group, role, created_at FROM users WHERE phone = $1 LIMIT 1',
+      [phone]
+    );
+    if (q.rows.length === 0) return res.json({ ok: true, user: null });
+    return res.json({ ok: true, user: q.rows[0] });
+  } catch (e) {
+    console.error('[PROFILE GET]', e && e.message ? e.message : String(e));
+    return res.status(500).json({ ok: false, message: e.message || String(e) });
+  }
+});
+
+// 提交/更新用户资料
+app.post('/api/profile', async (req, res) => {
+  const body = req.body || {};
+  const phone = String(body.phone || '').trim();
+  const nickname = body.nickname == null ? null : String(body.nickname).trim();
+  const ageGroup = String(body.age_group || '').trim();
+  const role = String(body.role || '').trim();
+
+  if (!isValidPhone(phone)) return res.status(400).json({ ok: false, message: '手机号无效' });
+  if (!ageGroup) return res.status(400).json({ ok: false, message: '缺少年龄段' });
+  if (!role) return res.status(400).json({ ok: false, message: '缺少身份' });
+  if (!pool) return res.status(503).json({ ok: false, message: 'Database not configured' });
+
+  try {
+    const q = await pool.query(
+      `
+        INSERT INTO users (phone, nickname, age_group, role, created_at, updated_at)
+        VALUES ($1, $2, $3, $4, NOW(), NOW())
+        ON CONFLICT (phone) DO UPDATE SET
+          nickname = COALESCE(NULLIF($2, ''), users.nickname),
+          age_group = $3,
+          role = $4,
+          updated_at = NOW()
+        RETURNING phone, nickname, age_group, role, created_at
+      `,
+      [phone, nickname, ageGroup, role]
+    );
+    return res.json({ ok: true, user: q.rows[0] });
+  } catch (e) {
+    console.error('[PROFILE POST]', e && e.message ? e.message : String(e));
+    return res.status(500).json({ ok: false, message: e.message || String(e) });
+  }
+});
+
+// 管理后台：导出用户列表
+app.get('/admin/users', async (req, res) => {
+  const key = String(req.query.key || '').trim();
+  if (key !== 'admin888') return res.status(401).json({ ok: false, message: 'Unauthorized' });
+  if (!pool) return res.status(503).json({ ok: false, message: 'Database not configured' });
+
+  try {
+    const q = await pool.query(
+      `SELECT phone, nickname, age_group, role, created_at
+       FROM users
+       ORDER BY created_at DESC`
+    );
+    return res.json({ ok: true, users: q.rows });
+  } catch (e) {
+    console.error('[ADMIN USERS]', e && e.message ? e.message : String(e));
+    return res.status(500).json({ ok: false, message: e.message || String(e) });
+  }
 });
 
 app.post('/api/pay/create-order', async (req, res) => {
