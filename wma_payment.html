@@ -132,6 +132,7 @@ function handlePaidSuccess() {
   localStorage.setItem('talentai_paid_package_type','navigator');
   localStorage.setItem('talentai_wma_paid_at', new Date().toISOString());
   try {
+    localStorage.removeItem('talentai_pending_checkout_package');
     localStorage.removeItem('talentai_wma_remaining');
   } catch (e) {}
 
@@ -207,9 +208,10 @@ function startOrderStatusPolling(orderIdValue, sessionTokenValue) {
     document.getElementById("payStatus").innerText = "请打开微信扫码支付";
     renderQrToImg(codeUrl);
 
-    // 保存订单信息（与 49 元链路对齐）
+    // 待支付：只记 pending，切勿提前写 talentai_paid_package_type（否则报告页会误判已解锁）
     try {
-      localStorage.setItem('talentai_paid_package_type', packageType);
+      localStorage.removeItem('talentai_paid_package_type');
+      localStorage.setItem('talentai_pending_checkout_package', packageType);
       localStorage.setItem('talentai_order_id', orderId || '');
       if (sessionToken) localStorage.setItem('talentai_session_token', sessionToken);
     } catch (e) {}

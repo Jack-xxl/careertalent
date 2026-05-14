@@ -790,9 +790,17 @@ function handlePaidSuccess() {
     if (expireInterval) clearInterval(expireInterval);
   } catch (e) {}
 
-  // 写入支付标记（供 p_assessment.html / WMA 流程防止未支付访问）
+  try {
+    const pend = localStorage.getItem('talentai_pending_checkout_package');
+    if (pend) {
+      localStorage.setItem('talentai_paid_package_type', pend);
+      localStorage.removeItem('talentai_pending_checkout_package');
+    }
+  } catch (e) {}
+
   try {
     localStorage.setItem('talentai_premium', '1');
+    localStorage.setItem('talentai_paid', '1');
     if (orderId) {
       localStorage.setItem('talentai_order', orderId);
       localStorage.setItem('talentai_order_id', orderId);
@@ -801,6 +809,26 @@ function handlePaidSuccess() {
   } catch (e) {}
 
   const pkg = (localStorage.getItem('talentai_paid_package_type') || '').toLowerCase();
+  try {
+    if (pkg === 'pathfinder' || pkg === '49') {
+      localStorage.setItem('talentai_p_paid', '1');
+      localStorage.setItem('talentai_p_remaining', '3');
+    }
+    if (pkg === 'navigator' || pkg === '150') {
+      localStorage.setItem('talentai_wma_unlocked', '1');
+      localStorage.setItem('talentai_wma_paid', '1');
+      localStorage.setItem('talentai_wma_paid_at', new Date().toISOString());
+      localStorage.removeItem('talentai_wma_completed_at');
+      localStorage.removeItem('talentai_wma_answers');
+      localStorage.removeItem('talentai_wma_layer');
+      localStorage.removeItem('talentai_wma_q');
+      localStorage.removeItem('talentai_wma_timer');
+      localStorage.removeItem('talentai_wma_progress');
+      localStorage.removeItem('talentai_wma_scores');
+      localStorage.removeItem('talentai_wma_result');
+    }
+    localStorage.removeItem('talentai_wma_remaining');
+  } catch (e) {}
   let dest = 'p_assessment.html';
   if (pkg === 'navigator' || pkg === '150') {
     dest = 'wma_upgrade.html';
@@ -1168,7 +1196,8 @@ function goBack() {
     const sessionToken = data.sessionToken;
     if (orderEl) orderEl.textContent = '// ORDER_ID: ' + orderId;
     try {
-      localStorage.setItem('talentai_paid_package_type', createOrderPackageType);
+      localStorage.removeItem('talentai_paid_package_type');
+      localStorage.setItem('talentai_pending_checkout_package', createOrderPackageType);
       localStorage.setItem('talentai_order_id', orderId);
       if (sessionToken) localStorage.setItem('talentai_session_token', sessionToken);
     } catch (e) {}

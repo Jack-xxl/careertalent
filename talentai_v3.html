@@ -1456,10 +1456,13 @@
       const card = document.getElementById('navigatorPaywallCard');
       const fullReportLink = document.getElementById('navigatorFullReportLink');
 
+      const pkg = String(localStorage.getItem('talentai_paid_package_type') || '').toLowerCase();
+      // 主规则：仅微信确认收款后写入的 talentai_wma_unlocked。
+      // 兼容旧版：¥150 在 payment.html 付成功时曾只写 premium + package，未写 wma_unlocked。
       const wmaUnlocked =
         localStorage.getItem('talentai_wma_unlocked') === '1' ||
-        localStorage.getItem('talentai_wma_paid') === '1' ||
-        String(localStorage.getItem('talentai_paid_package_type') || '').toLowerCase() === 'navigator';
+        (localStorage.getItem('talentai_premium') === '1' &&
+          (pkg === 'navigator' || pkg === '150'));
 
       if (!wmaUnlocked) return;
 
