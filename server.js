@@ -388,6 +388,10 @@ function getStoredCode(phone) {
 
 // 发送短信验证码（阿里云短信）
 app.post('/api/send_code', async (req, res) => {
+  console.log('[ROUTE HIT] raw env:', JSON.stringify({
+    sign: process.env.ALI_SMS_SIGN_NAME,
+    code: process.env.ALI_SMS_TEMPLATE_CODE,
+  }));
   const phone = String((req.body && req.body.phone) || '').trim();
   console.log('[SEND CODE] request body:', req.body);
   console.log('收到发送验证码请求，手机号：', phone);
@@ -396,24 +400,25 @@ app.post('/api/send_code', async (req, res) => {
     return res.status(400).json({ success: false, message: '手机号无效' });
   }
 
-  const signName = String(process.env.ALI_SMS_SIGN_NAME || '').trim();
-  const templateCode = String(process.env.ALI_SMS_TEMPLATE_CODE || '').trim();
+  // 临时硬编码兜底测试（调通后恢复 env-only + 缺失校验）
+  const signName = process.env.ALI_SMS_SIGN_NAME || '吉林省易乐科技有限公司';
+  const templateCode = process.env.ALI_SMS_TEMPLATE_CODE || 'SMS_505000057';
   console.log('[SEND CODE DEBUG]', {
     signName: process.env.ALI_SMS_SIGN_NAME,
     templateCode: process.env.ALI_SMS_TEMPLATE_CODE,
   });
-  if (!signName || !templateCode) {
-    return res.status(500).json({
-      success: false,
-      message: `Missing ALI_SMS_SIGN_NAME / ALI_SMS_TEMPLATE_CODE`,
-      debug: {
-        signName: process.env.ALI_SMS_SIGN_NAME || 'EMPTY',
-        templateCode: process.env.ALI_SMS_TEMPLATE_CODE || 'EMPTY',
-        signNameLen: (process.env.ALI_SMS_SIGN_NAME || '').length,
-        templateCodeLen: (process.env.ALI_SMS_TEMPLATE_CODE || '').length,
-      },
-    });
-  }
+  // if (!signName || !templateCode) {
+  //   return res.status(500).json({
+  //     success: false,
+  //     message: `Missing ALI_SMS_SIGN_NAME / ALI_SMS_TEMPLATE_CODE`,
+  //     debug: {
+  //       signName: process.env.ALI_SMS_SIGN_NAME || 'EMPTY',
+  //       templateCode: process.env.ALI_SMS_TEMPLATE_CODE || 'EMPTY',
+  //       signNameLen: (process.env.ALI_SMS_SIGN_NAME || '').length,
+  //       templateCodeLen: (process.env.ALI_SMS_TEMPLATE_CODE || '').length,
+  //     },
+  //   });
+  // }
 
   const code = new6DigitCode();
   smsCodeStore.set(phone, { code, expiresAt: Date.now() + 5 * 60 * 1000 });
