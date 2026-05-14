@@ -203,10 +203,7 @@
 
     async function prefillOrSkip(){
       hint.textContent = '正在检查资料...';
-      const API_BASE = 'https://careertalent-1.onrender.com';
-      const url = (window.location.protocol === 'file:')
-        ? `${API_BASE}/api/profile?phone=${encodeURIComponent(phone)}`
-        : `/api/profile?phone=${encodeURIComponent(phone)}`;
+      const url = `https://careertalent-1.onrender.com/api/profile?phone=${encodeURIComponent(phone)}`;
 
       try{
         const resp = await fetch(url);
@@ -261,10 +258,7 @@
       submitBtn.disabled = true;
       submitBtn.textContent = '提交中...';
 
-      const API_BASE = 'https://careertalent-1.onrender.com';
-      const url = (window.location.protocol === 'file:')
-        ? `${API_BASE}/api/profile`
-        : '/api/profile';
+      const url = 'https://careertalent-1.onrender.com/api/profile';
 
       try{
         const resp = await fetch(url, {
