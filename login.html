@@ -282,13 +282,9 @@
       sendCodeBtn.disabled = true;
       sendCodeBtn.textContent = '发送中...';
 
-      const API_BASE = 'https://careertalent-1.onrender.com';
-      const url = (window.location.protocol === 'file:')
-        ? `${API_BASE}/api/send_code`
-        : '/api/send_code';
+      const url = 'https://careertalent-1.onrender.com/api/send_code';
 
       try{
-        // 真实环境下，请将该接口指向你的后端短信服务
         const resp = await fetch(url, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -336,10 +332,7 @@
       submitBtn.textContent = '验证中...';
       submitBtn.disabled = true;
 
-      const API_BASE = 'https://careertalent-1.onrender.com';
-      const url = (window.location.protocol === 'file:')
-        ? `${API_BASE}/api/auth`
-        : '/api/auth';
+      const url = 'https://careertalent-1.onrender.com/api/auth';
 
       try{
         const resp = await fetch(url, {

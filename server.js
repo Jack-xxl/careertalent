@@ -383,6 +383,17 @@ app.get('/debug/env', (req, res) => {
   });
 });
 
+app.get('/debug/ping-send-code', (req, res) => {
+  console.log('[PING SEND CODE DEBUG HIT]');
+  res.json({
+    ok: true,
+    env: {
+      signName: JSON.stringify(process.env.ALI_SMS_SIGN_NAME),
+      templateCode: JSON.stringify(process.env.ALI_SMS_TEMPLATE_CODE),
+    },
+  });
+});
+
 function getAliyunSmsClient() {
   const { accessKeyId, accessKeySecret } = getAliSmsConfig();
   const endpoint = 'dysmsapi.aliyuncs.com';
@@ -418,6 +429,15 @@ function getStoredCode(phone) {
 
 // 发送短信验证码（阿里云短信）
 app.post('/api/send_code', async (req, res) => {
+  console.log('[SEND_CODE ROUTE HIT]', {
+    body: req.body,
+    time: new Date().toISOString(),
+  });
+  console.log('[REAL ENV VALUE CHECK]', {
+    ALI_ACCESS_KEY_ID: process.env.ALI_ACCESS_KEY_ID ? 'HAS_VALUE' : 'EMPTY',
+    ALI_SMS_SIGN_NAME_VALUE: JSON.stringify(process.env.ALI_SMS_SIGN_NAME),
+    ALI_SMS_TEMPLATE_CODE_VALUE: JSON.stringify(process.env.ALI_SMS_TEMPLATE_CODE),
+  });
   const aliProbe = getAliSmsConfig();
   console.log('[ROUTE HIT] raw env:', JSON.stringify({
     sign: aliProbe.signName,
@@ -445,12 +465,6 @@ app.post('/api/send_code', async (req, res) => {
   smsCodeStore.set(phone, { code, expiresAt: Date.now() + 5 * 60 * 1000 });
 
   try {
-    console.log('[REAL ENV VALUE CHECK]', {
-      ALI_ACCESS_KEY_ID: process.env.ALI_ACCESS_KEY_ID ? 'HAS_VALUE' : 'EMPTY',
-      ALI_SMS_SIGN_NAME_VALUE: JSON.stringify(process.env.ALI_SMS_SIGN_NAME),
-      ALI_SMS_TEMPLATE_CODE_VALUE: JSON.stringify(process.env.ALI_SMS_TEMPLATE_CODE),
-      NODE_ENV: process.env.NODE_ENV,
-    });
     const client = getAliyunSmsClient();
     const SendSmsReqCtor =
       (Dysmsapi.SendSmsRequest) ||
