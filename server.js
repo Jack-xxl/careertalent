@@ -43,6 +43,25 @@ let wxSerialNo = null;
 // 短信验证码：phone -> { code, expiresAt }
 const smsCodeStore = new Map();
 
+/** Render / 本地 .env 中若误带换行，会导致阿里云 SDK 读参异常；发送前统一剥掉。 */
+function normalizeAliSmsEnvString(val) {
+  return String(val == null ? '' : val).replace(/\n/g, '').replace(/\r/g, '').trim();
+}
+
+/** 每次调用时从 process.env 读取（勿在文件顶层缓存短信配置）。 */
+function getAliSmsConfig() {
+  return {
+    accessKeyId: normalizeAliSmsEnvString(process.env.ALI_ACCESS_KEY_ID),
+    accessKeySecret: normalizeAliSmsEnvString(process.env.ALI_ACCESS_KEY_SECRET),
+    signName: normalizeAliSmsEnvString(process.env.ALI_SMS_SIGN_NAME),
+    templateCode: normalizeAliSmsEnvString(process.env.ALI_SMS_TEMPLATE_CODE),
+  };
+}
+
+/** 环境变量未配置时的临时兜底（与阿里云控制台一致；调通后可改为强制读 env）。 */
+const DEFAULT_ALI_SMS_SIGN_NAME = '吉林省易乐科技有限公司';
+const DEFAULT_ALI_SMS_TEMPLATE_CODE = 'SMS_505000057';
+
 function pemFromEnv(val) {
   if (val == null || String(val).trim() === '') return null;
   const normalized = String(val).replace(/\\n/g, '\n').trim();
@@ -64,11 +83,14 @@ try {
   console.error('[INIT ERROR]', e && e.message ? e.message : String(e));
 }
 
-console.log('[ALI SMS CHECK]', {
-  ALI_ACCESS_KEY_ID: !!process.env.ALI_ACCESS_KEY_ID,
-  ALI_SMS_SIGN_NAME: !!(process.env.ALI_SMS_SIGN_NAME || '').replace(/\n/g, '').replace(/\r/g, '').trim(),
-  ALI_SMS_TEMPLATE_CODE: !!(process.env.ALI_SMS_TEMPLATE_CODE || '').replace(/\n/g, '').replace(/\r/g, '').trim(),
-});
+(() => {
+  const aliyunSmsProbe = getAliSmsConfig();
+  console.log('[ALI SMS CHECK]', {
+    ALI_ACCESS_KEY_ID: !!aliyunSmsProbe.accessKeyId,
+    ALI_SMS_SIGN_NAME: !!aliyunSmsProbe.signName,
+    ALI_SMS_TEMPLATE_CODE: !!aliyunSmsProbe.templateCode,
+  });
+})();
 
 // 支付初始化（缺证书不允许退出进程）
 try {
@@ -353,8 +375,7 @@ app.use(express.json({ limit: '2mb', verify: (req, res, buf) => { req.rawBody = 
 app.use(express.urlencoded({ extended: false }));
 
 app.get('/debug/env', (req, res) => {
-  const signName = (process.env.ALI_SMS_SIGN_NAME || '').replace(/\n/g, '').replace(/\r/g, '').trim();
-  const templateCode = (process.env.ALI_SMS_TEMPLATE_CODE || '').replace(/\n/g, '').replace(/\r/g, '').trim();
+  const { signName, templateCode } = getAliSmsConfig();
   res.json({
     signName,
     templateCode,
@@ -363,8 +384,7 @@ app.get('/debug/env', (req, res) => {
 });
 
 function getAliyunSmsClient() {
-  const accessKeyId = String(process.env.ALI_ACCESS_KEY_ID || '').trim();
-  const accessKeySecret = String(process.env.ALI_ACCESS_KEY_SECRET || '').trim();
+  const { accessKeyId, accessKeySecret } = getAliSmsConfig();
   const endpoint = 'dysmsapi.aliyuncs.com';
 
   if (!accessKeyId || !accessKeySecret) {
@@ -398,9 +418,10 @@ function getStoredCode(phone) {
 
 // 发送短信验证码（阿里云短信）
 app.post('/api/send_code', async (req, res) => {
+  const aliProbe = getAliSmsConfig();
   console.log('[ROUTE HIT] raw env:', JSON.stringify({
-    sign: (process.env.ALI_SMS_SIGN_NAME || '').replace(/\n/g, '').replace(/\r/g, '').trim(),
-    code: (process.env.ALI_SMS_TEMPLATE_CODE || '').replace(/\n/g, '').replace(/\r/g, '').trim(),
+    sign: aliProbe.signName,
+    code: aliProbe.templateCode,
   }));
   const phone = String((req.body && req.body.phone) || '').trim();
   console.log('[SEND CODE] request body:', req.body);
@@ -410,30 +431,26 @@ app.post('/api/send_code', async (req, res) => {
     return res.status(400).json({ success: false, message: '手机号无效' });
   }
 
-  // 临时硬编码兜底测试（调通后恢复 env-only + 缺失校验）
-  const signName = (process.env.ALI_SMS_SIGN_NAME || '').replace(/\n/g, '').replace(/\r/g, '').trim() || '吉林省易乐科技有限公司';
-  const templateCode = (process.env.ALI_SMS_TEMPLATE_CODE || '').replace(/\n/g, '').replace(/\r/g, '').trim() || 'SMS_505000057';
+  const ali = getAliSmsConfig();
+  const signName = ali.signName || DEFAULT_ALI_SMS_SIGN_NAME;
+  const templateCode = ali.templateCode || DEFAULT_ALI_SMS_TEMPLATE_CODE;
   console.log('[SEND CODE DEBUG]', {
     signName,
     templateCode,
+    envSignPresent: !!ali.signName,
+    envTemplatePresent: !!ali.templateCode,
   });
-  // if (!signName || !templateCode) {
-  //   return res.status(500).json({
-  //     success: false,
-  //     message: `Missing ALI_SMS_SIGN_NAME / ALI_SMS_TEMPLATE_CODE`,
-  //     debug: {
-  //       signName: (process.env.ALI_SMS_SIGN_NAME || '').replace(/\n/g, '').replace(/\r/g, '').trim() || 'EMPTY',
-  //       templateCode: (process.env.ALI_SMS_TEMPLATE_CODE || '').replace(/\n/g, '').replace(/\r/g, '').trim() || 'EMPTY',
-  //       signNameLen: (process.env.ALI_SMS_SIGN_NAME || '').replace(/\n/g, '').replace(/\r/g, '').trim().length,
-  //       templateCodeLen: (process.env.ALI_SMS_TEMPLATE_CODE || '').replace(/\n/g, '').replace(/\r/g, '').trim().length,
-  //     },
-  //   });
-  // }
 
   const code = new6DigitCode();
   smsCodeStore.set(phone, { code, expiresAt: Date.now() + 5 * 60 * 1000 });
 
   try {
+    console.log('[REAL ENV VALUE CHECK]', {
+      ALI_ACCESS_KEY_ID: process.env.ALI_ACCESS_KEY_ID ? 'HAS_VALUE' : 'EMPTY',
+      ALI_SMS_SIGN_NAME_VALUE: JSON.stringify(process.env.ALI_SMS_SIGN_NAME),
+      ALI_SMS_TEMPLATE_CODE_VALUE: JSON.stringify(process.env.ALI_SMS_TEMPLATE_CODE),
+      NODE_ENV: process.env.NODE_ENV,
+    });
     const client = getAliyunSmsClient();
     const SendSmsReqCtor =
       (Dysmsapi.SendSmsRequest) ||
