@@ -790,7 +790,6 @@ function handlePaidSuccess() {
     if (expireInterval) clearInterval(expireInterval);
   } catch (e) {}
 
-  // 仅在实际支付成功时，把「待支付页」记录的套餐写入正式字段（避免未付款即 talentai_paid_package_type=navigator）
   try {
     const pend = localStorage.getItem('talentai_pending_checkout_package');
     if (pend) {
@@ -799,27 +798,39 @@ function handlePaidSuccess() {
     }
   } catch (e) {}
 
-  // 写入支付标记（供 p_assessment.html / WMA 流程防止未支付访问）
+  const pkg = (localStorage.getItem('talentai_paid_package_type') || '').toLowerCase();
+
   try {
     localStorage.setItem('talentai_premium', '1');
-    localStorage.setItem('talentai_paid', '1');
-    if (orderId) {
-      localStorage.setItem('talentai_order', orderId);
-      localStorage.setItem('talentai_order_id', orderId);
-    }
     localStorage.setItem('talentai_p_enter_time', String(Date.now()));
   } catch (e) {}
 
-  const pkg = (localStorage.getItem('talentai_paid_package_type') || '').toLowerCase();
   try {
     if (pkg === 'pathfinder' || pkg === '49') {
+      localStorage.setItem('talentai_paid', '1');
+      localStorage.setItem('talentai_paid_at', new Date().toISOString());
+      if (orderId) {
+        localStorage.setItem('talentai_order', orderId);
+        localStorage.setItem('talentai_order_id', orderId);
+      }
       localStorage.setItem('talentai_p_paid', '1');
       localStorage.setItem('talentai_p_remaining', '3');
-    }
-    if (pkg === 'navigator' || pkg === '150') {
-      localStorage.setItem('talentai_wma_unlocked', '1');
+      localStorage.removeItem('talentai_navigator_paid');
+      localStorage.removeItem('talentai_navigator_paid_at');
+      localStorage.removeItem('talentai_navigator_order_id');
+      localStorage.removeItem('talentai_wma_paid');
+      localStorage.removeItem('talentai_wma_paid_at');
+      localStorage.removeItem('talentai_wma_order_id');
+      localStorage.removeItem('talentai_wma_unlocked');
+      localStorage.removeItem('talentai_paid_package_type');
+    } else if (pkg === 'navigator' || pkg === '150') {
+      localStorage.setItem('talentai_navigator_paid', 'true');
+      localStorage.setItem('talentai_navigator_paid_at', new Date().toISOString());
+      if (orderId) localStorage.setItem('talentai_navigator_order_id', orderId);
       localStorage.setItem('talentai_wma_paid', '1');
       localStorage.setItem('talentai_wma_paid_at', new Date().toISOString());
+      if (orderId) localStorage.setItem('talentai_wma_order_id', orderId);
+      localStorage.removeItem('talentai_wma_unlocked');
       localStorage.removeItem('talentai_wma_completed_at');
       localStorage.removeItem('talentai_wma_answers');
       localStorage.removeItem('talentai_wma_layer');
@@ -828,6 +839,7 @@ function handlePaidSuccess() {
       localStorage.removeItem('talentai_wma_progress');
       localStorage.removeItem('talentai_wma_scores');
       localStorage.removeItem('talentai_wma_result');
+      localStorage.removeItem('talentai_paid_package_type');
     }
     localStorage.removeItem('talentai_wma_remaining');
   } catch (e) {}

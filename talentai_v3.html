@@ -1435,7 +1435,7 @@
       </div>
       <a id="navigatorUnlockBtn" href="https://careertalent-1.onrender.com/wma_payment.html"
          style="display:block;background:#22c55e;color:#fff;text-decoration:none;border-radius:50px;padding:16px;font-size:16px;font-weight:800;letter-spacing:0.5px;box-shadow:0 4px 20px rgba(34,197,94,0.35);">
-        解锁·五层终极报告 ¥150
+        立即解锁五层报告
       </a>
       <div id="navigatorUnlockedHint" style="display:none;margin-top:12px;font-size:13px;color:#86efac;">
         已解锁 Navigator / 五层报告，可直接继续后续内容。
@@ -1456,13 +1456,18 @@
       const card = document.getElementById('navigatorPaywallCard');
       const fullReportLink = document.getElementById('navigatorFullReportLink');
 
-      const pkg = String(localStorage.getItem('talentai_paid_package_type') || '').toLowerCase();
-      // 主规则：仅微信确认收款后写入的 talentai_wma_unlocked。
-      // 兼容旧版：¥150 在 payment.html 付成功时曾只写 premium + package，未写 wma_unlocked。
+      try {
+        if (localStorage.getItem('talentai_navigator_paid') !== 'true' && localStorage.getItem('talentai_wma_unlocked') === '1') {
+          localStorage.setItem('talentai_navigator_paid', 'true');
+          const at = localStorage.getItem('talentai_wma_paid_at');
+          if (at) localStorage.setItem('talentai_navigator_paid_at', at);
+        }
+      } catch (e) {}
+
+      // 五层与 ¥49 基础包彻底分离：绝不使用 talentai_paid / talentai_premium / paid_package_type 判断此处
       const wmaUnlocked =
-        localStorage.getItem('talentai_wma_unlocked') === '1' ||
-        (localStorage.getItem('talentai_premium') === '1' &&
-          (pkg === 'navigator' || pkg === '150'));
+        localStorage.getItem('talentai_navigator_paid') === 'true' ||
+        localStorage.getItem('talentai_wma_paid') === '1';
 
       if (!wmaUnlocked) return;
 

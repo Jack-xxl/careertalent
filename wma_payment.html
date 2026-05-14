@@ -126,11 +126,14 @@ function handlePaidSuccess() {
   const btnPaidHint = document.getElementById("btnPaidHint");
   if (btnPaidHint) btnPaidHint.style.display = 'block';
 
-  // 写入支付标记（与已跑通链路一致）
-  localStorage.setItem('talentai_wma_paid','1');
-  localStorage.setItem('talentai_wma_unlocked','1');
-  localStorage.setItem('talentai_paid_package_type','navigator');
+  const oid = (typeof localStorage !== 'undefined' && localStorage.getItem('talentai_order_id')) || '';
+  localStorage.setItem('talentai_navigator_paid', 'true');
+  localStorage.setItem('talentai_navigator_paid_at', new Date().toISOString());
+  if (oid) localStorage.setItem('talentai_navigator_order_id', oid);
+  localStorage.setItem('talentai_wma_paid', '1');
   localStorage.setItem('talentai_wma_paid_at', new Date().toISOString());
+  if (oid) localStorage.setItem('talentai_wma_order_id', oid);
+  localStorage.removeItem('talentai_wma_unlocked');
   try {
     localStorage.removeItem('talentai_pending_checkout_package');
     localStorage.removeItem('talentai_wma_remaining');

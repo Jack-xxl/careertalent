@@ -103,7 +103,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 
     restoreProgress();
 
-    // talentai_wma_paid：仅表示「当前已付费且尚未完成一次完整测评提交」；完成后会清除，复测需再次付费
+    // talentai_wma_paid：当前轮 WMA 测评资格（¥150 支付成功或开发模式）；talentai_navigator_paid 为五层商业授权标记
     const paid = localStorage.getItem('talentai_wma_paid');
 
     try {
@@ -151,6 +151,7 @@ function getCurrentLayerQuestions() {
 
 window.onPaySuccess = function () {
     try {
+        localStorage.setItem('talentai_navigator_paid', 'true');
         localStorage.setItem('talentai_wma_paid', '1');
         localStorage.setItem('talentai_wma_paid_at', new Date().toISOString());
     } catch (e) {}
