@@ -398,6 +398,10 @@ app.post('/api/send_code', async (req, res) => {
 
   const signName = String(process.env.ALI_SMS_SIGN_NAME || '').trim();
   const templateCode = String(process.env.ALI_SMS_TEMPLATE_CODE || '').trim();
+  console.log('[SEND CODE DEBUG]', {
+    signName: process.env.ALI_SMS_SIGN_NAME,
+    templateCode: process.env.ALI_SMS_TEMPLATE_CODE,
+  });
   if (!signName || !templateCode) {
     return res.status(500).json({ success: false, message: 'Missing ALI_SMS_SIGN_NAME / ALI_SMS_TEMPLATE_CODE' });
   }
