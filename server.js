@@ -352,6 +352,14 @@ function buildWechatV3Authorization(method, pathWithQuery, requestBodyText, mchi
 app.use(express.json({ limit: '2mb', verify: (req, res, buf) => { req.rawBody = buf; } }));
 app.use(express.urlencoded({ extended: false }));
 
+app.get('/debug/env', (req, res) => {
+  res.json({
+    signName: process.env.ALI_SMS_SIGN_NAME,
+    templateCode: process.env.ALI_SMS_TEMPLATE_CODE,
+    keyId: process.env.ALI_ACCESS_KEY_ID ? '已设置' : '未设置',
+  });
+});
+
 function getAliyunSmsClient() {
   const accessKeyId = String(process.env.ALI_ACCESS_KEY_ID || '').trim();
   const accessKeySecret = String(process.env.ALI_ACCESS_KEY_SECRET || '').trim();
