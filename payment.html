@@ -807,9 +807,7 @@ function handlePaidSuccess() {
       localStorage.setItem('talentai_p_paid', '1');
       localStorage.setItem('talentai_p_remaining', '3');
     }
-    if (pkg === 'navigator' || pkg === '150') {
-      localStorage.setItem('talentai_wma_remaining', '3');
-    }
+    localStorage.removeItem('talentai_wma_remaining');
   } catch (e) {}
   let dest = 'p_assessment.html';
   if (pkg === 'navigator' || pkg === '150') {

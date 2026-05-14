@@ -81,45 +81,6 @@ let timerSeconds  = 0;
 let timerInterval = null;
 let isSubmitting  = false;   // 防止重复触发结算
 
-function getWmaRemaining() {
-    return parseInt(localStorage.getItem('talentai_wma_remaining') || '0', 10);
-}
-
-function setWmaRemaining(v) {
-    localStorage.setItem('talentai_wma_remaining', String(Math.max(0, v)));
-}
-
-function updateWmaAttemptInfo() {
-    const el = document.getElementById('wma-attempt-info');
-    if (!el) return;
-    el.textContent = `你当前还剩 ${getWmaRemaining()} 次测试机会`;
-}
-
-function showWmaNoMoreAttemptsMessage() {
-    const exhausted = document.getElementById('wma-attempt-exhausted');
-    if (exhausted) exhausted.style.display = 'block';
-    showScreen('wma-attempt-exhausted');
-}
-
-function hasWmaProgress() {
-    const savedAnswers = localStorage.getItem('talentai_wma_answers');
-    const savedLayer = localStorage.getItem('talentai_wma_layer');
-    const savedQ = localStorage.getItem('talentai_wma_q');
-    return !!(savedAnswers || savedLayer || savedQ);
-}
-
-function isWmaAttemptActive() {
-    return localStorage.getItem('talentai_wma_attempt_active') === '1';
-}
-
-function setWmaAttemptActive(v) {
-    if (v) {
-        localStorage.setItem('talentai_wma_attempt_active', '1');
-    } else {
-        localStorage.removeItem('talentai_wma_attempt_active');
-    }
-}
-
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // 初始化
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -137,14 +98,12 @@ window.addEventListener('DOMContentLoaded', async () => {
             localStorage.removeItem('talentai_wma_timer');
             localStorage.removeItem('talentai_wma_scores');
             localStorage.removeItem('talentai_wma_result');
-            localStorage.removeItem('talentai_wma_attempt_active');
         } catch (e) {}
     }
 
     restoreProgress();
-    updateWmaAttemptInfo();
 
-    // 已付费 + 有进度 → 跳过付费页直接回到答题
+    // talentai_wma_paid：仅表示「当前已付费且尚未完成一次完整测评提交」；完成后会清除，复测需再次付费
     const paid = localStorage.getItem('talentai_wma_paid');
 
     try {
@@ -152,20 +111,6 @@ window.addEventListener('DOMContentLoaded', async () => {
         console.log(`✅ WMA题库加载完成 W:${wmaData.W.questions.length} M:${wmaData.M.questions.length} A:${wmaData.A.questions.length}`);
 
         if (paid) {
-            // 新测评才扣减次数；active 或恢复进度时不重复扣减
-            const progressExists = hasWmaProgress();
-            if (!isWmaAttemptActive() && !progressExists) {
-                const remaining = getWmaRemaining();
-                if (remaining <= 0) {
-                    updateWmaAttemptInfo();
-                    showWmaNoMoreAttemptsMessage();
-                    return;
-                }
-                setWmaRemaining(remaining - 1);
-                setWmaAttemptActive(true);
-                updateWmaAttemptInfo();
-            }
-            // 恢复进度
             renderQuestion();
             showScreen('question-screen');
             startTimer();
@@ -651,7 +596,7 @@ function startCalc() {
                     localStorage.setItem('talentai_wma_scores',       JSON.stringify(result));
                     localStorage.setItem('talentai_wma_answers',      JSON.stringify(answers));
                     localStorage.setItem('talentai_wma_completed_at', result.completedAt);
-                    localStorage.removeItem('talentai_wma_attempt_active');
+                    localStorage.removeItem('talentai_wma_paid');
                     try { localStorage.removeItem(WMA_PROGRESS_KEY); } catch (_) {}
                 } catch (e) {
                     console.error('localStorage写入失败', e);
