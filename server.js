@@ -66,8 +66,8 @@ try {
 
 console.log('[ALI SMS CHECK]', {
   ALI_ACCESS_KEY_ID: !!process.env.ALI_ACCESS_KEY_ID,
-  ALI_SMS_SIGN_NAME: !!process.env.ALI_SMS_SIGN_NAME,
-  ALI_SMS_TEMPLATE_CODE: !!process.env.ALI_SMS_TEMPLATE_CODE,
+  ALI_SMS_SIGN_NAME: !!(process.env.ALI_SMS_SIGN_NAME || '').replace(/\n/g, '').replace(/\r/g, '').trim(),
+  ALI_SMS_TEMPLATE_CODE: !!(process.env.ALI_SMS_TEMPLATE_CODE || '').replace(/\n/g, '').replace(/\r/g, '').trim(),
 });
 
 // 支付初始化（缺证书不允许退出进程）
@@ -353,9 +353,11 @@ app.use(express.json({ limit: '2mb', verify: (req, res, buf) => { req.rawBody = 
 app.use(express.urlencoded({ extended: false }));
 
 app.get('/debug/env', (req, res) => {
+  const signName = (process.env.ALI_SMS_SIGN_NAME || '').replace(/\n/g, '').replace(/\r/g, '').trim();
+  const templateCode = (process.env.ALI_SMS_TEMPLATE_CODE || '').replace(/\n/g, '').replace(/\r/g, '').trim();
   res.json({
-    signName: process.env.ALI_SMS_SIGN_NAME,
-    templateCode: process.env.ALI_SMS_TEMPLATE_CODE,
+    signName,
+    templateCode,
     keyId: process.env.ALI_ACCESS_KEY_ID ? '已设置' : '未设置',
   });
 });
@@ -397,8 +399,8 @@ function getStoredCode(phone) {
 // 发送短信验证码（阿里云短信）
 app.post('/api/send_code', async (req, res) => {
   console.log('[ROUTE HIT] raw env:', JSON.stringify({
-    sign: process.env.ALI_SMS_SIGN_NAME,
-    code: process.env.ALI_SMS_TEMPLATE_CODE,
+    sign: (process.env.ALI_SMS_SIGN_NAME || '').replace(/\n/g, '').replace(/\r/g, '').trim(),
+    code: (process.env.ALI_SMS_TEMPLATE_CODE || '').replace(/\n/g, '').replace(/\r/g, '').trim(),
   }));
   const phone = String((req.body && req.body.phone) || '').trim();
   console.log('[SEND CODE] request body:', req.body);
@@ -409,21 +411,21 @@ app.post('/api/send_code', async (req, res) => {
   }
 
   // 临时硬编码兜底测试（调通后恢复 env-only + 缺失校验）
-  const signName = process.env.ALI_SMS_SIGN_NAME || '吉林省易乐科技有限公司';
-  const templateCode = process.env.ALI_SMS_TEMPLATE_CODE || 'SMS_505000057';
+  const signName = (process.env.ALI_SMS_SIGN_NAME || '').replace(/\n/g, '').replace(/\r/g, '').trim() || '吉林省易乐科技有限公司';
+  const templateCode = (process.env.ALI_SMS_TEMPLATE_CODE || '').replace(/\n/g, '').replace(/\r/g, '').trim() || 'SMS_505000057';
   console.log('[SEND CODE DEBUG]', {
-    signName: process.env.ALI_SMS_SIGN_NAME,
-    templateCode: process.env.ALI_SMS_TEMPLATE_CODE,
+    signName,
+    templateCode,
   });
   // if (!signName || !templateCode) {
   //   return res.status(500).json({
   //     success: false,
   //     message: `Missing ALI_SMS_SIGN_NAME / ALI_SMS_TEMPLATE_CODE`,
   //     debug: {
-  //       signName: process.env.ALI_SMS_SIGN_NAME || 'EMPTY',
-  //       templateCode: process.env.ALI_SMS_TEMPLATE_CODE || 'EMPTY',
-  //       signNameLen: (process.env.ALI_SMS_SIGN_NAME || '').length,
-  //       templateCodeLen: (process.env.ALI_SMS_TEMPLATE_CODE || '').length,
+  //       signName: (process.env.ALI_SMS_SIGN_NAME || '').replace(/\n/g, '').replace(/\r/g, '').trim() || 'EMPTY',
+  //       templateCode: (process.env.ALI_SMS_TEMPLATE_CODE || '').replace(/\n/g, '').replace(/\r/g, '').trim() || 'EMPTY',
+  //       signNameLen: (process.env.ALI_SMS_SIGN_NAME || '').replace(/\n/g, '').replace(/\r/g, '').trim().length,
+  //       templateCodeLen: (process.env.ALI_SMS_TEMPLATE_CODE || '').replace(/\n/g, '').replace(/\r/g, '').trim().length,
   //     },
   //   });
   // }
