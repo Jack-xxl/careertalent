@@ -403,7 +403,16 @@ app.post('/api/send_code', async (req, res) => {
     templateCode: process.env.ALI_SMS_TEMPLATE_CODE,
   });
   if (!signName || !templateCode) {
-    return res.status(500).json({ success: false, message: 'Missing ALI_SMS_SIGN_NAME / ALI_SMS_TEMPLATE_CODE' });
+    return res.status(500).json({
+      success: false,
+      message: `Missing ALI_SMS_SIGN_NAME / ALI_SMS_TEMPLATE_CODE`,
+      debug: {
+        signName: process.env.ALI_SMS_SIGN_NAME || 'EMPTY',
+        templateCode: process.env.ALI_SMS_TEMPLATE_CODE || 'EMPTY',
+        signNameLen: (process.env.ALI_SMS_SIGN_NAME || '').length,
+        templateCodeLen: (process.env.ALI_SMS_TEMPLATE_CODE || '').length,
+      },
+    });
   }
 
   const code = new6DigitCode();
