@@ -89,10 +89,6 @@ body{
         已付款，正在跳转...
     </button>
 
-    <button class="btn btn-green" id="btnManualConfirm" style="display:none;margin-top:12px;background:#374151;">
-        我已完成支付（本地校验）
-    </button>
-
 </div>
 
 <script>
@@ -162,16 +158,6 @@ function handlePaidSuccess() {
     redirectToWmaAssessment();
   }, 300);
 }
-
-(function wireWmaPaymentFallback() {
-  const manual = document.getElementById("btnManualConfirm");
-  if (!manual) return;
-  manual.style.display = "block";
-  manual.addEventListener("click", function () {
-    applyNavigator150PaidToStorage();
-    redirectToWmaAssessment();
-  });
-})();
 
 // ── 订单状态轮询机制（按 orderId + sessionToken 自动解锁）──
 let orderStatusTimer = null;
