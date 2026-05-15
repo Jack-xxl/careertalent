@@ -9,7 +9,6 @@ function renderAll(result, userData) {
   renderFamilies(result.topFamilies);
   renderCareers(result.careerRecommendations);
   renderParentRoadmap(result);
-  renderSocialProof();
   renderCasesDemo();
 
   // ✅ 保存T层8维天赋分数 → 供 talent_p_layer.html 读取，实现真实T+P动态联动
@@ -573,13 +572,7 @@ function renderParentRoadmap(result) {
   `;
 }
 
-/* ---------------- Social proof / Cases ---------------- */
-function renderSocialProof() {
-  const box = document.getElementById('social-proof');
-  if (!box) return;
-  box.innerHTML = `💡 已有 <strong>2,318</strong> 人通过完整测评找到方向 · ⭐⭐⭐⭐⭐ <strong>4.9/5.0</strong>（基于 386 条真实评价）`;
-}
-
+/* ---------------- Cases ---------------- */
 function renderCasesDemo() {
   const box = document.getElementById('case-cards');
   if (!box) return;
