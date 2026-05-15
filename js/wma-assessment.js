@@ -103,8 +103,9 @@ window.addEventListener('DOMContentLoaded', async () => {
 
     restoreProgress();
 
-    // talentai_wma_paid：当前轮 WMA 测评资格（¥150 支付成功或开发模式）；talentai_navigator_paid 为五层商业授权标记
-    const paid = localStorage.getItem('talentai_wma_paid');
+    // talentai_wma_paid：当前轮 WMA 测评资格；值为 '1' 或 'true'；talentai_navigator_paid 为五层商业授权标记
+    const paidRaw = localStorage.getItem('talentai_wma_paid');
+    const paid = paidRaw === '1' || paidRaw === 'true';
 
     try {
         await loadAllLayers();
@@ -152,7 +153,8 @@ function getCurrentLayerQuestions() {
 window.onPaySuccess = function () {
     try {
         localStorage.setItem('talentai_navigator_paid', 'true');
-        localStorage.setItem('talentai_wma_paid', '1');
+        localStorage.setItem('talentai_wma_paid', 'true');
+        localStorage.setItem('talentai_wma_unlocked', 'true');
         localStorage.setItem('talentai_wma_paid_at', new Date().toISOString());
     } catch (e) {}
     // 从W层第一题开始，显示欢迎过渡卡

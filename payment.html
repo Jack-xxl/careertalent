@@ -827,10 +827,10 @@ function handlePaidSuccess() {
       localStorage.setItem('talentai_navigator_paid', 'true');
       localStorage.setItem('talentai_navigator_paid_at', new Date().toISOString());
       if (orderId) localStorage.setItem('talentai_navigator_order_id', orderId);
-      localStorage.setItem('talentai_wma_paid', '1');
+      localStorage.setItem('talentai_wma_paid', 'true');
       localStorage.setItem('talentai_wma_paid_at', new Date().toISOString());
       if (orderId) localStorage.setItem('talentai_wma_order_id', orderId);
-      localStorage.removeItem('talentai_wma_unlocked');
+      localStorage.setItem('talentai_wma_unlocked', 'true');
       localStorage.removeItem('talentai_wma_completed_at');
       localStorage.removeItem('talentai_wma_answers');
       localStorage.removeItem('talentai_wma_layer');
@@ -845,7 +845,12 @@ function handlePaidSuccess() {
   } catch (e) {}
   let dest = 'p_assessment.html';
   if (pkg === 'navigator' || pkg === '150') {
-    dest = 'wma_upgrade.html';
+    console.log('[NAVIGATOR PAYMENT SUCCESS AUTO REDIRECT]', {
+      paid: true,
+      redirectTo: 'wma-assessment.html',
+      time: new Date().toISOString()
+    });
+    dest = 'wma-assessment.html';
   }
 
   setTimeout(() => {

@@ -100,7 +100,7 @@ body{
 // Render 全自动微信支付（Native 扫码支付）
 // =============================
 const API_BASE = 'https://careertalent-1.onrender.com';
-const WMA_UNLOCK_TARGET = 'https://careertalent-1.onrender.com/talentai_v3.html';
+const WMA_ASSESS_HREF = new URL('wma-assessment.html', window.location.href).href;
 
 function renderQrToImg(codeUrl) {
   const qrImg = document.getElementById('qrImg');
@@ -120,36 +120,58 @@ function renderQrToImg(codeUrl) {
   qrImg.style.display = 'block';
 }
 
-function handlePaidSuccess() {
-  document.getElementById("payStatus").innerText = "已付款，正在跳转...";
-  stopOrderStatusPolling();
-  const btnPaidHint = document.getElementById("btnPaidHint");
-  if (btnPaidHint) btnPaidHint.style.display = 'block';
-
+function applyNavigator150PaidToStorage() {
   const oid = (typeof localStorage !== 'undefined' && localStorage.getItem('talentai_order_id')) || '';
   localStorage.setItem('talentai_navigator_paid', 'true');
   localStorage.setItem('talentai_navigator_paid_at', new Date().toISOString());
   if (oid) localStorage.setItem('talentai_navigator_order_id', oid);
-  localStorage.setItem('talentai_wma_paid', '1');
+  localStorage.setItem('talentai_wma_paid', 'true');
   localStorage.setItem('talentai_wma_paid_at', new Date().toISOString());
   if (oid) localStorage.setItem('talentai_wma_order_id', oid);
-  localStorage.removeItem('talentai_wma_unlocked');
+  localStorage.setItem('talentai_wma_unlocked', 'true');
   try {
     localStorage.removeItem('talentai_pending_checkout_package');
     localStorage.removeItem('talentai_wma_remaining');
   } catch (e) {}
 
-  // 清除旧测评数据
   localStorage.removeItem('talentai_wma_completed_at');
   localStorage.removeItem('talentai_wma_answers');
   localStorage.removeItem('talentai_wma_layer');
   localStorage.removeItem('talentai_wma_q');
   localStorage.removeItem('talentai_wma_timer');
+}
+
+function redirectToWmaAssessment() {
+  console.log('[NAVIGATOR PAYMENT SUCCESS AUTO REDIRECT]', {
+    paid: true,
+    redirectTo: 'wma-assessment.html',
+    time: new Date().toISOString()
+  });
+  window.location.href = WMA_ASSESS_HREF;
+}
+
+function handlePaidSuccess() {
+  document.getElementById("payStatus").innerText = "已付款，正在跳转...";
+  stopOrderStatusPolling();
+  const btnPaidHint = document.getElementById("btnPaidHint");
+  if (btnPaidHint) btnPaidHint.style.display = "block";
+
+  applyNavigator150PaidToStorage();
 
   setTimeout(() => {
-    window.location.href = WMA_UNLOCK_TARGET;
+    redirectToWmaAssessment();
   }, 300);
 }
+
+(function wireWmaPaymentFallback() {
+  const manual = document.getElementById("btnManualConfirm");
+  if (!manual) return;
+  manual.style.display = "block";
+  manual.addEventListener("click", function () {
+    applyNavigator150PaidToStorage();
+    redirectToWmaAssessment();
+  });
+})();
 
 // ── 订单状态轮询机制（按 orderId + sessionToken 自动解锁）──
 let orderStatusTimer = null;

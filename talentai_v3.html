@@ -1457,17 +1457,22 @@
       const fullReportLink = document.getElementById('navigatorFullReportLink');
 
       try {
-        if (localStorage.getItem('talentai_navigator_paid') !== 'true' && localStorage.getItem('talentai_wma_unlocked') === '1') {
-          localStorage.setItem('talentai_navigator_paid', 'true');
-          const at = localStorage.getItem('talentai_wma_paid_at');
-          if (at) localStorage.setItem('talentai_navigator_paid_at', at);
+        if (localStorage.getItem('talentai_navigator_paid') !== 'true') {
+          const wu = localStorage.getItem('talentai_wma_unlocked');
+          if (wu === '1' || wu === 'true') {
+            localStorage.setItem('talentai_navigator_paid', 'true');
+            const at = localStorage.getItem('talentai_wma_paid_at');
+            if (at) localStorage.setItem('talentai_navigator_paid_at', at);
+          }
         }
       } catch (e) {}
 
       // 五层与 ¥49 基础包彻底分离：绝不使用 talentai_paid / talentai_premium / paid_package_type 判断此处
+      const wp = localStorage.getItem('talentai_wma_paid');
+      const wmaSession = wp === '1' || wp === 'true';
       const wmaUnlocked =
         localStorage.getItem('talentai_navigator_paid') === 'true' ||
-        localStorage.getItem('talentai_wma_paid') === '1';
+        wmaSession;
 
       if (!wmaUnlocked) return;
 
