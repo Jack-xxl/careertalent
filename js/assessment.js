@@ -213,6 +213,16 @@ function updateProgress() {
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 function completeAssessment() {
+    let unanswered = 0;
+    dimensions.forEach(d => {
+        for (let i = 0; i < 5; i++) {
+            if (!answers[d.key] || !answers[d.key][i]) unanswered++;
+        }
+    });
+    if (unanswered > 0) {
+        alert('尚有题目未完成，请继续作答。');
+        return;
+    }
 
     localStorage.setItem("talentai_answers", JSON.stringify(answers));
     localStorage.setItem("talentai_completed_at", new Date().toISOString());
@@ -221,6 +231,6 @@ function completeAssessment() {
     document.getElementById("loading-screen").classList.remove("hidden");
 
     setTimeout(() => {
-        window.location.href = "answer-review.html";
-    }, 2000);
+        window.location.href = "result.html";
+    }, 800);
 }
