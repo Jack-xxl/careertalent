@@ -485,6 +485,107 @@
       margin-top:6px;
     }
 
+    /* T 层解锁：Top1 & Top3 职业（¥49 后展示于 P 层报告顶部） */
+    .t-unlocked-wrap{
+      margin:24px 0 8px;
+      padding:20px 20px 18px;
+      border-radius:18px;
+      border:1px solid rgba(52,211,153,0.35);
+      background:linear-gradient(145deg,rgba(6,78,59,0.25),rgba(15,23,42,0.92));
+      box-shadow:0 12px 32px rgba(0,0,0,0.35);
+    }
+    .t-unlocked-head{
+      margin-bottom:14px;
+    }
+    .t-unlocked-head .eyebrow{
+      font-size:11px;
+      letter-spacing:0.12em;
+      color:#6ee7b7;
+      margin-bottom:6px;
+    }
+    .t-unlocked-head h2{
+      font-size:18px;
+      font-weight:700;
+      margin-bottom:6px;
+    }
+    .t-unlocked-head p{
+      font-size:13px;
+      color:var(--sub);
+      line-height:1.55;
+    }
+    .t-unlocked-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
+    }
+    @media (max-width:720px){
+      .t-unlocked-grid{ grid-template-columns:1fr; }
+    }
+    .t-unlocked-card{
+      background:rgba(15,23,42,0.85);
+      border:1px solid rgba(148,163,184,0.28);
+      border-radius:14px;
+      padding:16px 16px 14px;
+    }
+    .t-unlocked-card .rank-row{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:8px;
+    }
+    .t-unlocked-card .rank-badge{
+      font-size:13px;
+      font-weight:700;
+      color:#fbbf24;
+    }
+    .t-unlocked-card .match-pct{
+      font-size:22px;
+      font-weight:800;
+      color:var(--accent);
+    }
+    .t-unlocked-card .career-name{
+      font-size:16px;
+      font-weight:700;
+      margin-bottom:8px;
+      line-height:1.35;
+    }
+    .t-unlocked-card .career-desc{
+      font-size:12px;
+      color:var(--sub);
+      line-height:1.6;
+      margin-bottom:10px;
+    }
+    .t-unlocked-meta{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:8px;
+      margin-bottom:10px;
+    }
+    .t-unlocked-meta .meta-box{
+      text-align:center;
+      padding:8px 6px;
+      border-radius:10px;
+      background:rgba(255,255,255,0.04);
+      border:1px solid rgba(148,163,184,0.2);
+    }
+    .t-unlocked-meta .meta-label{
+      font-size:10px;
+      color:var(--sub);
+      margin-bottom:4px;
+    }
+    .t-unlocked-meta .meta-val{
+      font-size:13px;
+      font-weight:700;
+      color:#e5e7eb;
+    }
+    .t-unlocked-tip{
+      font-size:11px;
+      color:#a7f3d0;
+      line-height:1.5;
+      padding-top:8px;
+      border-top:1px solid rgba(52,211,153,0.2);
+    }
+
     @media (max-width:900px){
       .grid-top{grid-template-columns:1fr;}
       .two-col{grid-template-columns:1fr;}
@@ -509,6 +610,15 @@
     <p class="subtitle">
       这一页不是在给你贴标签，而是帮你看清：在 AI 时代，什么样的环境、路径、合作方式最适合你。
     </p>
+
+    <div id="t-layer-unlocked-careers" class="t-unlocked-wrap" style="display:none;" aria-label="T层解锁职业推荐">
+      <div class="t-unlocked-head">
+        <div class="eyebrow">T 层天赋测评 · 已解锁</div>
+        <h2>你的 Top1 与 Top3 高匹配职业</h2>
+        <p>完成 ¥49 寻路者解锁后，基于 T 层天赋 DNA 为你揭晓的两条重点方向（第 1、3 名）。下方 P 层报告将结合性格，帮你看清在这些方向里你会更快乐还是更消耗。</p>
+      </div>
+      <div id="t-unlocked-careers-grid" class="t-unlocked-grid"></div>
+    </div>
 
     <!-- 顶部：人格 + 能量 -->
     <div class="grid-top">
@@ -1436,7 +1546,115 @@
       el.innerHTML = joined;
     }
 
+    function isPathfinderPaid() {
+      return (
+        localStorage.getItem('talentai_premium') === '1' ||
+        localStorage.getItem('talentai_paid') === '1' ||
+        localStorage.getItem('talentai_p_paid') === '1'
+      );
+    }
+
+    function loadTLayerTopCareers() {
+      try {
+        const full = localStorage.getItem('talentai_careers_full');
+        if (full) {
+          const list = JSON.parse(full);
+          if (Array.isArray(list) && list.length >= 3) return list;
+        }
+        const raw = localStorage.getItem('talentai_t_careers_raw');
+        if (raw) {
+          const list = JSON.parse(raw);
+          if (Array.isArray(list) && list.length >= 3) return list;
+        }
+        const simple = localStorage.getItem('talentai_careers');
+        if (simple) {
+          const list = JSON.parse(simple);
+          if (Array.isArray(list) && list.length >= 3) {
+            return list.map((c) => ({
+              name: c.name,
+              matchScore: c.matchScore,
+              description: '',
+              aiImpact: {}
+            }));
+          }
+        }
+      } catch (e) {
+        console.warn('读取 T 层职业数据失败', e);
+      }
+      return null;
+    }
+
+    function escHtml(s) {
+      return String(s || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function buildTUnlockedCareers() {
+      const wrap = document.getElementById('t-layer-unlocked-careers');
+      const grid = document.getElementById('t-unlocked-careers-grid');
+      if (!wrap || !grid) return;
+
+      if (!isPathfinderPaid()) {
+        wrap.style.display = 'none';
+        return;
+      }
+
+      const careers = loadTLayerTopCareers();
+      if (!careers) {
+        wrap.style.display = 'none';
+        return;
+      }
+
+      const pairs = [
+        { c: careers[0], rank: 1, medal: '🥇' },
+        { c: careers[2], rank: 3, medal: '🥉' }
+      ];
+
+      grid.innerHTML = pairs.map(({ c, rank, medal }) => {
+        const aiR = c.aiImpact?.replacementRisk ?? '--';
+        const newbie = c.aiImpact?.newbieAdvantage ?? '--';
+        const salary = c.aiImpact?.salaryRange ?? '--';
+        const ms = c.matchScore ?? '--';
+        const desc = c.description || '基于你的 T 层天赋结构，该方向与核心能力匹配度较高。';
+        const why = c.whyNewbieCanWin
+          ? `<div class="t-unlocked-tip">💡 ${escHtml(c.whyNewbieCanWin)}</div>`
+          : '';
+
+        return `
+          <div class="t-unlocked-card">
+            <div class="rank-row">
+              <span class="rank-badge">${medal} 第 ${rank} 名</span>
+              <span class="match-pct">${ms}%</span>
+            </div>
+            <div class="career-name">${escHtml(c.name)}</div>
+            <p class="career-desc">${escHtml(desc)}</p>
+            <div class="t-unlocked-meta">
+              <div class="meta-box">
+                <div class="meta-label">AI 替代风险</div>
+                <div class="meta-val">${aiR}${aiR !== '--' ? '%' : ''}</div>
+              </div>
+              <div class="meta-box">
+                <div class="meta-label">新人优势</div>
+                <div class="meta-val">${newbie}${newbie !== '--' ? '%' : ''}</div>
+              </div>
+              <div class="meta-box">
+                <div class="meta-label">薪资范围</div>
+                <div class="meta-val">${escHtml(salary)}</div>
+              </div>
+            </div>
+            ${why}
+          </div>
+        `;
+      }).join('');
+
+      wrap.style.display = 'block';
+    }
+
     function init(){
+      buildTUnlockedCareers();
       buildArchetype();
       buildOcean();
       buildEnergy();
