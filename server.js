@@ -10,6 +10,141 @@ const OpenApi = require('@alicloud/openapi-client');
 const WxPay = require('wechatpay-node-v3');
 const { Pool } = require('pg');
 
+let nodemailer = null;
+try {
+  nodemailer = require('nodemailer');
+} catch (e) {
+  console.warn('[MAIL] nodemailer not installed; email send disabled until npm install nodemailer');
+}
+
+const REPORT_SHARE_TTL_DAYS = 180;
+const REPORT_SHARE_DIR = path.join(__dirname, 'data', 'report-shares');
+const reportShareMemory = new Map();
+
+function getReportShareSecret() {
+  return process.env.REPORT_SHARE_SECRET || 'talentai-dev-share-key-please-set-in-production';
+}
+
+function encryptShareBlob(obj) {
+  const iv = crypto.randomBytes(12);
+  const key = crypto.createHash('sha256').update(getReportShareSecret()).digest();
+  const plain = Buffer.from(JSON.stringify(obj), 'utf8');
+  const cipher = crypto.createCipheriv('aes-256-gcm', key, iv);
+  const enc = Buffer.concat([cipher.update(plain), cipher.final()]);
+  const tag = cipher.getAuthTag();
+  return Buffer.concat([iv, tag, enc]).toString('base64');
+}
+
+function decryptShareBlob(b64) {
+  const buf = Buffer.from(b64, 'base64');
+  const iv = buf.subarray(0, 12);
+  const tag = buf.subarray(12, 28);
+  const enc = buf.subarray(28);
+  const key = crypto.createHash('sha256').update(getReportShareSecret()).digest();
+  const decipher = crypto.createDecipheriv('aes-256-gcm', key, iv);
+  decipher.setAuthTag(tag);
+  const plain = Buffer.concat([decipher.update(enc), decipher.final()]);
+  return JSON.parse(plain.toString('utf8'));
+}
+
+function newShareId() {
+  return crypto.randomBytes(16).toString('hex');
+}
+
+function ensureReportShareDir() {
+  if (!fs.existsSync(REPORT_SHARE_DIR)) {
+    fs.mkdirSync(REPORT_SHARE_DIR, { recursive: true });
+  }
+}
+
+async function saveReportShare(record) {
+  const encrypted = encryptShareBlob(record);
+  if (pool) {
+    await pool.query(
+      `INSERT INTO report_shares (share_id, report_type, page_path, page_title, payload_enc, expires_at)
+       VALUES ($1, $2, $3, $4, $5, $6)`,
+      [
+        record.shareId,
+        record.reportType,
+        record.pagePath,
+        record.pageTitle,
+        encrypted,
+        record.expiresAt
+      ]
+    );
+    return;
+  }
+  ensureReportShareDir();
+  fs.writeFileSync(path.join(REPORT_SHARE_DIR, `${record.shareId}.enc`), encrypted, 'utf8');
+  reportShareMemory.set(record.shareId, { encrypted, expiresAt: record.expiresAt });
+}
+
+async function loadReportShare(shareId) {
+  let encrypted = null;
+  let expiresAt = null;
+  if (pool) {
+    const r = await pool.query(
+      'SELECT payload_enc, expires_at FROM report_shares WHERE share_id = $1 LIMIT 1',
+      [shareId]
+    );
+    if (!r.rows.length) return null;
+    encrypted = r.rows[0].payload_enc;
+    expiresAt = r.rows[0].expires_at;
+  } else {
+    const mem = reportShareMemory.get(shareId);
+    if (mem) {
+      encrypted = mem.encrypted;
+      expiresAt = mem.expiresAt;
+    } else {
+      const fp = path.join(REPORT_SHARE_DIR, `${shareId}.enc`);
+      if (!fs.existsSync(fp)) return null;
+      encrypted = fs.readFileSync(fp, 'utf8');
+    }
+  }
+  if (!encrypted) return null;
+  try {
+    const data = decryptShareBlob(encrypted);
+    const exp = data.expiresAt || expiresAt;
+    if (exp && new Date(exp) < new Date()) return { expired: true };
+    return { data, expired: false };
+  } catch (e) {
+    console.error('[REPORT SHARE] decrypt failed', e);
+    return null;
+  }
+}
+
+async function sendReportHtmlEmail(to, subject, htmlBody, shareUrl) {
+  const host = process.env.SMTP_HOST || process.env.ALI_SMTP_HOST;
+  const user = process.env.SMTP_USER || process.env.ALI_SMTP_USER;
+  const pass = process.env.SMTP_PASS || process.env.ALI_SMTP_PASS;
+  if (!nodemailer || !host || !user || !pass) {
+    return {
+      ok: false,
+      error:
+        '邮件服务未配置。请在环境变量中设置 SMTP_HOST、SMTP_USER、SMTP_PASS（可与阿里云企业邮箱 SMTP 对接）。'
+    };
+  }
+  const transporter = nodemailer.createTransport({
+    host,
+    port: Number(process.env.SMTP_PORT || 465),
+    secure: String(process.env.SMTP_SECURE || 'true') !== 'false',
+    auth: { user, pass }
+  });
+  const from = process.env.SMTP_FROM || `TalentAI <${user}>`;
+  const html = `
+    <div style="font-family:PingFang SC,Microsoft YaHei,sans-serif;max-width:640px;margin:0 auto;color:#1e293b;">
+      <h2 style="color:#0f766e;">${subject}</h2>
+      ${htmlBody}
+      <p style="margin-top:24px;font-size:14px;">
+        <a href="${shareUrl}" style="color:#059669;font-weight:bold;">点击在线查看完整报告</a>
+        （链接 180 天内有效）
+      </p>
+      <p style="font-size:12px;color:#64748b;margin-top:32px;">© TalentAI · 本邮件为系统自动发送</p>
+    </div>`;
+  await transporter.sendMail({ from, to, subject, html });
+  return { ok: true };
+}
+
 // 先保证服务启动监听端口（Render 需要探测 open port）
 const app = express();
 app.disable('x-powered-by');
@@ -250,6 +385,17 @@ try {
       await pool.query(`ALTER TABLE paid_orders ADD COLUMN IF NOT EXISTS package_type VARCHAR(64);`);
       await pool.query(`ALTER TABLE paid_orders ADD COLUMN IF NOT EXISTS amount INTEGER;`);
       await pool.query(`ALTER TABLE paid_orders ADD COLUMN IF NOT EXISTS paid_at TIMESTAMP DEFAULT NOW();`);
+      await pool.query(`
+        CREATE TABLE IF NOT EXISTS report_shares (
+          share_id VARCHAR(64) PRIMARY KEY,
+          report_type VARCHAR(32) NOT NULL,
+          page_path VARCHAR(128),
+          page_title VARCHAR(256),
+          payload_enc TEXT NOT NULL,
+          expires_at TIMESTAMP NOT NULL,
+          created_at TIMESTAMP DEFAULT NOW()
+        );
+      `);
       await pool.query(`
         DO $$
         BEGIN
@@ -1204,6 +1350,86 @@ app.get('/api/check-payment', async (req, res) => {
   } catch (e) {
     console.error('[INIT ERROR]', e && e.message ? e.message : String(e));
     return res.json({ ok: true, paid: false, packageType: tier });
+  }
+});
+
+app.post('/api/report/share', async (req, res) => {
+  try {
+    const body = req.body || {};
+    const reportType = String(body.reportType || 'unknown').slice(0, 32);
+    const shareId = newShareId();
+    const expiresAt = new Date(Date.now() + REPORT_SHARE_TTL_DAYS * 24 * 60 * 60 * 1000);
+    const record = {
+      shareId,
+      reportType,
+      pagePath: String(body.pagePath || '').slice(0, 128),
+      pageTitle: String(body.pageTitle || 'TalentAI 测评报告').slice(0, 256),
+      htmlSnapshot: String(body.htmlSnapshot || ''),
+      storagePayload: body.storagePayload || {},
+      styleLinks: Array.isArray(body.styleLinks) ? body.styleLinks : [],
+      inlineStyles: String(body.inlineStyles || ''),
+      expiresAt: expiresAt.toISOString()
+    };
+    await saveReportShare(record);
+    const shareUrl = `${getBaseUrl()}/report-view.html?id=${shareId}`;
+    return res.json({
+      success: true,
+      shareId,
+      shareUrl,
+      expiresAt: record.expiresAt
+    });
+  } catch (e) {
+    console.error('[REPORT SHARE CREATE]', e);
+    return res.status(500).json({ success: false, error: e.message || '创建分享失败' });
+  }
+});
+
+app.get('/api/report/share/:id', async (req, res) => {
+  try {
+    const loaded = await loadReportShare(req.params.id);
+    if (!loaded) return res.status(404).json({ success: false, error: '链接不存在或已失效' });
+    if (loaded.expired) return res.status(410).json({ success: false, error: '链接已过期（有效期 180 天）' });
+    const d = loaded.data;
+    return res.json({
+      success: true,
+      reportType: d.reportType,
+      pagePath: d.pagePath,
+      pageTitle: d.pageTitle,
+      htmlSnapshot: d.htmlSnapshot,
+      styleLinks: d.styleLinks || [],
+      inlineStyles: d.inlineStyles || '',
+      expiresAt: d.expiresAt
+    });
+  } catch (e) {
+    console.error('[REPORT SHARE GET]', e);
+    return res.status(500).json({ success: false, error: '读取分享失败' });
+  }
+});
+
+app.post('/api/report/send-email', async (req, res) => {
+  try {
+    const email = String(req.body?.email || '').trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return res.status(400).json({ success: false, error: '邮箱格式不正确' });
+    }
+    const shareId = String(req.body?.shareId || '').trim();
+    const loaded = shareId ? await loadReportShare(shareId) : null;
+    if (shareId && (!loaded || loaded.expired)) {
+      return res.status(410).json({ success: false, error: '报告链接无效或已过期' });
+    }
+    const title = String(req.body?.reportTitle || (loaded && loaded.data.pageTitle) || 'TalentAI 测评报告');
+    const shareUrl = shareId
+      ? `${getBaseUrl()}/report-view.html?id=${shareId}`
+      : getBaseUrl();
+    const preview = loaded && loaded.data.htmlSnapshot
+      ? loaded.data.htmlSnapshot.slice(0, 12000)
+      : '<p>您的测评报告已生成，请点击下方链接查看完整内容。</p>';
+    const mail = await sendReportHtmlEmail(email, title, preview, shareUrl);
+    if (!mail.ok) return res.status(503).json({ success: false, error: mail.error });
+    return res.json({ success: true, message: '邮件已发送' });
+  } catch (e) {
+    console.error('[REPORT EMAIL]', e);
+    return res.status(500).json({ success: false, error: e.message || '发送失败' });
   }
 });
 

@@ -100,7 +100,10 @@
     </div>
   </div>
 
+  <script src="js/site-config.js"></script>
+  <script src="js/format-labels.js"></script>
   <script src="js/t-careers-store.js"></script>
+  <script src="js/report-share.js"></script>
   <script>
     function isPathfinderPaid() {
       return (
@@ -129,7 +132,7 @@
           <div class="meta">
             <div class="meta-box"><div class="meta-label">AI 替代风险</div><div class="meta-val">${aiR}${aiR !== '--' ? '%' : ''}</div></div>
             <div class="meta-box"><div class="meta-label">新人优势</div><div class="meta-val">${newbie}${newbie !== '--' ? '%' : ''}</div></div>
-            <div class="meta-box"><div class="meta-label">薪资范围</div><div class="meta-val">${esc(salary)}</div></div>
+            <div class="meta-box"><div class="meta-label">${typeof FormatLabels !== 'undefined' ? FormatLabels.salaryMetaLabel() : '薪资范围（参考）'}</div><div class="meta-val">${esc(typeof FormatLabels !== 'undefined' ? FormatLabels.formatSalaryValue(salary) : salary)}</div></div>
           </div>
         </div>`;
     }
@@ -180,6 +183,15 @@
         return;
       }
       renderPage();
+      if (window.ReportShare) {
+        ReportShare.mount({
+          reportType: 'pathfinder',
+          reportTitle: '寻路者 Top1/Top3 解锁',
+          pagePath: 'pathfinder-unlock.html',
+          captureSelector: '.wrap',
+          delayMs: 500
+        });
+      }
     })();
   </script>
 </body>

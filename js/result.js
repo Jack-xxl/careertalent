@@ -44,6 +44,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('main-content').style.display = 'block';
 
     console.log('=== 页面渲染完成 ===');
+
+    if (window.ReportShare) {
+      ReportShare.mount({
+        reportType: 't-layer',
+        reportTitle: 'T层天赋测评结果',
+        pagePath: 'result.html',
+        captureSelector: '#main-content',
+        insertBefore: 'footer.footer',
+        stylesheetUrls: ['css/result.css', 'css/report-share.css'],
+        delayMs: 600
+      });
+    }
   } catch (err) {
     console.error('❌ 生成结果失败:', err);
     showError('结果生成失败：' + err.message);

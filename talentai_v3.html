@@ -598,7 +598,7 @@
       <span class="dot"></span>
       TALENTAI · P层性格深度报告
     </div>
-    <button onclick="
+    <button class="no-print" onclick="
       const keys = Object.keys(localStorage).filter(k=>k.startsWith('talentai_'));
       keys.forEach(k=>localStorage.removeItem(k));
       alert('✅ 缓存已清除！页面将重新加载');
@@ -733,7 +733,10 @@
 
   </div>
 
+  <script src="js/site-config.js"></script>
+  <script src="js/format-labels.js"></script>
   <script src="js/t-careers-store.js"></script>
+  <script src="js/report-share.js"></script>
   <script>
     // ==========================
     // 1. 读取数据（从 localStorage 或示例）
@@ -1076,7 +1079,7 @@
                 <div style="font-size:11px;color:var(--sub);margin-top:3px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;">
                   ${c.ecosystemRole?`<span style="color:${eco.color};font-weight:500;">⬟ ${c.ecosystemRole}</span>`:''}
                   <span style="color:${stCol};">${c.stabilityLabel}</span>
-                  ${c.salaryRange?`<span>💰 ${c.salaryRange}</span>`:''}
+                  ${c.salaryRange?`<span>💰 ${typeof FormatLabels !== 'undefined' ? FormatLabels.formatSalaryLine(c.salaryRange) : '薪资范围（参考）：' + c.salaryRange}</span>`:''}
                 </div>
               </div>
               <div class="type-tag ${kind.cls}" style="flex-shrink:0;">${kind.text}</div>
@@ -1612,8 +1615,8 @@
                 <div class="meta-val">${newbie}${newbie !== '--' ? '%' : ''}</div>
               </div>
               <div class="meta-box">
-                <div class="meta-label">薪资范围</div>
-                <div class="meta-val">${escHtml(salary)}</div>
+                <div class="meta-label">${typeof FormatLabels !== 'undefined' ? FormatLabels.salaryMetaLabel() : '薪资范围（参考）'}</div>
+                <div class="meta-val">${escHtml(typeof FormatLabels !== 'undefined' ? FormatLabels.formatSalaryValue(salary) : salary)}</div>
               </div>
             </div>
             ${why}
@@ -1640,9 +1643,20 @@
       },120);
     }
 
-    document.addEventListener('DOMContentLoaded', init);
+    document.addEventListener('DOMContentLoaded', function () {
+      init();
+      if (window.ReportShare) {
+        ReportShare.mount({
+          reportType: 'p-layer',
+          reportTitle: 'P层性格深度报告',
+          pagePath: 'talentai_v3.html',
+          captureSelector: '.shell',
+          insertBefore: '#navigatorPaywallWrap',
+          delayMs: 1500
+        });
+      }
+    });
   </script>
-
 
   <!-- 付费跳转 -->
   <div id="navigatorPaywallWrap" style="padding:32px 20px 60px;text-align:center;">

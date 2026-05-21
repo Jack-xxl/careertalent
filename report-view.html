@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TalentAI · 报告查看</title>
+  <style>
+    body { margin: 0; min-height: 100vh; background: #0d1117; color: #e5e7eb; font-family: "PingFang SC", "Microsoft YaHei", sans-serif; }
+    .report-view-loading { text-align: center; padding: 48px 20px; color: #94a3b8; }
+    .report-view-error { text-align: center; padding: 48px 20px; color: #fbbf24; max-width: 480px; margin: 0 auto; line-height: 1.6; }
+    .report-view-banner {
+      text-align: center; padding: 10px 16px; font-size: 12px; color: #6ee7b7;
+      background: rgba(6, 78, 59, 0.35); border-bottom: 1px solid rgba(52, 211, 153, 0.25);
+    }
+    #report-view-root { min-height: 60vh; }
+  </style>
+</head>
+<body>
+  <div id="report-view-banner" class="report-view-banner" style="display:none;">专属报告链接 · 内容与生成时一致</div>
+  <div id="report-view-loading" class="report-view-loading">正在加载报告…</div>
+  <div id="report-view-error" class="report-view-error" hidden></div>
+  <div id="report-view-root"></div>
+
+  <script>
+    (async function () {
+      const params = new URLSearchParams(location.search);
+      const id = params.get('id');
+      const loading = document.getElementById('report-view-loading');
+      const errEl = document.getElementById('report-view-error');
+      const root = document.getElementById('report-view-root');
+      const banner = document.getElementById('report-view-banner');
+
+      if (!id) {
+        loading.hidden = true;
+        errEl.hidden = false;
+        errEl.textContent = '缺少报告 ID，请检查链接是否完整。';
+        return;
+      }
+
+      const apiBase = location.origin;
+      try {
+        const r = await fetch(apiBase + '/api/report/share/' + encodeURIComponent(id));
+        const data = await r.json();
+        if (!data.success) {
+          throw new Error(data.error || '加载失败');
+        }
+        document.title = (data.pageTitle || 'TalentAI 报告') + ' · 专属链接';
+
+        (data.styleLinks || []).forEach(function (href) {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = href;
+          document.head.appendChild(link);
+        });
+        if (data.inlineStyles) {
+          const st = document.createElement('style');
+          st.textContent = data.inlineStyles;
+          document.head.appendChild(st);
+        }
+
+        root.innerHTML = data.htmlSnapshot || '<p>报告内容为空</p>';
+        loading.hidden = true;
+        banner.style.display = 'block';
+      } catch (e) {
+        loading.hidden = true;
+        errEl.hidden = false;
+        errEl.textContent = e.message || '无法加载报告';
+      }
+    })();
+  </script>
+</body>
+</html>

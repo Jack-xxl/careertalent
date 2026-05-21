@@ -528,8 +528,8 @@ function renderCareers(top5, scores) {
             <span class="meta-value">${(c.aiImpact?.newbieAdvantage ?? '-')}${c.aiImpact?.newbieAdvantage != null ? '%' : ''}</span>
           </div>
           <div class="meta-item">
-            <span class="meta-label">薪资范围</span>
-            <span class="meta-value">${escapeHtml(c.aiImpact?.salaryRange || '-')}</span>
+            <span class="meta-label">${window.FormatLabels ? FormatLabels.salaryMetaLabel() : '薪资范围（参考）'}</span>
+            <span class="meta-value">${escapeHtml(window.FormatLabels ? FormatLabels.formatSalaryValue(c.aiImpact?.salaryRange) : (c.aiImpact?.salaryRange || '-'))}</span>
           </div>
         </div>
 
