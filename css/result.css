@@ -703,6 +703,31 @@ section h2{ font-size: 1.75rem; font-weight: 850; margin-bottom: 8px; letter-spa
 .layer-question{ font-weight: 800; margin-bottom: 8px; color: var(--text); }
 .layer-card p{ color: var(--muted); font-size: .95rem; }
 
+/* ========================= 9b. 测评结果说明 ========================= */
+.result-disclaimer{
+  margin: 28px auto 24px;
+  max-width: 900px;
+  padding: 24px 26px;
+  border-radius: var(--radius-md);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  text-align: left;
+}
+.result-disclaimer__title{
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: var(--text);
+  margin-bottom: 14px;
+}
+.result-disclaimer__body p{
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.75;
+  margin-bottom: 12px;
+}
+.result-disclaimer__body p:last-child{ margin-bottom: 0; }
+.result-disclaimer__body strong{ color: #a78bfa; font-weight: 800; }
+
 /* ========================= 10. Footer ========================= */
 .footer{
   margin-bottom: 22px;

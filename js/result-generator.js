@@ -6,7 +6,6 @@ function renderAll(result, userData) {
   renderTop3(result.top3Talents);
   renderCombination(result.combinationAnalysis);
   renderConflicts(result.conflictWarnings);
-  renderFamilies(result.topFamilies);
   renderCareers(result.careerRecommendations);
   renderParentRoadmap(result);
   renderCasesDemo();
@@ -203,29 +202,21 @@ function renderFamilies(familiesSorted) {
 }
 
 /* ---------------- Careers ---------------- */
-function isPremium() {
-  // 检查是否登录且已付费
-  const user = localStorage.getItem('currentUser');
-  if (!user) return false;
-  
-  try {
-    const userData = JSON.parse(user);
-    return userData.isPaid === true;
-  } catch {
-    return false;
-  }
+function isPathfinderPaid() {
+  return (
+    localStorage.getItem('talentai_premium') === '1' ||
+    localStorage.getItem('talentai_paid') === '1' ||
+    localStorage.getItem('talentai_p_paid') === '1'
+  );
 }
 
-/* ── 解锁流程入口（¥49 寻路者套餐点击后调用） ── */
+/* ── 解锁流程入口（¥49 寻路者套餐：跳转微信支付页，付成功后由 payment 页进入 P 层测评） ── */
 function buyPackage(type) {
   if (type !== 'pathfinder') {
-    // 导航者套餐：跳转到完整支付页（占位）
-    alert('导航者套餐支付页开发中，敬请期待！');
+    window.location.href = 'wma_payment.html';
     return;
   }
-
-  // ── 寻路者 ¥49：触发原地解锁动画 ──
-  _doUnlockAnimation();
+  window.location.href = 'payment.html?package=pathfinder';
 }
 
 function _doUnlockAnimation() {
@@ -422,7 +413,7 @@ function renderCareers(top5) {
   const box = document.getElementById('career-list');
   if (!box) return;
 
-  const premium = isPremium();
+  const premium = isPathfinderPaid();
   const hideIndex = premium ? [] : [0, 2];
 
   // 注入马赛克呼吸动画 CSS（只注入一次）

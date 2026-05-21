@@ -248,6 +248,18 @@
     .timeline-year{font-size:12px;font-weight:900;letter-spacing:.8px;color:var(--muted2)}
     .timeline-title{font-size:16px;font-weight:850;margin:2px 0 6px}
     .timeline-desc{font-size:14px;color:var(--muted)}
+    .result-disclaimer{
+      margin:32px 0 24px;padding:24px 26px;border-radius:16px;
+      background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);text-align:left;
+    }
+    .result-disclaimer__title{
+      font-size:17px;font-weight:850;color:var(--text);margin-bottom:14px;
+    }
+    .result-disclaimer__body p{
+      font-size:14px;line-height:1.75;color:var(--muted);margin-bottom:12px;
+    }
+    .result-disclaimer__body p:last-child{margin-bottom:0;}
+    .result-disclaimer__body strong{color:#93c5fd;font-weight:800;}
     .footer{
       text-align:center;padding:26px 6px 8px;color:var(--muted2);font-size:13px
     }
@@ -524,6 +536,16 @@
       <h2>👪 给家长的解读</h2>
       <p class="section-desc">如果这是给孩子做的，这一段是帮助家长理解“该如何支持，而不是如何控制”。</p>
       <div id="parent-section" class="parent-box"></div>
+    </section>
+
+    <section class="result-disclaimer" aria-label="关于本测评结果的说明">
+      <h2 class="result-disclaimer__title">关于本测评结果的说明</h2>
+      <div class="result-disclaimer__body">
+        <p>TalentAI 五层模型（T/P/W/M/A）分析的是孩子更底层的人才结构——天赋优势、性格特征、内在驱动力、成长潜力与 AI 时代适配能力。这些底层特质具有较高的稳定性与长期参考价值，测的不是短期兴趣，而是更深层的成长方向。</p>
+        <p>但需要说明的是：职业本身是动态的。随着 AI 发展、行业演变与孩子自身成长经历的变化，具体岗位会持续迭代。因此，职业匹配结果更适合作为方向性参考，而非固定答案。</p>
+        <p>TalentAI 真正关注的，是帮助孩子找到适合长期发展的成长生态与未来方向。</p>
+        <p>为获得更精准的落地路径，建议结合专业 AI 时代成长路径导师，根据孩子实际情况持续动态优化。微信号：<strong>shfeducation</strong></p>
+      </div>
     </section>
 
     <footer class="footer">
