@@ -552,8 +552,72 @@ function calculateWScoresFromAnswers(wLayerAnswers) {
 // 计算动画 → 保存 → 跳转
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+const WMA_RESULT_HREF = 'wma-result.html';
+let wmaFinishTriggered = false;
+
+function saveWmaResultsAndRedirect(result) {
+    let scores = result;
+    try {
+        if (!scores) scores = calcScores();
+    } catch (e) {
+        console.error('calcScores 失败，使用兜底数据', e);
+        scores = {
+            aiIndex: 0,
+            normalized: { W: {}, M: {}, A: {} },
+            completedAt: new Date().toISOString()
+        };
+    }
+
+    try {
+        const wRaw = answers.W || {};
+        const looksLikeLetters = Object.values(wRaw).some(v => typeof v === 'string' && /^[A-Z]$/i.test(v));
+        if (looksLikeLetters || Object.keys(wRaw).length === 0) {
+            answers.W = calculateWScoresFromAnswers(wRaw);
+        }
+        if (scores.normalized && scores.normalized.M && Object.keys(scores.normalized.M).length) {
+            answers.M = { ...scores.normalized.M };
+        }
+        if (scores.normalized && scores.normalized.A && Object.keys(scores.normalized.A).length) {
+            answers.A = { ...scores.normalized.A };
+        }
+        localStorage.setItem('talentai_wma_scores', JSON.stringify(scores));
+        localStorage.setItem('talentai_wma_answers', JSON.stringify(answers));
+        localStorage.setItem('talentai_wma_completed_at', scores.completedAt || new Date().toISOString());
+        localStorage.setItem('talentai_navigator_paid', 'true');
+        localStorage.removeItem('talentai_wma_paid');
+        try { localStorage.removeItem(WMA_PROGRESS_KEY); } catch (_) {}
+    } catch (e) {
+        console.error('localStorage 写入失败', e);
+    }
+
+    const db5 = document.getElementById('db5');
+    if (db5) {
+        const idx = scores.aiIndex != null ? scores.aiIndex : '--';
+        db5.innerHTML =
+            `AI适配指数 ${idx}/100 · 报告生成完成<br>` +
+            `<a href="${WMA_RESULT_HREF}" style="color:#6ee7b7;font-size:11px;margin-top:4px;display:inline-block;">若未自动跳转，请点击此处查看报告 →</a>`;
+    }
+
+    setTimeout(() => {
+        window.location.assign(WMA_RESULT_HREF);
+    }, 700);
+}
+
+function finishWmaAssessment() {
+    if (wmaFinishTriggered) return;
+    wmaFinishTriggered = true;
+    let result = null;
+    try {
+        result = calcScores();
+    } catch (e) {
+        console.error('结算计分异常', e);
+    }
+    saveWmaResultsAndRedirect(result);
+}
+
 function startCalc() {
     if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+    wmaFinishTriggered = false;
     showScreen('loading-screen');
 
     const steps = [
@@ -566,13 +630,11 @@ function startCalc() {
     ];
 
     steps.forEach((step, i) => {
-        // 激活
         setTimeout(() => {
             const el = document.getElementById(step.id);
             if (el) el.classList.add('active');
         }, step.delay);
 
-        // 完成
         setTimeout(() => {
             const el = document.getElementById(step.id);
             if (el) {
@@ -581,38 +643,14 @@ function startCalc() {
                 const ic = el.querySelector('.cs-ic');
                 if (ic) ic.textContent = '✅';
             }
-
-            // 最后一步：计算 + 保存 + 跳转（必须先算 W 分数再写，避免被 saveProgress 的字母格式覆盖）
             if (i === steps.length - 1) {
-                const result = calcScores();
-                try {
-                    // 用当前选项字母 (W01:'A', ...) 计算 W1-W7 数字分数，用已加载的 wmaData.W 不依赖 fetch
-                    answers.W = calculateWScoresFromAnswers(answers.W || {});
-
-                    if (result.normalized && result.normalized.M && Object.keys(result.normalized.M).length) {
-                        answers.M = { ...result.normalized.M };
-                    }
-                    if (result.normalized && result.normalized.A && Object.keys(result.normalized.A).length) {
-                        answers.A = { ...result.normalized.A };
-                    }
-                    localStorage.setItem('talentai_wma_scores',       JSON.stringify(result));
-                    localStorage.setItem('talentai_wma_answers',      JSON.stringify(answers));
-                    localStorage.setItem('talentai_wma_completed_at', result.completedAt);
-                    localStorage.removeItem('talentai_wma_paid');
-                    try { localStorage.removeItem(WMA_PROGRESS_KEY); } catch (_) {}
-                } catch (e) {
-                    console.error('localStorage写入失败', e);
-                }
-
-                const db5 = document.getElementById('db5');
-                if (db5) db5.textContent = `AI适配指数 ${result.aiIndex}/100 · 报告生成完成`;
-
-                setTimeout(() => {
-                    window.location.href = 'wma-result.html';
-                }, 900);
+                finishWmaAssessment();
             }
         }, step.delay + 600);
     });
+
+    // 动画步骤异常时仍保证跳转结果页
+    setTimeout(finishWmaAssessment, 5200);
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

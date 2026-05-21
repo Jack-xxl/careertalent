@@ -1,5 +1,5 @@
 /**
- * 结果页统一：导出 PDF / 发送邮箱 / 生成专属链接（180 天有效）
+ * 结果页统一：导出 PDF / 生成专属链接（180 天有效）
  */
 (function (global) {
   const API_BASE =
@@ -181,70 +181,6 @@
     }
   }
 
-  function showEmailModal() {
-    let modal = document.getElementById('report-share-email-modal');
-    if (!modal) {
-      modal = document.createElement('div');
-      modal.id = 'report-share-email-modal';
-      modal.className = 'report-share-modal';
-      modal.hidden = true;
-      modal.innerHTML = `
-        <div class="report-share-modal__card">
-          <h4>发送到邮箱</h4>
-          <p style="font-size:13px;color:#94a3b8;margin:0 0 12px;line-height:1.5;">我们将把当前报告以 HTML 邮件形式发送到您的邮箱。</p>
-          <input type="email" id="report-share-email-input" placeholder="your@email.com" autocomplete="email" />
-          <div class="report-share-modal__row">
-            <button type="button" id="report-share-email-cancel" style="background:#334155;color:#e2e8f0;">取消</button>
-            <button type="button" id="report-share-email-send" style="background:#22c55e;color:#fff;">发送</button>
-          </div>
-        </div>`;
-      document.body.appendChild(modal);
-      modal.addEventListener('click', (ev) => {
-        if (ev.target === modal) modal.hidden = true;
-      });
-      document.getElementById('report-share-email-cancel').onclick = () => {
-        modal.hidden = true;
-      };
-      document.getElementById('report-share-email-send').onclick = () => sendEmail();
-    }
-    modal.hidden = false;
-    const inp = document.getElementById('report-share-email-input');
-    if (inp) inp.focus();
-  }
-
-  async function sendEmail() {
-    const inp = document.getElementById('report-share-email-input');
-    const email = (inp?.value || '').trim();
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      toast('请输入有效邮箱地址');
-      return;
-    }
-    const modal = document.getElementById('report-share-email-modal');
-    try {
-      toast('正在发送邮件…');
-      const share = await createShareRecord();
-      const r = await fetch(`${API_BASE}/api/report/send-email`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email,
-          shareId: share.shareId,
-          reportType: mountedConfig.reportType,
-          reportTitle: mountedConfig.reportTitle || document.title
-        })
-      });
-      const data = await r.json();
-      if (!data || !data.success) {
-        throw new Error(data?.error || '发送失败');
-      }
-      if (modal) modal.hidden = true;
-      toast('邮件已发送，请查收（含报告链接）');
-    } catch (e) {
-      console.error(e);
-      toast(e.message || '邮件发送失败');
-    }
-  }
-
   function injectBar() {
     if (document.getElementById('report-share-bar')) return;
 
@@ -255,28 +191,33 @@
       <h3>保存与分享</h3>
       <div class="report-share-actions">
         <button type="button" class="report-share-btn report-share-btn--pdf" data-action="pdf">导出 PDF</button>
-        <button type="button" class="report-share-btn report-share-btn--email" data-action="email">发送到邮箱</button>
         <button type="button" class="report-share-btn report-share-btn--link" data-action="link">生成专属链接</button>
       </div>
       <p class="report-share-hint">专属链接有效期 180 天，打开后内容与当前报告一致。PDF 可保存或通过微信转发给好友。</p>
     `;
 
-    const anchor = mountedConfig.insertBefore
-      ? document.querySelector(mountedConfig.insertBefore)
+    const mountTarget = mountedConfig.mountTarget
+      ? document.querySelector(mountedConfig.mountTarget)
       : null;
-    if (anchor && anchor.parentNode) {
-      anchor.parentNode.insertBefore(bar, anchor);
+    if (mountTarget) {
+      mountTarget.appendChild(bar);
     } else {
-      const root = getCaptureElement();
-      if (root && root.parentNode) {
-        root.parentNode.appendChild(bar);
+      const anchor = mountedConfig.insertBefore
+        ? document.querySelector(mountedConfig.insertBefore)
+        : null;
+      if (anchor && anchor.parentNode) {
+        anchor.parentNode.insertBefore(bar, anchor);
       } else {
-        document.body.appendChild(bar);
+        const root = getCaptureElement();
+        if (root && root.parentNode) {
+          root.parentNode.appendChild(bar);
+        } else {
+          document.body.appendChild(bar);
+        }
       }
     }
 
     bar.querySelector('[data-action="pdf"]').addEventListener('click', exportPdf);
-    bar.querySelector('[data-action="email"]').addEventListener('click', showEmailModal);
     bar.querySelector('[data-action="link"]').addEventListener('click', generateShareLink);
   }
 
@@ -293,9 +234,9 @@
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', run);
     } else {
-      setTimeout(run, mountedConfig.delayMs || 800);
+      setTimeout(run, mountedConfig.delayMs != null ? mountedConfig.delayMs : 300);
     }
   }
 
-  global.ReportShare = { mount, exportPdf, generateShareLink, sendEmail };
+  global.ReportShare = { mount, exportPdf, generateShareLink };
 })(typeof window !== 'undefined' ? window : global);
