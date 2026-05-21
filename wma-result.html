@@ -574,10 +574,12 @@
     </div>
   </div>
 
+  <script src="js/site-config.js"></script>
   <script src="js/career-matching-engine.js"></script>
   <script src="js/careerEcosystems.js"></script>
   <script src="js/careerArchetypes.js"></script>
   <script src="js/calcCareerMatch.js"></script>
+  <script src="js/report-share.js"></script>
   <script>
     console.log('[TEST] html底部script已执行');
   </script>
@@ -2092,6 +2094,19 @@
       document.getElementById("loading").style.display = "none";
       document.getElementById("main-content").style.display = "block";
       bindPreferenceModal();
+      mountWmaReportShare();
+    }
+
+    function mountWmaReportShare() {
+      if (!window.ReportShare) return;
+      ReportShare.mount({
+        reportType: 'wma-full',
+        reportTitle: 'TalentAI 五层完整报告',
+        pagePath: 'wma-result.html',
+        captureSelector: '#main-content',
+        insertBefore: 'footer.footer',
+        delayMs: 400
+      });
     }
 
     function updatePrefHint(){
