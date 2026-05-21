@@ -29,6 +29,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         ));
         // 完整版（含aiImpact、description等，供支付后展示完整卡片）
         localStorage.setItem('talentai_careers_full', JSON.stringify(result.careerRecommendations));
+        if (window.TCareersStore) {
+          TCareersStore.saveFromCareerList(result.careerRecommendations);
+        }
         console.log('✅ 职业数据已更新:', result.careerRecommendations[0]?.name, result.careerRecommendations[2]?.name);
       }
     } catch(e) { console.warn('存储职业数据失败', e); }
@@ -114,7 +117,7 @@ function showError(message) {
 function buyPackage(packageType) {
   console.log('购买套餐:', packageType);
   window.location.href =
-    'https://careertalent-1.onrender.com/payment.html?package=' + encodeURIComponent(packageType);
+    'payment.html?package=' + encodeURIComponent(packageType);
 }
 
 

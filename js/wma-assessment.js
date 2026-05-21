@@ -103,15 +103,14 @@ window.addEventListener('DOMContentLoaded', async () => {
 
     restoreProgress();
 
-    // talentai_wma_paid：当前轮 WMA 测评资格；值为 '1' 或 'true'；talentai_navigator_paid 为五层商业授权标记
-    const paidRaw = localStorage.getItem('talentai_wma_paid');
-    const paid = paidRaw === '1' || paidRaw === 'true';
+    // 仅 ¥150 Navigator 已付费用户可进入 W/M/A；¥49 寻路者不得仅凭 wma_paid 误入
+    const navigatorPaid = localStorage.getItem('talentai_navigator_paid') === 'true';
 
     try {
         await loadAllLayers();
         console.log(`✅ WMA题库加载完成 W:${wmaData.W.questions.length} M:${wmaData.M.questions.length} A:${wmaData.A.questions.length}`);
 
-        if (paid) {
+        if (navigatorPaid) {
             renderQuestion();
             showScreen('question-screen');
             startTimer();
@@ -269,7 +268,7 @@ function renderQuestion() {
     setEl('current-layer-badge',   `${layer.icon} ${layer.badge}`);
     setEl('current-layer-badge-q', `${layer.icon} ${layer.badge}`);
     setEl('current-layer-q', `第 ${currentQuestionIdx + 1} / ${layer.totalQuestions} 题`);
-    setEl('question-number-global', `全局第 ${totalAnswered + 1} 题`);
+    setEl('question-number-global', String(totalAnswered + 1));
 
     // ── 题目文字 ──
     const qText = (q.question && q.question['zh-CN']) ? q.question['zh-CN'] : (q.question || '');

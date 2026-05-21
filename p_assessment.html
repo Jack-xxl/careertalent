@@ -81,6 +81,7 @@ body{
 </div>
 </div>
 
+<script src="js/t-careers-store.js"></script>
 <script>
 
 // 防止未支付直接访问（49元链路统一判定）
@@ -90,7 +91,7 @@ const paid =
   localStorage.getItem('talentai_p_paid') === '1';
 
 if (!paid) {
-  window.location.href = 'https://careertalent-1.onrender.com/payment.html?package=pathfinder';
+  window.location.href = 'payment.html?package=pathfinder';
 }
 
 function getPRemaining() {
@@ -284,6 +285,10 @@ function calculateResult(){
 
   localStorage.setItem("talentai_p_completed","1");
   setPAttemptActive(false);
+
+  if (window.TCareersStore) {
+    TCareersStore.migrateFromLegacy();
+  }
 
   window.location.href = "talentai_v3.html";
 }

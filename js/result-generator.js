@@ -6,7 +6,7 @@ function renderAll(result, userData) {
   renderTop3(result.top3Talents);
   renderCombination(result.combinationAnalysis);
   renderConflicts(result.conflictWarnings);
-  renderCareers(result.careerRecommendations);
+  renderCareers(result.careerRecommendations, result.scores);
   renderParentRoadmap(result);
   renderCasesDemo();
 
@@ -19,6 +19,9 @@ function renderAll(result, userData) {
     }
     if (result.careerRecommendations && result.careerRecommendations.length > 0) {
       localStorage.setItem('talentai_t_careers_raw', JSON.stringify(result.careerRecommendations));
+      if (window.TCareersStore) {
+        TCareersStore.saveFromCareerList(result.careerRecommendations);
+      }
     }
   } catch(e) { console.warn('保存T层分数失败:', e); }
 }
@@ -409,7 +412,68 @@ function _buildLockedCard(c, idx) {
   `;
 }
 
-function renderCareers(top5) {
+const T_DIM_LABELS = {
+  T1_language: '语言智能',
+  T2_logic: '逻辑数学',
+  T3_spatial: '空间智能',
+  T4_music: '音乐智能',
+  T5_bodily: '身体动觉',
+  T6_interpersonal: '人际智能',
+  T7_intrapersonal: '内省智能',
+  T8_naturalist: '自然观察'
+};
+
+function mapCareerDimKey(k) {
+  if (k && k.includes('_') && k.startsWith('T')) return k;
+  const map = {
+    T1: 'T1_language', T2: 'T2_logic', T3: 'T3_spatial', T4: 'T4_music',
+    T5: 'T5_bodily', T6: 'T6_interpersonal', T7: 'T7_intrapersonal', T8: 'T8_naturalist'
+  };
+  return map[k] || k;
+}
+
+/** 匹配度构成：仅展示 T 层实测维度分 + AI 适配（无家族/能力结构等未采集项） */
+function buildMatchCompositionHtml(c, scores) {
+  const parts = [];
+  parts.push(
+    `<p style="margin-top:4px;font-size:14px;"><strong>综合匹配度：${c.matchScore}%</strong></p>`
+  );
+
+  const req = c.requiredAbilities || {};
+  const dimLines = Object.entries(req)
+    .map(([key, target]) => {
+      const dimKey = mapCareerDimKey(key);
+      const user = scores?.[dimKey]?.displayScore;
+      if (user == null || target == null) return null;
+      const label = T_DIM_LABELS[dimKey] || dimKey;
+      return `${label}：${Number(user).toFixed(1)} / 10（本职业关键要求 ${target}）`;
+    })
+    .filter(Boolean)
+    .slice(0, 4);
+
+  if (dimLines.length) {
+    parts.push(
+      `<p style="margin-top:8px;opacity:.92;font-size:13px;line-height:1.55;">` +
+      `<strong>T 层核心天赋得分</strong><br/>${dimLines.join('<br/>')}</p>`
+    );
+  }
+
+  const ai = c.aiImpact || {};
+  const aiBits = [];
+  if (ai.newbieAdvantage != null) aiBits.push(`新人优势 ${ai.newbieAdvantage}%`);
+  if (ai.collaborationPotential != null) aiBits.push(`人机协作潜力 ${ai.collaborationPotential}%`);
+  if (ai.replacementRisk != null) aiBits.push(`AI 替代风险 ${ai.replacementRisk}%`);
+  if (aiBits.length) {
+    parts.push(
+      `<p style="margin-top:8px;opacity:.92;font-size:13px;line-height:1.55;">` +
+      `<strong>AI 时代适配</strong><br/>${aiBits.join(' · ')}</p>`
+    );
+  }
+
+  return parts.join('');
+}
+
+function renderCareers(top5, scores) {
   const box = document.getElementById('career-list');
   if (!box) return;
 
@@ -470,20 +534,16 @@ function renderCareers(top5) {
         </div>
 
         <div class="career-why" style="margin-top:12px;">
-          <strong>匹配度构成（示例）</strong>
-          <p style="margin-top:6px;opacity:.9;">
-            - 天赋匹配：${Math.min(99, c.matchScore+4)}%<br/>
-            - 家族匹配：${Math.max(50, c.matchScore-8)}%<br/>
-            - 能力结构：${Math.max(55, c.matchScore-6)}%
-          </p>
+          <strong>匹配度构成</strong>
+          ${buildMatchCompositionHtml(c, scores)}
         </div>
 
         <div class="career-why" style="margin-top:12px;">
           <strong>核心匹配原因：</strong>
           <ul style="margin:6px 0 0;">
-            <li>你的优势更符合该职业的关键能力结构</li>
+            <li>你的 T 层天赋得分与该职业关键维度要求较为一致</li>
             <li>你更可能在该路径中做出稳定产出</li>
-            <li>适合在AI工具加持下快速升级</li>
+            <li>适合在 AI 工具加持下快速升级</li>
           </ul>
         </div>
 

@@ -30,7 +30,7 @@ app.get('/', (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
 
 // 其余初始化不能阻塞启动
@@ -68,6 +68,24 @@ function pemFromEnv(val) {
   return Buffer.from(normalized, 'utf8');
 }
 
+function isProductionEnv() {
+  return String(process.env.NODE_ENV || '').trim() === 'production';
+}
+
+function hasWeChatEnvConfig() {
+  return (
+    Boolean(String(process.env.WECHAT_APPID || '').trim()) &&
+    Boolean(String(process.env.WECHAT_MCHID || '').trim()) &&
+    Boolean(String(process.env.WECHAT_SERIAL_NO || '').trim()) &&
+    Boolean(String(process.env.WECHAT_API_V3_KEY || '').trim()) &&
+    Boolean(String(process.env.WECHAT_PRIVATE_KEY || process.env.WECHAT_KEY || '').trim())
+  );
+}
+
+function isLocalDevMode() {
+  return !isProductionEnv();
+}
+
 // 微信配置调试（不打印敏感内容）
 try {
   console.log('[WX CHECK]', {
@@ -92,62 +110,66 @@ try {
   });
 })();
 
-// 支付初始化（缺证书不允许退出进程）
+// 支付初始化：生产环境缺配置则退出；本地开发仅警告并继续（可用模拟支付按钮）
 try {
-  // 启动时强校验（避免 TLS / AggregateError 隐性失败）
-  const hasWeChatConfig =
-    Boolean(String(process.env.WECHAT_APPID || '').trim()) &&
-    Boolean(String(process.env.WECHAT_MCHID || '').trim()) &&
-    Boolean(String(process.env.WECHAT_SERIAL_NO || '').trim()) &&
-    Boolean(String(process.env.WECHAT_API_V3_KEY || '').trim()) &&
-    Boolean(String(process.env.WECHAT_PRIVATE_KEY || process.env.WECHAT_KEY || '').trim());
+  const hasWeChatConfig = hasWeChatEnvConfig();
 
   if (!hasWeChatConfig) {
-    console.error('❌ Missing WeChat config');
-    process.exit(1);
-  }
-
-  const CERT_PATH = path.join(__dirname, 'apiclient_cert.pem');
-  const KEY_PATH = path.join(__dirname, 'apiclient_key.pem');
-
-  let publicKey = null;
-  let privateKey = null;
-
-  const certFromEnv = pemFromEnv(process.env.WECHAT_CERT);
-  const keyFromEnv = pemFromEnv(process.env.WECHAT_PRIVATE_KEY || process.env.WECHAT_KEY);
-
-  if (certFromEnv && keyFromEnv) {
-    publicKey = certFromEnv;
-    privateKey = keyFromEnv;
-    console.log('[TalentAI] 从环境变量加载证书');
-  } else if (fs.existsSync(CERT_PATH) && fs.existsSync(KEY_PATH)) {
-    publicKey = fs.readFileSync(CERT_PATH);
-    privateKey = fs.readFileSync(KEY_PATH);
-    console.log('[TalentAI] 从文件加载证书');
+    if (isProductionEnv()) {
+      console.error('❌ Missing WeChat config');
+      process.exit(1);
+    } else {
+      console.warn(
+        '[WARN] Missing WeChat config — 本地开发模式，服务器继续启动。' +
+          '支付页可使用「本地测试：模拟¥49支付成功」，不依赖微信。'
+      );
+    }
   } else {
-    console.warn('[WARN] WeChat cert missing, skip payment init');
-  }
+    const CERT_PATH = path.join(__dirname, 'apiclient_cert.pem');
+    const KEY_PATH = path.join(__dirname, 'apiclient_key.pem');
 
-  if (publicKey && privateKey) {
-    wxPrivateKeyPem = privateKey.toString('utf8');
-    wxMchid = String(process.env.WECHAT_MCHID || '').trim();
-    wxSerialNo = String(process.env.WECHAT_SERIAL_NO || '').trim();
+    let publicKey = null;
+    let privateKey = null;
 
-    pay = new WxPay({
-      appid: process.env.WECHAT_APPID,
-      mchid: process.env.WECHAT_MCHID,
-      serial_no: process.env.WECHAT_SERIAL_NO,
-      publicKey,
-      privateKey,
-      key: process.env.WECHAT_API_V3_KEY,
-      userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-    });
-    console.log('[WX INIT] WxPay initialized');
-  } else {
-    console.warn('[WX INIT] WxPay not initialized');
+    const certFromEnv = pemFromEnv(process.env.WECHAT_CERT);
+    const keyFromEnv = pemFromEnv(process.env.WECHAT_PRIVATE_KEY || process.env.WECHAT_KEY);
+
+    if (certFromEnv && keyFromEnv) {
+      publicKey = certFromEnv;
+      privateKey = keyFromEnv;
+      console.log('[TalentAI] 从环境变量加载证书');
+    } else if (fs.existsSync(CERT_PATH) && fs.existsSync(KEY_PATH)) {
+      publicKey = fs.readFileSync(CERT_PATH);
+      privateKey = fs.readFileSync(KEY_PATH);
+      console.log('[TalentAI] 从文件加载证书');
+    } else {
+      console.warn('[WARN] WeChat cert missing, skip payment init');
+    }
+
+    if (publicKey && privateKey) {
+      wxPrivateKeyPem = privateKey.toString('utf8');
+      wxMchid = String(process.env.WECHAT_MCHID || '').trim();
+      wxSerialNo = String(process.env.WECHAT_SERIAL_NO || '').trim();
+
+      pay = new WxPay({
+        appid: process.env.WECHAT_APPID,
+        mchid: process.env.WECHAT_MCHID,
+        serial_no: process.env.WECHAT_SERIAL_NO,
+        publicKey,
+        privateKey,
+        key: process.env.WECHAT_API_V3_KEY,
+        userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+      });
+      console.log('[WX INIT] WxPay initialized');
+    } else {
+      console.warn('[WX INIT] WxPay not initialized');
+    }
   }
 } catch (e) {
   console.error('[WX INIT]', e && e.message ? e.message : String(e));
+  if (isProductionEnv()) {
+    process.exit(1);
+  }
 }
 
 // 数据库初始化（无 DATABASE_URL 不允许阻塞启动）
@@ -662,6 +684,20 @@ app.post('/api/pay/create-order', async (req, res) => {
   const mchid = String(process.env.WECHAT_MCHID || '').trim();
   const appid = String(process.env.WECHAT_APPID || '').trim();
 
+  // 本地开发：无微信/数据库时返回模拟订单，供页面展示；真实支付走下方生产逻辑
+  if (isLocalDevMode() && (!pay || !pool || !hasWeChatEnvConfig())) {
+    const mockOrderId = `DEV${Date.now()}${Math.random().toString(36).slice(2, 6)}`.toUpperCase().slice(0, 32);
+    const sessionToken = newSessionToken();
+    console.log('[PAY CREATE DEV MOCK]', { mockOrderId, packageType });
+    return res.json({
+      success: true,
+      orderId: mockOrderId,
+      sessionToken,
+      code_url: 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=DEV_LOCAL_MOCK_PAY',
+      devMode: true,
+    });
+  }
+
   if (!pay || !wxPrivateKeyPem || !wxSerialNo || !mchid || !appid) {
     return res.status(503).json({ success: false, error: 'WxPay not initialized' });
   }
@@ -836,6 +872,12 @@ app.get('/api/order-status', async (req, res) => {
   if (!orderId || !sessionToken) {
     console.log('[ORDER STATUS] status: not_found');
     return res.json({ success: false, status: 'not_found' });
+  }
+
+  // 本地开发模拟订单：轮询直接视为已支付（前端模拟按钮仍会直接走 handlePaidSuccess）
+  if (isLocalDevMode() && /^DEV/i.test(orderId)) {
+    console.log('[ORDER STATUS] dev mock paid');
+    return res.json({ success: true, status: 'paid', devMode: true });
   }
 
   if (!pool) {
@@ -1165,5 +1207,6 @@ app.get('/api/check-payment', async (req, res) => {
   }
 });
 
-app.use(express.static(path.join(__dirname, 'public')));
+// 根目录优先（含 pathfinder-unlock、最新 payment.html），public 为补充
 app.use(express.static(__dirname));
+app.use(express.static(path.join(__dirname, 'public')));

@@ -618,6 +618,8 @@
         <p>完成 ¥49 寻路者解锁后，基于 T 层天赋 DNA 为你揭晓的两条重点方向（第 1、3 名）。下方 P 层报告将结合性格，帮你看清在这些方向里你会更快乐还是更消耗。</p>
       </div>
       <div id="t-unlocked-careers-grid" class="t-unlocked-grid"></div>
+      <p id="t-unlocked-loading" class="t-unlocked-head p" style="display:none;margin-top:8px;">正在加载 T 层 Top1 / Top3 职业数据…</p>
+      <p id="t-unlocked-missing" class="t-unlocked-head p" style="display:none;margin-top:8px;color:#fbbf24;">请先完成 T 层测评并解锁 ¥49 寻路者套餐。<a href="assessment.html" style="color:#6ee7b7;">去做 T 层测评</a> · <a href="pathfinder-unlock.html" style="color:#6ee7b7;">查看 Top1/Top3 解锁页</a></p>
     </div>
 
     <!-- 顶部：人格 + 能量 -->
@@ -731,24 +733,12 @@
 
   </div>
 
+  <script src="js/t-careers-store.js"></script>
   <script>
     // ==========================
     // 1. 读取数据（从 localStorage 或示例）
     // ==========================
     // P层五维分数：O 开放性, C 尽责性, E 外向性, A 宜人性, N 神经质/情绪稳定
-
-    // ✅ 版本缓存控制：版本变化时自动清除旧数据
-    const CACHE_VERSION = 'talentai_v3_1';
-    (function() {
-      const saved = localStorage.getItem('talentai_version');
-      if (saved !== CACHE_VERSION) {
-        Object.keys(localStorage)
-          .filter(k => k.startsWith('talentai_'))
-          .forEach(k => localStorage.removeItem(k));
-        localStorage.setItem('talentai_version', CACHE_VERSION);
-        console.log('✅ 旧缓存已自动清除');
-      }
-    })();
 
     const dimScores = (function(){
       try {
@@ -1550,38 +1540,15 @@
       return (
         localStorage.getItem('talentai_premium') === '1' ||
         localStorage.getItem('talentai_paid') === '1' ||
-        localStorage.getItem('talentai_p_paid') === '1'
+        localStorage.getItem('talentai_p_paid') === '1' ||
+        localStorage.getItem('talentai_p_completed') === '1'
       );
     }
 
-    function loadTLayerTopCareers() {
-      try {
-        const full = localStorage.getItem('talentai_careers_full');
-        if (full) {
-          const list = JSON.parse(full);
-          if (Array.isArray(list) && list.length >= 3) return list;
-        }
-        const raw = localStorage.getItem('talentai_t_careers_raw');
-        if (raw) {
-          const list = JSON.parse(raw);
-          if (Array.isArray(list) && list.length >= 3) return list;
-        }
-        const simple = localStorage.getItem('talentai_careers');
-        if (simple) {
-          const list = JSON.parse(simple);
-          if (Array.isArray(list) && list.length >= 3) {
-            return list.map((c) => ({
-              name: c.name,
-              matchScore: c.matchScore,
-              description: '',
-              aiImpact: {}
-            }));
-          }
-        }
-      } catch (e) {
-        console.warn('读取 T 层职业数据失败', e);
-      }
-      return null;
+    function loadTLayerUnlockPair() {
+      if (!window.TCareersStore) return null;
+      TCareersStore.migrateFromLegacy();
+      return TCareersStore.getUnlockPair();
     }
 
     function escHtml(s) {
@@ -1595,22 +1562,26 @@
     function buildTUnlockedCareers() {
       const wrap = document.getElementById('t-layer-unlocked-careers');
       const grid = document.getElementById('t-unlocked-careers-grid');
+      const loadingEl = document.getElementById('t-unlocked-loading');
+      const missingEl = document.getElementById('t-unlocked-missing');
       if (!wrap || !grid) return;
 
-      if (!isPathfinderPaid()) {
-        wrap.style.display = 'none';
+      if (loadingEl) loadingEl.style.display = 'none';
+
+      const pair = loadTLayerUnlockPair();
+      if (!pair || !pair.top1 || !pair.top3) {
+        wrap.style.display = 'block';
+        grid.innerHTML = '';
+        if (missingEl) missingEl.style.display = 'block';
         return;
       }
 
-      const careers = loadTLayerTopCareers();
-      if (!careers) {
-        wrap.style.display = 'none';
-        return;
-      }
+      if (missingEl) missingEl.style.display = 'none';
+      wrap.style.display = 'block';
 
       const pairs = [
-        { c: careers[0], rank: 1, medal: '🥇' },
-        { c: careers[2], rank: 3, medal: '🥉' }
+        { c: pair.top1, rank: 1, medal: '🥇' },
+        { c: pair.top3, rank: 3, medal: '🥉' }
       ];
 
       grid.innerHTML = pairs.map(({ c, rank, medal }) => {

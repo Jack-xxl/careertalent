@@ -481,8 +481,9 @@ function matchTop5Careers(scores, familyScores, careersList) {
     return {
       id: c.id || "",
       name: c.name || c.title || "未命名职业",
-      description: c.description || "",
+      description: c.description || c.desc || "",
       family: famKey,
+      requiredAbilities: req,
       matchScore: clampInt(Math.round(final), 1, 99),  // 临时值，后面归一化
       aiImpact: c.aiImpact || {},
       whyNewbieCanWin: c.whyNewbieCanWin || "",

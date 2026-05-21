@@ -572,6 +572,8 @@ body {
 
 </div><!-- end .page -->
 
+<script src="js/site-config.js"></script>
+<script src="js/t-careers-store.js"></script>
 <script>
 // ── Stars background ──
 (function(){
@@ -592,13 +594,13 @@ body {
   draw();
 })();
 
-// 后端/前端统一域名（Render）
-const API_BASE = 'https://careertalent-1.onrender.com';
-const SITE_BASE = 'https://careertalent-1.onrender.com';
+const API_BASE = window.TALENTAI_API_BASE || 'https://careertalent-1.onrender.com';
 
 // ── Order ID（来自后端）──
 let orderId = null;
 let pollTimer = null;
+/** 当前页下单套餐（以 URL 为准，避免 localStorage 残留 navigator 导致误跳 W 层） */
+let checkoutPackageType = '';
 const orderEl = document.getElementById('orderId');
 if (orderEl) orderEl.textContent = '// ORDER_ID: 正在创建...';
 
@@ -783,6 +785,89 @@ function stopPolling() {
   pollTimer = null;
 }
 
+function clearNavigatorWmaSession() {
+  try {
+    localStorage.removeItem('talentai_navigator_paid');
+    localStorage.removeItem('talentai_navigator_paid_at');
+    localStorage.removeItem('talentai_navigator_order_id');
+    localStorage.removeItem('talentai_wma_paid');
+    localStorage.removeItem('talentai_wma_paid_at');
+    localStorage.removeItem('talentai_wma_order_id');
+    localStorage.removeItem('talentai_wma_unlocked');
+    localStorage.removeItem('talentai_wma_completed_at');
+    localStorage.removeItem('talentai_wma_answers');
+    localStorage.removeItem('talentai_wma_layer');
+    localStorage.removeItem('talentai_wma_q');
+    localStorage.removeItem('talentai_wma_timer');
+    localStorage.removeItem('talentai_wma_progress');
+    localStorage.removeItem('talentai_wma_scores');
+    localStorage.removeItem('talentai_wma_result');
+    localStorage.removeItem('talentai_wma_attempt_active');
+  } catch (e) {}
+}
+
+function applyPathfinderPaid() {
+  clearNavigatorWmaSession();
+  try {
+    localStorage.setItem('talentai_premium', '1');
+    localStorage.setItem('talentai_paid', '1');
+    localStorage.setItem('talentai_paid_at', new Date().toISOString());
+    localStorage.setItem('talentai_p_paid', '1');
+    localStorage.setItem('talentai_p_remaining', '3');
+    localStorage.setItem('talentai_paid_package_type', 'pathfinder');
+    localStorage.setItem('talentai_p_enter_time', String(Date.now()));
+    if (orderId) {
+      localStorage.setItem('talentai_order', orderId);
+      localStorage.setItem('talentai_order_id', orderId);
+    }
+    localStorage.removeItem('talentai_pending_checkout_package');
+    localStorage.removeItem('talentai_wma_remaining');
+    if (window.TCareersStore) {
+      TCareersStore.persistTopCareersSnapshotFromStorage();
+    }
+  } catch (e) {}
+}
+
+function applyNavigatorPaid() {
+  try {
+    localStorage.setItem('talentai_premium', '1');
+    localStorage.setItem('talentai_navigator_paid', 'true');
+    localStorage.setItem('talentai_navigator_paid_at', new Date().toISOString());
+    if (orderId) localStorage.setItem('talentai_navigator_order_id', orderId);
+    localStorage.setItem('talentai_wma_paid', 'true');
+    localStorage.setItem('talentai_wma_paid_at', new Date().toISOString());
+    if (orderId) localStorage.setItem('talentai_wma_order_id', orderId);
+    localStorage.setItem('talentai_wma_unlocked', 'true');
+    localStorage.setItem('talentai_paid_package_type', 'navigator');
+    localStorage.setItem('talentai_p_enter_time', String(Date.now()));
+    localStorage.removeItem('talentai_wma_completed_at');
+    localStorage.removeItem('talentai_wma_answers');
+    localStorage.removeItem('talentai_wma_layer');
+    localStorage.removeItem('talentai_wma_q');
+    localStorage.removeItem('talentai_wma_timer');
+    localStorage.removeItem('talentai_wma_progress');
+    localStorage.removeItem('talentai_wma_scores');
+    localStorage.removeItem('talentai_wma_result');
+    localStorage.removeItem('talentai_pending_checkout_package');
+    localStorage.removeItem('talentai_wma_remaining');
+  } catch (e) {}
+}
+
+function resolvePaidPackageType() {
+  const pend = (localStorage.getItem('talentai_pending_checkout_package') || '').toLowerCase();
+  const stored = (localStorage.getItem('talentai_paid_package_type') || '').toLowerCase();
+  const fromPage = (checkoutPackageType || '').toLowerCase();
+  return fromPage || pend || stored;
+}
+
+function persistCareerSnapshotForUnlock() {
+  if (!window.TCareersStore) return;
+  TCareersStore.migrateFromLegacy();
+  if (!TCareersStore.hasSnapshot()) {
+    TCareersStore.persistFromStorage();
+  }
+}
+
 function handlePaidSuccess() {
   stopPolling();
   stopOrderStatusPolling();
@@ -790,72 +875,30 @@ function handlePaidSuccess() {
     if (expireInterval) clearInterval(expireInterval);
   } catch (e) {}
 
-  try {
-    const pend = localStorage.getItem('talentai_pending_checkout_package');
-    if (pend) {
-      localStorage.setItem('talentai_paid_package_type', pend);
-      localStorage.removeItem('talentai_pending_checkout_package');
-    }
-  } catch (e) {}
+  const pkg = resolvePaidPackageType();
+  console.log('[PAYMENT SUCCESS]', { pkg, checkoutPackageType, orderId });
 
-  const pkg = (localStorage.getItem('talentai_paid_package_type') || '').toLowerCase();
+  if (pkg === 'pathfinder' || pkg === '49') {
+    applyPathfinderPaid();
+    persistCareerSnapshotForUnlock();
+    setTimeout(() => talentaiGo('pathfinder-unlock.html?from=pay'), 400);
+    return;
+  }
 
-  try {
-    localStorage.setItem('talentai_premium', '1');
-    localStorage.setItem('talentai_p_enter_time', String(Date.now()));
-  } catch (e) {}
-
-  try {
-    if (pkg === 'pathfinder' || pkg === '49') {
-      localStorage.setItem('talentai_paid', '1');
-      localStorage.setItem('talentai_paid_at', new Date().toISOString());
-      if (orderId) {
-        localStorage.setItem('talentai_order', orderId);
-        localStorage.setItem('talentai_order_id', orderId);
-      }
-      localStorage.setItem('talentai_p_paid', '1');
-      localStorage.setItem('talentai_p_remaining', '3');
-      localStorage.removeItem('talentai_navigator_paid');
-      localStorage.removeItem('talentai_navigator_paid_at');
-      localStorage.removeItem('talentai_navigator_order_id');
-      localStorage.removeItem('talentai_wma_paid');
-      localStorage.removeItem('talentai_wma_paid_at');
-      localStorage.removeItem('talentai_wma_order_id');
-      localStorage.removeItem('talentai_wma_unlocked');
-      localStorage.removeItem('talentai_paid_package_type');
-    } else if (pkg === 'navigator' || pkg === '150') {
-      localStorage.setItem('talentai_navigator_paid', 'true');
-      localStorage.setItem('talentai_navigator_paid_at', new Date().toISOString());
-      if (orderId) localStorage.setItem('talentai_navigator_order_id', orderId);
-      localStorage.setItem('talentai_wma_paid', 'true');
-      localStorage.setItem('talentai_wma_paid_at', new Date().toISOString());
-      if (orderId) localStorage.setItem('talentai_wma_order_id', orderId);
-      localStorage.setItem('talentai_wma_unlocked', 'true');
-      localStorage.removeItem('talentai_wma_completed_at');
-      localStorage.removeItem('talentai_wma_answers');
-      localStorage.removeItem('talentai_wma_layer');
-      localStorage.removeItem('talentai_wma_q');
-      localStorage.removeItem('talentai_wma_timer');
-      localStorage.removeItem('talentai_wma_progress');
-      localStorage.removeItem('talentai_wma_scores');
-      localStorage.removeItem('talentai_wma_result');
-      localStorage.removeItem('talentai_paid_package_type');
-    }
-    localStorage.removeItem('talentai_wma_remaining');
-  } catch (e) {}
-  let dest = 'p_assessment.html';
   if (pkg === 'navigator' || pkg === '150') {
+    applyNavigatorPaid();
     console.log('[NAVIGATOR PAYMENT SUCCESS AUTO REDIRECT]', {
       paid: true,
       redirectTo: 'wma-assessment.html',
       time: new Date().toISOString()
     });
-    dest = 'wma-assessment.html';
+    setTimeout(() => talentaiGo('wma-assessment.html'), 300);
+    return;
   }
 
-  setTimeout(() => {
-    window.location.href = `${SITE_BASE}/${dest}`;
-  }, 300);
+  applyPathfinderPaid();
+  persistCareerSnapshotForUnlock();
+  setTimeout(() => talentaiGo('pathfinder-unlock.html?from=pay'), 400);
 }
 
 async function renderQrToCanvas(codeUrl) {
@@ -1087,9 +1130,7 @@ function buildFullCareerCards() {
         </div>
       </div>
       <div class="scc-match-breakdown">
-        <div class="scc-mb-item"><div class="scc-mb-label">天赋匹配</div><div class="scc-mb-val">${Math.min(99, ms+4)}%</div></div>
-        <div class="scc-mb-item"><div class="scc-mb-label">家族匹配</div><div class="scc-mb-val">${Math.max(50, ms-8)}%</div></div>
-        <div class="scc-mb-item"><div class="scc-mb-label">能力结构</div><div class="scc-mb-val">${Math.max(55, ms-6)}%</div></div>
+        <div class="scc-mb-item"><div class="scc-mb-label">综合匹配度</div><div class="scc-mb-val">${ms}%</div></div>
       </div>
       ${skills ? `<div class="scc-section"><div class="scc-section-title">关键技能</div><p>${skills}</p></div>` : ''}
       ${c.whyNewbieCanWin ? `<div class="scc-section"><div class="scc-section-title">💡 为什么新人有优势？</div><p>${c.whyNewbieCanWin}</p></div>` : ''}
@@ -1110,7 +1151,7 @@ function buildFullCareerCards() {
 }
 
 function goBack() {
-  window.location.href = `${SITE_BASE}/result.html`; // ← 改成你的T层结果页路径
+  talentaiGo('result.html');
 }
 
 // ── Create order + Auto poll payment ──
@@ -1130,10 +1171,13 @@ function goBack() {
 
     if (rawPkg === 'pathfinder' || rawPkg === '49') {
       createOrderPackageType = 'pathfinder';
+      checkoutPackageType = 'pathfinder';
       displayYuan = 49;
       description = PATHFINDER_DESC;
+      clearNavigatorWmaSession();
     } else if (rawPkg === 'navigator' || rawPkg === '150') {
       createOrderPackageType = 'navigator';
+      checkoutPackageType = 'navigator';
       displayYuan = 150;
       description = NAVIGATOR_DESC;
     }
@@ -1236,7 +1280,29 @@ function goBack() {
     if (orderEl) orderEl.textContent = '// ORDER_ID: 创建失败';
     alert(err?.error || err?.message || String(err));
   }
+
+  if (window.TALENTAI_IS_LOCAL) {
+    injectLocalPayTestButton();
+  }
 })();
+
+function injectLocalPayTestButton() {
+  if (document.getElementById('btnLocalPayTest')) return;
+  const btn = document.createElement('button');
+  btn.id = 'btnLocalPayTest';
+  btn.type = 'button';
+  btn.textContent = '🧪 本地测试：模拟 ¥49 支付成功';
+  btn.style.cssText =
+    'position:fixed;bottom:16px;left:16px;z-index:99999;padding:12px 16px;border-radius:12px;border:2px solid #22c55e;background:#052e16;color:#86efac;font-size:13px;font-weight:700;cursor:pointer;';
+  btn.onclick = function () {
+    if (!checkoutPackageType) checkoutPackageType = 'pathfinder';
+    orderId = orderId || 'local-test-' + Date.now();
+    applyPathfinderPaid();
+    persistCareerSnapshotForUnlock();
+    talentaiGo('pathfinder-unlock.html?from=local-mock');
+  };
+  document.body.appendChild(btn);
+}
 </script>
 </body>
 </html>
