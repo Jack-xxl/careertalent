@@ -7,13 +7,6 @@
 
   <!-- 结果页样式（你已有） -->
   <link rel="stylesheet" href="css/result.css" />
-  <style>
-    .radar-container { animation: none !important; }
-    .locked-career-card .unlock-mosaic { transition: opacity 0.6s ease-in-out; }
-    .locked-career-card:hover .unlock-mosaic { opacity: 0; pointer-events: none; }
-  </style>
-  <!-- Chart.js：必须是纯URL -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 
 <body>
@@ -71,31 +64,6 @@
             <div id="talent-top3-chips" class="chip-row"></div>
           </div>
         </div>
-      </div>
-    </section>
-
-    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
-    <!-- 第2部分：天赋雷达图 -->
-    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
-    <section class="radar-section">
-      <h2>🎯 你的 8 大智能全景图</h2>
-      <p class="section-desc">
-        这张雷达图展示了你在8个核心智能维度上的天赋水平。每个维度满分10分，得分越高代表天赋越突出。
-      </p>
-
-      <div class="radar-container">
-        <canvas id="radar-chart"></canvas>
-      </div>
-
-      <!-- 8大智能维度说明（保留原内容，不变：你可放回原文） -->
-      <div class="radar-tips">
-        <p>💡 <strong>理解你的雷达图</strong></p>
-        <ul>
-          <li>没有“完美”的雷达图，每个人都有独特的天赋组合</li>
-          <li>高分区域是你的天然优势，值得深度发展</li>
-          <li>中等区域通过刻意练习可以提升</li>
-          <li>低分区域不是缺陷，而是提示你寻找互补伙伴</li>
-        </ul>
       </div>
     </section>
 

@@ -3,7 +3,6 @@ console.log('✅ result-generator.js loaded');
 function renderAll(result, userData) {
   renderHeader(result, userData);
   renderTalentBars(result.scores);
-  renderRadar(result.radarData);
   renderTop3(result.top3Talents);
   renderCombination(result.combinationAnalysis);
   renderConflicts(result.conflictWarnings);
@@ -428,63 +427,19 @@ function _playSFX_unlock() {
 /* 生成锁定卡片的 HTML（带呼吸感马赛克） */
 function _buildLockedCard(c, idx) {
   const rankBadge = ['🥇','🥈','🥉','4️⃣','5️⃣'][idx] || `${idx+1}️⃣`;
-
-  // 背景关键词（每个岗位不同，增加神秘感）
-  const kwMap = {
-    0: ['逻辑架构','系统设计','AI · 未来','深度思考'],
-    2: ['数据洞察','分析决策','模式识别','AI放大器'],
-  };
-  const kws = kwMap[idx] || ['职业天赋','未来赛道','核心能力','AI时代'];
-
   return `
-    <div class="career-card locked-career-card" id="locked-career-${idx}" style="position:relative;overflow:hidden;min-height:180px;">
-
-      <!-- 背景关键词层（马赛克遮挡下隐约透出） -->
-      <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
-                  justify-content:center;gap:6px;pointer-events:none;z-index:0;opacity:0.55;">
-        ${kws.map(k => `<span style="font-size:12px;letter-spacing:2px;color:#667eea;opacity:0.7">${k}</span>`).join('')}
-      </div>
-
-      <!-- 马赛克遮罩层（呼吸动画） -->
-      <div class="unlock-mosaic" style="position:absolute;inset:0;z-index:1;
-           display:grid;grid-template-columns:repeat(10,1fr);grid-template-rows:repeat(6,1fr);">
-        ${Array.from({length:60}).map((_,i) => `
-          <div style="background:rgba(15,20,50,${0.88+Math.random()*0.08});
-               animation:mosaicBreath ${1.8+Math.random()*0.8}s ease-in-out ${Math.random()*1.5}s infinite;
-               border:1px solid rgba(0,0,0,0.2)"></div>
-        `).join('')}
-      </div>
-
-      <!-- 卡片主内容（在马赛克之上） -->
-      <div style="position:relative;z-index:2;">
+    <div class="career-card locked-career-card" id="locked-career-${idx}">
+      <div class="locked-career-inner">
         <div class="career-header">
-          <div class="career-rank" style="display:flex;align-items:center;gap:8px;">
-            <span class="lock-icon" style="font-size:20px;transition:all 0.4s">🔒</span>
-            ${rankBadge} 第${idx+1}名：<span style="letter-spacing:3px;color:#aaa">████████</span>
+          <div class="career-rank">
+            <span class="lock-icon">🔒</span>
+            ${rankBadge} 第${idx + 1}名 · 支付解锁后查看
           </div>
-          <div class="career-match">匹配度：${c.matchScore}%</div>
         </div>
-
-        <!-- 隐藏数据（JS解锁时读取） -->
-        <span class="career-name-hidden" data-name="${escapeHtml(c.name)}" data-badge="${rankBadge}" style="display:none"></span>
-
-        <div style="margin-top:14px;padding:14px;background:rgba(102,126,234,0.06);
-                    border-radius:10px;border:1px solid rgba(102,126,234,0.15);">
-          <p style="font-size:14px;line-height:1.7;color:#888;">
-            💡 <strong>为什么这个职业最值得关注？</strong><br>
-            你的天赋匹配度高达 <strong style="color:#667eea">${c.matchScore}%</strong>，
-            但在AI时代其替代风险和适配路径完全不同。
-            <br>解锁后查看：如何用你的天赋组合在这条赛道形成<strong>护城河</strong>。
-          </p>
-        </div>
-
-        <!-- 解锁成功后显示 -->
-        <div class="unlock-msg" style="display:none;margin-top:12px;padding:12px;
-             background:rgba(0,255,136,0.06);border-radius:10px;border:1px solid rgba(0,255,136,0.2);
-             color:#00c970;font-size:14px;">
-          ✅ 解锁成功！职业详情已在 P层测评结果 中完整展示
-        </div>
+        <p class="locked-career-hint">该方向与你的天赋匹配度较高，解锁 ¥49 寻路者套餐后可查看完整解读。</p>
       </div>
+      <div class="unlock-mosaic" aria-hidden="true"></div>
+      <span class="career-name-hidden" data-name="${escapeHtml(c.name)}" data-badge="${rankBadge}" style="display:none"></span>
     </div>
   `;
 }
@@ -554,8 +509,8 @@ function renderCareers(top5, scores) {
   const box = document.getElementById('career-list');
   if (!box) return;
 
-  const premium = isPathfinderPaid();
-  const hideIndex = premium ? [] : [0, 2];
+  // T 层结果页：第 1、3 名职业始终锁定；完整内容在 pathfinder-unlock.html
+  const hideIndex = [0, 2];
 
   // 注入马赛克呼吸动画 CSS（只注入一次）
   if (!document.getElementById('mosaic-style')) {

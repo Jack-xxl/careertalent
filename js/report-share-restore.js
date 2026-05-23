@@ -74,6 +74,8 @@
   function hideShareOnlyChrome() {
     const paywall = document.getElementById('navigatorPaywallWrap');
     if (paywall) paywall.style.display = 'none';
+    const tPaywall = document.getElementById('paywall');
+    if (tPaywall) tPaywall.style.display = 'none';
   }
 
   async function bootstrap() {
