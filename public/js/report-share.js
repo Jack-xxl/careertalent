@@ -427,7 +427,39 @@
   function shouldUseFullPagePdf() {
     if (mountedConfig?.pdfLayout === 'full-page') return true;
     if (mountedConfig?.pdfLayout === 'blocks') return false;
+    return false;
+  }
+
+  function shouldUseSinglePagePdf() {
+    if (mountedConfig?.pdfLayout === 'single-page') return true;
     return mountedConfig?.reportType === 'p-layer';
+  }
+
+  /** 整张长页：一页 PDF 容纳完整报告（P 层） */
+  function layoutSinglePageCanvasToPdf(canvas, opts) {
+    const { jsPDF } = window.jspdf;
+    const margin = opts.margin || 10;
+    const pageW = opts.pageW || 210;
+    const contentW = pageW - margin * 2;
+    const drawH = (canvas.height * contentW) / canvas.width;
+    const pageH = Math.max(50, drawH + margin * 2);
+
+    const pdf = new jsPDF({
+      orientation: 'p',
+      unit: 'mm',
+      format: [pageW, pageH]
+    });
+    pdf.setFillColor(11, 16, 32);
+    pdf.rect(0, 0, pageW, pageH, 'F');
+    pdf.addImage(
+      canvas.toDataURL('image/jpeg', 0.92),
+      'JPEG',
+      margin,
+      margin,
+      contentW,
+      drawH
+    );
+    return pdf;
   }
 
   /** 将完整内容块排版到 PDF：块内不截断，放不下则换新页；单块过高则等比缩小 */
@@ -561,7 +593,10 @@
       const contentH = ph - margin * 2;
 
       let ok;
-      if (shouldUseFullPagePdf()) {
+      if (shouldUseSinglePagePdf()) {
+        pdf = layoutSinglePageCanvasToPdf(masterCanvas, { margin, pageW: pw });
+        ok = !!pdf;
+      } else if (shouldUseFullPagePdf()) {
         ok = layoutFullCanvasToPdf(pdf, masterCanvas, {
           margin,
           contentW,
