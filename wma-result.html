@@ -396,38 +396,6 @@
     </section>
 
     <section>
-      <div class="wma-badge badge-t">🧠 T层 · 天赋智能</div>
-      <h2>你的核心天赋结构</h2>
-      <p class="section-desc">T层决定你“天然更容易做好的事情”，是职业资格线和长期优势区的基础。</p>
-      <div class="grid-2" style="margin-top:16px">
-        <div id="t-bars"></div>
-        <div>
-          <div class="insight-box" id="t-profile"></div>
-          <div class="soft-card" style="margin-top:14px">
-            <h3>Top3天赋维度</h3>
-            <div id="t-top3" class="chip-row"></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section>
-      <div class="wma-badge badge-p">🌿 P层 · 性格能量账户</div>
-      <h2>你的性格工作方式</h2>
-      <p class="section-desc">P层不是“好坏”，而是你在什么工作环境里更容易持续输出，什么环境更容易内耗。</p>
-      <div class="grid-2" style="margin-top:16px">
-        <div id="p-bars"></div>
-        <div>
-          <div class="insight-box" id="p-profile"></div>
-          <div class="soft-card" style="margin-top:14px">
-            <h3>性格建议</h3>
-            <div id="p-tags" class="chip-row"></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section>
       <div class="wma-badge badge-w">🧭 W层 · 内在驱动</div>
       <h2>你真正会长期投入的方向</h2>
       <p class="section-desc">W层决定你为什么愿意做。能力再高，如果驱动力不匹配，长期也会疲劳。</p>
@@ -2089,8 +2057,6 @@
 
       renderHeader(data, careerResults, ecoPools);
       renderComposite(data.composite);
-      renderTLayer(data.tScores);
-      renderPLayer(data.pScores);
       renderWLayer(data.normalized.W);
       renderMLayer(data.normalized.M);
       renderALayer(data.normalized.A, data.aiIndex, data.riskLevel);

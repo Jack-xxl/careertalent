@@ -2,6 +2,7 @@ console.log('✅ result-generator.js loaded');
 
 function renderAll(result, userData) {
   renderHeader(result, userData);
+  renderTalentBars(result.scores);
   renderRadar(result.radarData);
   renderTop3(result.top3Talents);
   renderCombination(result.combinationAnalysis);
@@ -48,6 +49,82 @@ function estimateMinutes(timings) {
   if (vals.length === 0) return '-';
   const seconds = vals.reduce((a,b)=>a+(Number(b)||0),0);
   return Math.max(1, Math.round(seconds/60));
+}
+
+const T_DIM_META = {
+  T1_language: { name: "语言智能", color: "#60a5fa", desc: "表达、理解、叙事能力" },
+  T2_logic: { name: "逻辑数学智能", color: "#34d399", desc: "分析、推理、建模能力" },
+  T3_spatial: { name: "空间智能", color: "#f59e0b", desc: "视觉结构、空间构建能力" },
+  T4_music: { name: "音乐智能", color: "#f472b6", desc: "节奏、旋律、声音感知能力" },
+  T5_bodily: { name: "身体动觉智能", color: "#f97316", desc: "动作控制、身体执行能力" },
+  T6_interpersonal: { name: "人际智能", color: "#10b981", desc: "理解他人、建立连接能力" },
+  T7_intrapersonal: { name: "内省智能", color: "#a78bfa", desc: "自我觉察、独立反思能力" },
+  T8_naturalist: { name: "自然观察智能", color: "#84cc16", desc: "自然模式、系统观察能力" }
+};
+
+function talentDimBar(name, val, color, desc) {
+  const score = Number(val) || 0;
+  const pct = Math.max(0, Math.min(100, Math.round(score * 10)));
+  return `
+    <div class="dim-bar-wrap">
+      <div class="dim-bar-label">
+        <div class="left">
+          <span>${name}</span>
+          <small>${desc || ""}</small>
+        </div>
+        <strong style="color:${color}">${score.toFixed(1)}</strong>
+      </div>
+      <div class="dim-bar-track">
+        <div class="dim-bar-fill" data-pct="${pct}" style="background:${color}"></div>
+      </div>
+    </div>
+  `;
+}
+
+function animateTalentBars() {
+  const wrap = document.getElementById("talent-bars");
+  if (!wrap) return;
+  wrap.querySelectorAll(".dim-bar-fill").forEach(el => {
+    const pct = el.getAttribute("data-pct") || "0";
+    requestAnimationFrame(() => { el.style.width = pct + "%"; });
+  });
+}
+
+function renderTalentBars(scores) {
+  const barsEl = document.getElementById("talent-bars");
+  if (!barsEl || !scores) return;
+
+  const entries = Object.keys(T_DIM_META).map(k => ({
+    key: k,
+    score: Number(scores[k]?.displayScore ?? 0) || 0,
+    ...T_DIM_META[k]
+  }));
+
+  barsEl.innerHTML = entries.map(e =>
+    talentDimBar(e.name, e.score, e.color, e.desc)
+  ).join("");
+  animateTalentBars();
+
+  const top3 = [...entries].sort((a, b) => b.score - a.score).slice(0, 3);
+  const chipsEl = document.getElementById("talent-top3-chips");
+  if (chipsEl) {
+    chipsEl.innerHTML = top3.map(e =>
+      `<span class="chip">${e.name} ${e.score.toFixed(1)}</span>`
+    ).join("");
+  }
+
+  const profileEl = document.getElementById("talent-profile");
+  if (profileEl) {
+    let profile = "你的 T 层分布较均衡，说明你具备多维度的潜力。";
+    if (top3.length) {
+      profile = `你的前三大天赋分别是 <strong>${top3[0].name}</strong>、<strong>${top3[1]?.name || "-"}</strong>、<strong>${top3[2]?.name || "-"}</strong>。这意味着你在这些维度对应的任务中，更容易进入高效区、持续区和优势区。`;
+    }
+    profileEl.innerHTML = `
+      <h3>天赋画像</h3>
+      <p>${profile}</p>
+      <p style="margin-top:10px">职业匹配中，T 层主要负责两件事：一是判断你是否具备职业资格线，二是识别你最容易形成长期优势的方向。</p>
+    `;
+  }
 }
 
 /* ---------------- Radar（固定尺寸，不随悬停/窗口变化） ---------------- */
