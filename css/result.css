@@ -47,8 +47,39 @@ body{
 
 .container{ max-width: 1140px; margin: 0 auto; padding: 26px 16px 72px; }
 
+/* 整页报告：独立区块紧凑排列 */
+.report-page{
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.report-page > .report-block,
+.report-page > section.report-block{
+  margin-bottom: 0 !important;
+  padding: 20px 18px;
+  border-radius: var(--radius);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(8px);
+}
+.report-page > .report-block--light{
+  background: linear-gradient(180deg, #fafafa 0%, #f0f0f0 100%);
+  border-color: #e0e0e0;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.08);
+}
+.report-page > .report-block--light h2{ color: #111; }
+.report-page > .report-block--light .section-desc{ color: #444; }
+.report-page .welcome-section,
+.report-page .talent-structure-section,
+.report-page .radar-section,
+.report-page .top3-section{
+  margin-bottom: 0;
+  padding: 20px 18px;
+}
+
 section h2{ font-size: 1.75rem; font-weight: 850; margin-bottom: 8px; letter-spacing: .2px; color: var(--text); }
-.section-desc{ color: var(--muted); font-size: 1.02rem; margin-bottom: 22px; }
+.section-desc{ color: var(--muted); font-size: 1.02rem; margin-bottom: 16px; }
 
 /* ========================= 1. Loading ========================= */
 .loading-screen{
@@ -423,6 +454,15 @@ section h2{ font-size: 1.75rem; font-weight: 850; margin-bottom: 8px; letter-spa
 .careers-section .career-card:not(.locked-career-card) .career-name{ color: #111; }
 .career-match{ font-size: 1.05rem; font-weight: 800; color: #a78bfa; margin-bottom: 12px; }
 .careers-section .career-card:not(.locked-career-card) .career-match{ color: #333; }
+.careers-section .career-card--open .career-match{
+  font-size: 2.25rem;
+  font-weight: 900;
+  color: #111;
+  margin: 8px 0 14px;
+  line-height: 1;
+}
+body.pdf-exporting .locked-career-card .unlock-mosaic{ opacity: 1 !important; }
+body.pdf-exporting .locked-career-hint{ filter: blur(3px); }
 .careers-section .career-card:not(.locked-career-card) .career-desc,
 .careers-section .career-card:not(.locked-career-card) .career-description{ color: #444; }
 .careers-section .career-card:not(.locked-career-card) .career-meta .meta-label{ color: #666; }
@@ -486,57 +526,100 @@ section h2{ font-size: 1.75rem; font-weight: 850; margin-bottom: 8px; letter-spa
 .locked-career-card{
   position: relative;
   overflow: hidden;
-  min-height: 148px;
-  background: rgba(255,255,255,0.03);
-  border: 1px dashed rgba(148,163,184,0.35) !important;
+  min-height: 200px;
+  padding: 0 !important;
+  border-radius: var(--radius-md) !important;
+  border: 1px solid rgba(102, 126, 234, 0.4) !important;
+  background: linear-gradient(145deg, #1e1245 0%, #151b38 45%, #0f172a 100%) !important;
+  box-shadow: 0 8px 32px rgba(59, 130, 246, 0.15), inset 0 1px 0 rgba(255,255,255,0.06) !important;
+  cursor: default;
+  animation: none !important;
+}
+.locked-career-card:hover{ transform: none !important; }
+.locked-career-keywords{
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.5;
+}
+.locked-career-keywords span{
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: #818cf8;
+  filter: blur(4px);
+  user-select: none;
 }
 .locked-career-card .unlock-mosaic{
   position: absolute;
   inset: 0;
-  z-index: 2;
-  pointer-events: none;
-  background:
-    linear-gradient(135deg, rgba(11,16,32,0.94), rgba(15,23,42,0.96)),
-    repeating-linear-gradient(
-      -45deg,
-      rgba(255,255,255,0.04) 0,
-      rgba(255,255,255,0.04) 6px,
-      transparent 6px,
-      transparent 12px
-    );
-}
-.locked-career-card .locked-career-inner{
-  position: relative;
   z-index: 1;
-  padding: 6px 0;
-  filter: blur(5px);
-  opacity: 0.25;
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: repeat(6, 1fr);
+  pointer-events: none;
+  opacity: 0.92;
+}
+.locked-career-card .unlock-mosaic > div{
+  border: 1px solid rgba(0,0,0,0.25);
+}
+.locked-career-body{
+  position: relative;
+  z-index: 2;
+  padding: 18px 20px;
+}
+.locked-career-header{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  margin-bottom: 14px;
+}
+.locked-career-card .lock-icon{
+  font-size: 20px;
+  line-height: 1;
+}
+.locked-career-rank{
+  font-size: 1rem;
+  font-weight: 800;
+  color: #e9d5ff;
+}
+.locked-name-mask{
+  display: inline-block;
+  filter: blur(6px);
+  letter-spacing: 2px;
+  color: transparent;
+  text-shadow: 0 0 8px rgba(255,255,255,0.35);
+}
+.locked-career-match{
+  margin-left: auto;
+  font-size: 0.95rem;
+  color: #93c5fd;
+}
+.locked-career-match strong{
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #67e8f9;
+}
+.locked-career-hint{
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: rgba(102, 126, 234, 0.08);
+  border: 1px solid rgba(102, 126, 234, 0.2);
+  font-size: 13px;
+  color: rgba(238,242,255,0.75);
+  line-height: 1.65;
+  filter: blur(3px);
   user-select: none;
   pointer-events: none;
 }
-.locked-career-card .lock-icon{ font-size: 18px; margin-right: 6px; }
-.locked-career-hint{
-  margin-top: 10px;
-  font-size: 13px;
-  color: var(--muted);
-  line-height: 1.6;
-}
-.locked-career-card::after{
-  content: "🔒 解锁 ¥49 后查看";
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 3;
-  padding: 8px 14px;
-  border-radius: 999px;
-  font-size: 13px;
-  font-weight: 700;
-  color: #c4b5fd;
-  background: rgba(15,23,42,0.88);
-  border: 1px solid rgba(139,92,246,0.45);
-  white-space: nowrap;
-}
+.locked-career-hint strong{ color: #c4b5fd; }
+.locked-career-hint .match-highlight{ color: #818cf8; font-weight: 700; }
 
 .career-card.locked::before{
   content: "🔒";

@@ -3,6 +3,7 @@ console.log('✅ result-generator.js loaded');
 function renderAll(result, userData) {
   renderHeader(result, userData);
   renderTalentBars(result.scores);
+  if (result.radarData) renderRadar(result.radarData);
   renderTop3(result.top3Talents);
   renderCombination(result.combinationAnalysis);
   renderConflicts(result.conflictWarnings);
@@ -424,22 +425,39 @@ function _playSFX_unlock() {
   } catch(e) {}
 }
 
-/* 生成锁定卡片的 HTML（带呼吸感马赛克） */
+/* 生成锁定卡片（第1/3名：深紫渐变 + 马赛克 + 可见匹配度） */
 function _buildLockedCard(c, idx) {
-  const rankBadge = ['🥇','🥈','🥉','4️⃣','5️⃣'][idx] || `${idx+1}️⃣`;
+  const rankBadge = ['🥇', '🥈', '🥉', '4️⃣', '5️⃣'][idx] || `${idx + 1}️⃣`;
+  const kwMap = {
+    0: ['逻辑架构', '系统设计', 'AI · 未来', '深度思考'],
+    2: ['数据洞察', '分析决策', '模式识别', 'AI放大器']
+  };
+  const kws = kwMap[idx] || ['职业天赋', '未来赛道', '核心能力', 'AI时代'];
+  const mosaicCells = Array.from({ length: 60 }).map(() => {
+    const op = 0.88 + Math.random() * 0.08;
+    const dur = 1.8 + Math.random() * 0.8;
+    const delay = Math.random() * 1.5;
+    return `<div style="background:rgba(15,20,50,${op});animation:mosaicBreath ${dur}s ease-in-out ${delay}s infinite"></div>`;
+  }).join('');
+
   return `
-    <div class="career-card locked-career-card" id="locked-career-${idx}">
-      <div class="locked-career-inner">
-        <div class="career-header">
-          <div class="career-rank">
-            <span class="lock-icon">🔒</span>
-            ${rankBadge} 第${idx + 1}名 · 支付解锁后查看
-          </div>
-        </div>
-        <p class="locked-career-hint">该方向与你的天赋匹配度较高，解锁 ¥49 寻路者套餐后可查看完整解读。</p>
+    <div class="career-card locked-career-card" id="locked-career-${idx}" data-pdf-block="career">
+      <div class="locked-career-keywords" aria-hidden="true">
+        ${kws.map((k) => `<span>${k}</span>`).join('')}
       </div>
-      <div class="unlock-mosaic" aria-hidden="true"></div>
-      <span class="career-name-hidden" data-name="${escapeHtml(c.name)}" data-badge="${rankBadge}" style="display:none"></span>
+      <div class="unlock-mosaic" aria-hidden="true">${mosaicCells}</div>
+      <div class="locked-career-body">
+        <div class="locked-career-header">
+          <span class="lock-icon" aria-hidden="true">🔒</span>
+          <span class="locked-career-rank">${rankBadge} 第${idx + 1}名：<span class="locked-name-mask">████████</span></span>
+          <span class="locked-career-match">匹配度：<strong>${c.matchScore}%</strong></span>
+        </div>
+        <span class="career-name-hidden" data-name="${escapeHtml(c.name)}" data-badge="${rankBadge}" hidden></span>
+        <div class="locked-career-hint">
+          <p>💡 <strong>为什么这个职业值得关注？</strong></p>
+          <p style="margin-top:8px">你的天赋匹配度高达 <span class="match-highlight">${c.matchScore}%</span>，但在 AI 时代其替代风险和适配路径完全不同。解锁后查看：如何用你的天赋组合在这条赛道形成<strong>护城河</strong>。</p>
+        </div>
+      </div>
     </div>
   `;
 }
@@ -542,11 +560,11 @@ function renderCareers(top5, scores) {
 
     // 展示职业（第2/4/5）
     return `
-      <div class="career-card">
+      <div class="career-card career-card--open" data-pdf-block="career">
         <div class="career-header">
           <div class="career-rank">${rankBadge} 第${idx+1}名：${escapeHtml(c.name)}</div>
-          <div class="career-match">${c.matchScore}%</div>
         </div>
+        <div class="career-match">${c.matchScore}%</div>
 
         <p class="career-desc">${escapeHtml(c.description || '—')}</p>
 
