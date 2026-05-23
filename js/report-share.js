@@ -151,12 +151,18 @@
   /** 导出前冻结动画、进度条宽度，避免截图为空白 */
   function prepareDomForPdf(root) {
     if (!root) return;
-    root.querySelectorAll('.dim-bar-fill').forEach((el) => {
+    root.querySelectorAll('.dim-bar-fill, .o-fill, .td-fill').forEach((el) => {
       const pct = el.getAttribute('data-pct');
+      const score = el.getAttribute('data-score');
+      const w = el.getAttribute('data-w');
       if (pct != null) el.style.width = pct + '%';
+      else if (score != null) el.style.width = score + '%';
+      else if (w != null) el.style.width = w + '%';
       el.style.transition = 'none';
     });
-    root.querySelectorAll('.talent-card, .career-card, section, .welcome-section').forEach((el) => {
+    root.querySelectorAll(
+      '.talent-card, .career-card, .find-card, .risk-card, .cmd-card, section, .welcome-section, .section, .card'
+    ).forEach((el) => {
       el.style.animation = 'none';
       el.style.transition = 'none';
       el.style.opacity = '1';
@@ -174,9 +180,13 @@
       clonedDoc.body;
     if (!clonedRoot) return;
 
-    clonedRoot.querySelectorAll('.dim-bar-fill').forEach((el) => {
+    clonedRoot.querySelectorAll('.dim-bar-fill, .o-fill, .td-fill').forEach((el) => {
       const pct = el.getAttribute('data-pct');
+      const score = el.getAttribute('data-score');
+      const w = el.getAttribute('data-w');
       if (pct != null) el.style.width = pct + '%';
+      else if (score != null) el.style.width = score + '%';
+      else if (w != null) el.style.width = w + '%';
       el.style.transition = 'none';
     });
     clonedRoot.querySelectorAll('*').forEach((el) => {
@@ -184,7 +194,7 @@
       el.style.transition = 'none';
       if (el.style.opacity === '0') el.style.opacity = '1';
     });
-    clonedRoot.querySelectorAll('.talent-card, .career-card').forEach((el) => {
+    clonedRoot.querySelectorAll('.talent-card, .career-card, .find-card, .risk-card, .cmd-card').forEach((el) => {
       el.style.opacity = '1';
       el.style.transform = 'none';
     });
@@ -231,10 +241,51 @@
   function collectBlockRects(root, scale) {
     const blocks = [];
     const rootRect = root.getBoundingClientRect();
-    const sections = root.querySelectorAll(':scope > section, :scope > .welcome-section');
+    const sections = root.querySelectorAll(
+      ':scope > section, :scope > .welcome-section, :scope > .section, :scope > .grid-top'
+    );
+
+    if (root.classList.contains('shell')) {
+      pushBlock(blocks, rootRect, scale, [
+        root.querySelector('.badge'),
+        root.querySelector('.title'),
+        root.querySelector('.subtitle')
+      ]);
+      const tUnlock = root.querySelector('#t-layer-unlocked-careers');
+      if (tUnlock && isVisibleEl(tUnlock)) {
+        pushBlock(blocks, rootRect, scale, [tUnlock]);
+      }
+    }
 
     sections.forEach((section) => {
       if (!isVisibleEl(section)) return;
+
+      if (section.classList.contains('grid-top')) {
+        section.querySelectorAll(':scope > .card').forEach((card) => {
+          pushBlock(blocks, rootRect, scale, [card]);
+        });
+        return;
+      }
+
+      if (section.tagName === 'DIV' && section.classList.contains('section')) {
+        pushBlock(blocks, rootRect, scale, [section.querySelector('.sec-head')]);
+        const banner = section.querySelector('#ecosystemBanner');
+        if (banner && banner.innerHTML.trim()) {
+          pushBlock(blocks, rootRect, scale, [banner]);
+        }
+        const pCards = section.querySelectorAll(
+          '.find-card, .career-card, .risk-card, .cmd-card'
+        );
+        if (pCards.length) {
+          pCards.forEach((card) => pushBlock(blocks, rootRect, scale, [card]));
+          section.querySelectorAll(':scope > .hint').forEach((el) => {
+            pushBlock(blocks, rootRect, scale, [el]);
+          });
+          return;
+        }
+        pushBlock(blocks, rootRect, scale, [section]);
+        return;
+      }
 
       if (section.classList.contains('top3-section')) {
         pushBlock(blocks, rootRect, scale, [
@@ -406,6 +457,36 @@
     return hasContent;
   }
 
+  /** 分块失败时：整页截图按 A4 高度纵向分页 */
+  function layoutFullCanvasToPdf(pdf, canvas, opts) {
+    const { margin, contentW, contentH } = opts;
+    const sliceH = Math.max(1, Math.floor((contentH * canvas.width) / contentW));
+    let srcY = 0;
+    let pageIndex = 0;
+
+    while (srcY < canvas.height) {
+      const h = Math.min(sliceH, canvas.height - srcY);
+      const slice = document.createElement('canvas');
+      slice.width = canvas.width;
+      slice.height = h;
+      slice.getContext('2d').drawImage(canvas, 0, srcY, canvas.width, h, 0, 0, canvas.width, h);
+
+      if (pageIndex > 0) pdf.addPage();
+      const drawH = (h * contentW) / canvas.width;
+      pdf.addImage(
+        slice.toDataURL('image/jpeg', 0.92),
+        'JPEG',
+        margin,
+        margin,
+        contentW,
+        drawH
+      );
+      srcY += h;
+      pageIndex++;
+    }
+    return pageIndex > 0;
+  }
+
   async function exportPdf() {
     const root = getCaptureElement();
     if (!root) {
@@ -455,19 +536,24 @@
         .filter(Boolean);
 
       const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF('p', 'mm', 'a4');
+      let pdf = new jsPDF('p', 'mm', 'a4');
       const pw = pdf.internal.pageSize.getWidth();
       const ph = pdf.internal.pageSize.getHeight();
       const margin = 10;
       const contentW = pw - margin * 2;
       const contentH = ph - margin * 2;
 
-      const ok = layoutBlocksToPdf(pdf, blockCanvases, {
+      let ok = layoutBlocksToPdf(pdf, blockCanvases, {
         margin,
         contentW,
         contentH,
         pageH: ph
       });
+
+      if (!ok) {
+        pdf = new jsPDF('p', 'mm', 'a4');
+        ok = layoutFullCanvasToPdf(pdf, masterCanvas, { margin, contentW, contentH });
+      }
 
       if (!ok) {
         throw new Error('未生成有效页面');
@@ -518,12 +604,25 @@
       styleLinks: styles.styleLinks,
       inlineStyles: styles.inlineStyles
     };
+    let payload = JSON.stringify(body);
+    if (payload.length > 1900000) {
+      body.inlineStyles = String(body.inlineStyles || '').slice(0, 180000);
+      payload = JSON.stringify(body);
+    }
+    if (payload.length > 1900000) {
+      throw new Error('报告内容过大，请尝试导出 PDF 保存');
+    }
     const r = await fetch(`${API_BASE}/api/report/share`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
+      body: payload
     });
-    const data = await r.json();
+    let data;
+    try {
+      data = await r.json();
+    } catch (e) {
+      throw new Error(r.ok ? '服务器响应异常' : `请求失败 (${r.status})`);
+    }
     if (!data || !data.success) {
       throw new Error(data?.error || '创建分享链接失败');
     }
