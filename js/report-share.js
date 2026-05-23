@@ -198,10 +198,13 @@
       el.style.opacity = '1';
       el.style.transform = 'none';
     });
-    clonedRoot.querySelectorAll('section, .welcome-section').forEach((el) => {
+    clonedRoot.querySelectorAll('section, .welcome-section, .card, .section').forEach((el) => {
       el.style.backdropFilter = 'none';
       el.style.webkitBackdropFilter = 'none';
     });
+    clonedRoot.style.overflow = 'visible';
+    clonedRoot.style.height = 'auto';
+    clonedRoot.style.maxHeight = 'none';
     clonedRoot.querySelectorAll('.report-share-bar, .no-print').forEach((el) => {
       el.remove();
     });
@@ -401,21 +404,30 @@
     const w = canvas.width;
     const h = canvas.height;
     if (h < 8) return true;
-    const stepX = Math.max(4, Math.floor(w / 60));
-    const stepY = Math.max(4, Math.floor(h / 60));
+    const stepX = Math.max(4, Math.floor(w / 40));
+    const stepY = Math.max(4, Math.floor(h / 40));
     let samples = 0;
-    let uniform = 0;
-    let prev = null;
+    let bgLike = 0;
+    const bg = [11, 16, 32];
+    const tolerance = 18;
     for (let y = 0; y < h; y += stepY) {
       for (let x = 0; x < w; x += stepX) {
         const d = ctx.getImageData(x, y, 1, 1).data;
-        const key = d[0] + ',' + d[1] + ',' + d[2];
-        if (prev === key) uniform++;
-        prev = key;
         samples++;
+        const nearBg =
+          Math.abs(d[0] - bg[0]) < tolerance &&
+          Math.abs(d[1] - bg[1]) < tolerance &&
+          Math.abs(d[2] - bg[2]) < tolerance;
+        if (nearBg) bgLike++;
       }
     }
-    return samples > 0 && uniform / samples > 0.985;
+    return samples > 0 && bgLike / samples > 0.992;
+  }
+
+  function shouldUseFullPagePdf() {
+    if (mountedConfig?.pdfLayout === 'full-page') return true;
+    if (mountedConfig?.pdfLayout === 'blocks') return false;
+    return mountedConfig?.reportType === 'p-layer';
   }
 
   /** 将完整内容块排版到 PDF：块内不截断，放不下则换新页；单块过高则等比缩小 */
@@ -457,9 +469,9 @@
     return hasContent;
   }
 
-  /** 分块失败时：整页截图按 A4 高度纵向分页 */
+  /** 整页截图按 A4 高度纵向分页（P 层等深色长页） */
   function layoutFullCanvasToPdf(pdf, canvas, opts) {
-    const { margin, contentW, contentH } = opts;
+    const { margin, contentW, contentH, pageW, pageH } = opts;
     const sliceH = Math.max(1, Math.floor((contentH * canvas.width) / contentW));
     let srcY = 0;
     let pageIndex = 0;
@@ -469,9 +481,14 @@
       const slice = document.createElement('canvas');
       slice.width = canvas.width;
       slice.height = h;
-      slice.getContext('2d').drawImage(canvas, 0, srcY, canvas.width, h, 0, 0, canvas.width, h);
+      const sctx = slice.getContext('2d');
+      sctx.fillStyle = PDF_BG;
+      sctx.fillRect(0, 0, slice.width, slice.height);
+      sctx.drawImage(canvas, 0, srcY, canvas.width, h, 0, 0, canvas.width, h);
 
       if (pageIndex > 0) pdf.addPage();
+      pdf.setFillColor(11, 16, 32);
+      pdf.rect(0, 0, pageW, pageH, 'F');
       const drawH = (h * contentW) / canvas.width;
       pdf.addImage(
         slice.toDataURL('image/jpeg', 0.92),
@@ -507,7 +524,11 @@
       await ensurePdfLibs();
       rasterizeCanvases(root);
       prepareDomForPdf(root);
-      await new Promise((r) => setTimeout(r, 350));
+      const prevRootOverflow = root.style.overflow;
+      const prevRootHeight = root.style.height;
+      root.style.overflow = 'visible';
+      root.style.height = 'auto';
+      await new Promise((r) => setTimeout(r, 450));
 
       const masterCanvas = await html2canvas(root, {
         scale: PDF_SCALE,
@@ -519,21 +540,17 @@
         height: root.scrollHeight,
         windowWidth: root.scrollWidth,
         windowHeight: root.scrollHeight,
-        x: 0,
-        y: 0,
         scrollX: 0,
-        scrollY: 0,
+        scrollY: -window.scrollY,
         onclone: (clonedDoc) => patchCloneForPdf(clonedDoc, captureSelector)
       });
+
+      root.style.overflow = prevRootOverflow;
+      root.style.height = prevRootHeight;
 
       if (!masterCanvas.width || !masterCanvas.height) {
         throw new Error('截图尺寸为 0');
       }
-
-      const blockRects = collectBlockRects(root, PDF_SCALE);
-      const blockCanvases = blockRects
-        .map((rect) => extractBlockCanvas(masterCanvas, rect))
-        .filter(Boolean);
 
       const { jsPDF } = window.jspdf;
       let pdf = new jsPDF('p', 'mm', 'a4');
@@ -543,16 +560,38 @@
       const contentW = pw - margin * 2;
       const contentH = ph - margin * 2;
 
-      let ok = layoutBlocksToPdf(pdf, blockCanvases, {
-        margin,
-        contentW,
-        contentH,
-        pageH: ph
-      });
+      let ok;
+      if (shouldUseFullPagePdf()) {
+        ok = layoutFullCanvasToPdf(pdf, masterCanvas, {
+          margin,
+          contentW,
+          contentH,
+          pageW: pw,
+          pageH: ph
+        });
+      } else {
+        const blockRects = collectBlockRects(root, PDF_SCALE);
+        const blockCanvases = blockRects
+          .map((rect) => extractBlockCanvas(masterCanvas, rect))
+          .filter(Boolean);
 
-      if (!ok) {
-        pdf = new jsPDF('p', 'mm', 'a4');
-        ok = layoutFullCanvasToPdf(pdf, masterCanvas, { margin, contentW, contentH });
+        ok = layoutBlocksToPdf(pdf, blockCanvases, {
+          margin,
+          contentW,
+          contentH,
+          pageH: ph
+        });
+
+        if (!ok) {
+          pdf = new jsPDF('p', 'mm', 'a4');
+          ok = layoutFullCanvasToPdf(pdf, masterCanvas, {
+            margin,
+            contentW,
+            contentH,
+            pageW: pw,
+            pageH: ph
+          });
+        }
       }
 
       if (!ok) {

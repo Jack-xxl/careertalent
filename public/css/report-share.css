@@ -81,6 +81,19 @@
   display: none !important;
 }
 
+body.pdf-exporting .find-card {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+body.pdf-exporting .o-fill {
+  transition: none !important;
+}
+
+body.pdf-exporting .shell {
+  overflow: visible !important;
+}
+
 @media print {
   .report-share-bar,
   .report-share-toast,
