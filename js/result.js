@@ -61,6 +61,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         captureSelector: '#main-content',
         insertBefore: 'footer.footer',
         stylesheetUrls: ['css/result.css', 'css/report-share.css'],
+        pdfLayout: 'single-page',
         delayMs: 600
       });
     }

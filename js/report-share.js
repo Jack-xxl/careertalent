@@ -432,10 +432,12 @@
 
   function shouldUseSinglePagePdf() {
     if (mountedConfig?.pdfLayout === 'single-page') return true;
-    return mountedConfig?.reportType === 'p-layer';
+    if (mountedConfig?.pdfLayout === 'blocks') return false;
+    const t = mountedConfig?.reportType;
+    return t === 'p-layer' || t === 't-layer' || t === 'wma-full';
   }
 
-  /** 整张长页：一页 PDF 容纳完整报告（P 层） */
+  /** 整张长页：一页 PDF 容纳完整报告 */
   function layoutSinglePageCanvasToPdf(canvas, opts) {
     const { jsPDF } = window.jspdf;
     const margin = opts.margin || 10;
