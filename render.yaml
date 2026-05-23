@@ -21,3 +21,5 @@ services:
         sync: false
       - key: DATABASE_URL
         sync: false
+      - key: NODE_ENV
+        value: production

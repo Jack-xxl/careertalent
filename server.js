@@ -221,6 +221,11 @@ function isLocalDevMode() {
   return !isProductionEnv();
 }
 
+/** 仅当显式设置 ALLOW_MOCK_PAY=true 时启用模拟支付（默认关闭，生产走微信 Native） */
+function allowMockPay() {
+  return String(process.env.ALLOW_MOCK_PAY || '').trim().toLowerCase() === 'true';
+}
+
 // 微信配置调试（不打印敏感内容）
 try {
   console.log('[WX CHECK]', {
@@ -245,7 +250,7 @@ try {
   });
 })();
 
-// 支付初始化：生产环境缺配置则退出；本地开发仅警告并继续（可用模拟支付按钮）
+// 支付初始化：生产环境缺配置则退出；本地开发仅警告（需配置微信或 ALLOW_MOCK_PAY=true）
 try {
   const hasWeChatConfig = hasWeChatEnvConfig();
 
@@ -256,7 +261,7 @@ try {
     } else {
       console.warn(
         '[WARN] Missing WeChat config — 本地开发模式，服务器继续启动。' +
-          '支付页可使用「本地测试：模拟¥49支付成功」，不依赖微信。'
+          '请配置微信商户环境变量，或设置 ALLOW_MOCK_PAY=true 用于本地联调。'
       );
     }
   } else {
@@ -830,8 +835,8 @@ app.post('/api/pay/create-order', async (req, res) => {
   const mchid = String(process.env.WECHAT_MCHID || '').trim();
   const appid = String(process.env.WECHAT_APPID || '').trim();
 
-  // 本地开发：无微信/数据库时返回模拟订单，供页面展示；真实支付走下方生产逻辑
-  if (isLocalDevMode() && (!pay || !pool || !hasWeChatEnvConfig())) {
+  // 模拟支付：仅 ALLOW_MOCK_PAY=true 时启用（默认关闭）
+  if (allowMockPay()) {
     const mockOrderId = `DEV${Date.now()}${Math.random().toString(36).slice(2, 6)}`.toUpperCase().slice(0, 32);
     const sessionToken = newSessionToken();
     console.log('[PAY CREATE DEV MOCK]', { mockOrderId, packageType });
@@ -851,6 +856,7 @@ app.post('/api/pay/create-order', async (req, res) => {
     return res.status(503).json({ success: false, error: 'Database not configured' });
   }
   const BASE_URL = String(process.env.BASE_URL || 'https://careertalent-1.onrender.com').replace(/\/$/, '');
+  const notify_url = `${BASE_URL}/api/pay/notify`;
   if (packageType == null || String(packageType).trim() === '') {
     return res.status(400).json({ success: false, error: 'Missing packageType' });
   }
@@ -865,7 +871,6 @@ app.post('/api/pay/create-order', async (req, res) => {
 
   const orderId = `PAY${Date.now()}${Math.random().toString(36).slice(2, 8)}`.toUpperCase().slice(0, 32);
   const sessionToken = newSessionToken();
-  const notify_url = 'https://careertalent-1.onrender.com/api/pay/notify';
 
   console.log('[PAY CREATE REQUEST BODY]', JSON.stringify(req.body));
 
@@ -1020,8 +1025,8 @@ app.get('/api/order-status', async (req, res) => {
     return res.json({ success: false, status: 'not_found' });
   }
 
-  // 本地开发模拟订单：轮询直接视为已支付（前端模拟按钮仍会直接走 handlePaidSuccess）
-  if (isLocalDevMode() && /^DEV/i.test(orderId)) {
+  // 模拟订单轮询：仅 ALLOW_MOCK_PAY=true 时视为已支付
+  if (allowMockPay() && /^DEV/i.test(orderId)) {
     console.log('[ORDER STATUS] dev mock paid');
     return res.json({ success: true, status: 'paid', devMode: true });
   }
@@ -1331,7 +1336,12 @@ app.post('/api/payment-notify', async (req, res) => {
 });
 
 app.get('/api/payment-config', (req, res) => {
-  res.json({ ok: true, wechatNotifyEnabled: isWechatNotifyProduction(), baseUrl: getBaseUrl() });
+  res.json({
+    ok: true,
+    wechatNotifyEnabled: isWechatNotifyProduction(),
+    mockPayEnabled: allowMockPay(),
+    baseUrl: getBaseUrl(),
+  });
 });
 
 app.get('/api/check-payment', async (req, res) => {

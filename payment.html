@@ -479,9 +479,9 @@ body {
       </div>
 
       <!-- Step 1: Show QR button -->
-      <button class="btn-pay" id="btnShowQR" onclick="showQR()">
+      <button class="btn-pay" id="btnShowQR" type="button" disabled>
         <span style="font-size:22px">💚</span>
-        微信扫码支付 ¥49
+        正在生成微信支付二维码…
       </button>
 
       <!-- Step 2: QR Code section -->
@@ -500,7 +500,7 @@ body {
         </div>
         <div class="expire-track"><div class="expire-fill" id="expireFill"></div></div>
 
-        <!-- Render 生产环境：微信回调后轮询自动跳转。本地：点按钮模拟已付后用 check-payment 校验 -->
+        <!-- 微信 Native 支付：扫码后轮询订单状态，支付成功后自动跳转 -->
         <button class="btn-confirm" id="btnConfirm" type="button" style="display:none">
           ✅ &nbsp;我已完成支付
         </button>
@@ -706,78 +706,6 @@ function startExpireTimer() {
     // Turn yellow when < 60s
     if (total < 60) timeEl.style.color = 'var(--neon-rose)';
   }, 1000);
-}
-
-// ── Simulate payment success ──
-function simulateSuccess() {
-  clearInterval(expireInterval);
-
-  // Play unlock sound
-  playSFX();
-
-  // Write premium flag
-  localStorage.setItem('talentai_premium', '1');
-  localStorage.setItem('talentai_order', orderId);
-
-  // ── 读取真实T层职业数据（优先用预加载的data属性，再兜底读localStorage）──
-  let career1Name = '第1名职业', career1Match = '--';
-  let career3Name = '第3名职业', career3Match = '--';
-  try {
-    // 先用页面初始化时已存好的data属性
-    const el1 = document.getElementById('un1');
-    const em1 = document.getElementById('um1txt');
-    const el3 = document.getElementById('un3');
-    const em3 = document.getElementById('um3txt');
-    if (el1?.getAttribute('data-real-name')) {
-      career1Name = el1.getAttribute('data-real-name');
-      career1Match = '';
-    }
-    if (em1?.getAttribute('data-real-match')) {
-      // match text already formatted
-    }
-    if (el3?.getAttribute('data-real-name')) {
-      career3Name = el3.getAttribute('data-real-name');
-      career3Match = '';
-    }
-    // 兜底：重新读localStorage
-    const raw = localStorage.getItem('talentai_careers');
-    if (raw) {
-      const careers = JSON.parse(raw);
-      if (careers[0]) { career1Name = careers[0].name; career1Match = careers[0].matchScore + '%'; }
-      if (careers[2]) { career3Name = careers[2].name; career3Match = careers[2].matchScore + '%'; }
-    }
-  } catch(e) { console.warn('读取职业数据失败', e); }
-
-  document.getElementById('un1').textContent = career1Name;
-  document.getElementById('um1txt').textContent = career1Match ? '▲ 匹配度 ' + career1Match : (document.getElementById('um1txt').getAttribute('data-real-match') || '▲ 匹配度 --');
-  document.getElementById('un3').textContent = career3Name;
-  document.getElementById('um3txt').textContent = career3Match ? '▲ 匹配度 ' + career3Match : (document.getElementById('um3txt').getAttribute('data-real-match') || '▲ 匹配度 --');
-
-  // Hide payment card, show success
-  const payCard = document.getElementById('payCard');
-  payCard.style.transition = 'all 0.5s ease';
-  payCard.style.opacity = '0';
-  payCard.style.transform = 'scale(0.95)';
-
-  setTimeout(() => {
-    payCard.style.display = 'none';
-    const ss = document.getElementById('success-screen');
-    ss.classList.add('show');
-    document.getElementById('successOrderId').textContent = '// ORDER_ID: ' + orderId + ' · PAID ✓';
-
-    // Build mosaics
-    buildMosaic('um1'); buildMosaic('um3');
-
-    // Start unlock sequence
-    setTimeout(() => unlockCard('uc1','ul1','un1','um1txt','um1'), 600);
-    setTimeout(() => unlockCard('uc3','ul3','un3','um3txt','um3'), 1400);
-    setTimeout(() => {
-      document.getElementById('btnStart').classList.add('show');
-    }, 2600);
-    setTimeout(() => {
-      buildFullCareerCards();
-    }, 3200);
-  }, 500);
 }
 
 function stopPolling() {
@@ -1238,6 +1166,7 @@ function goBack() {
     if (btnShowQR) {
       btnShowQR.innerHTML =
         '<span style="font-size:22px">💚</span>微信扫码支付 ¥' + displayYuan;
+      btnShowQR.disabled = true;
     }
 
     // 1) 新链路：不依赖手机号，仅 orderId + sessionToken 解锁
@@ -1278,31 +1207,21 @@ function goBack() {
     console.error('[PAYMENT INIT ERROR FULL]', err);
     if (err && err.errors) console.error('[PAYMENT INIT SUB ERRORS]', err.errors);
     if (orderEl) orderEl.textContent = '// ORDER_ID: 创建失败';
-    alert(err?.error || err?.message || String(err));
-  }
-
-  if (window.TALENTAI_IS_LOCAL) {
-    injectLocalPayTestButton();
+    const btnShowQR = document.getElementById('btnShowQR');
+    if (btnShowQR) {
+      btnShowQR.disabled = false;
+      btnShowQR.textContent = '';
+      btnShowQR.innerHTML = '<span style="font-size:22px">💚</span>重试生成二维码';
+      btnShowQR.onclick = function () {
+        location.reload();
+      };
+    }
+    alert(
+      (err?.error || err?.message || String(err)) +
+        '\n\n若本地打开 HTML，请刷新重试；或访问：\nhttps://careertalent-1.onrender.com/payment.html?package=pathfinder'
+    );
   }
 })();
-
-function injectLocalPayTestButton() {
-  if (document.getElementById('btnLocalPayTest')) return;
-  const btn = document.createElement('button');
-  btn.id = 'btnLocalPayTest';
-  btn.type = 'button';
-  btn.textContent = '🧪 本地测试：模拟 ¥49 支付成功';
-  btn.style.cssText =
-    'position:fixed;bottom:16px;left:16px;z-index:99999;padding:12px 16px;border-radius:12px;border:2px solid #22c55e;background:#052e16;color:#86efac;font-size:13px;font-weight:700;cursor:pointer;';
-  btn.onclick = function () {
-    if (!checkoutPackageType) checkoutPackageType = 'pathfinder';
-    orderId = orderId || 'local-test-' + Date.now();
-    applyPathfinderPaid();
-    persistCareerSnapshotForUnlock();
-    talentaiGo('pathfinder-unlock.html?from=local-mock');
-  };
-  document.body.appendChild(btn);
-}
 </script>
 </body>
 </html>
