@@ -575,6 +575,7 @@
   </div>
 
   <script src="js/site-config.js"></script>
+  <script src="js/report-share-restore.js"></script>
   <script src="js/career-matching-engine.js"></script>
   <script src="js/careerEcosystems.js"></script>
   <script src="js/careerArchetypes.js"></script>
@@ -2052,6 +2053,12 @@
     }
 
     async function renderAll(){
+      if (window.ReportShareRestore) {
+        const ok = await ReportShareRestore.bootstrap();
+        if (ReportShareRestore.isShareMode() && !ok) {
+          throw new Error(window.__TALENTAI_SHARE_ERROR__ || '专属链接无效');
+        }
+      }
       // 确保 localStorage 中测试数据已经写入再开始匹配
       await new Promise(r => setTimeout(r, 100));
       const data = parseStorageData();

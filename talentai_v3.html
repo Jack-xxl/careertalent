@@ -735,9 +735,12 @@
 
   <script src="js/site-config.js"></script>
   <script src="js/format-labels.js"></script>
+  <script src="js/report-share-restore.js"></script>
   <script src="js/t-careers-store.js"></script>
   <script src="js/report-share.js"></script>
   <script>
+    (async function () {
+    if (window.ReportShareRestore) await ReportShareRestore.bootstrap();
     // ==========================
     // 1. 读取数据（从 localStorage 或示例）
     // ==========================
@@ -1656,6 +1659,7 @@
         });
       }
     });
+    })();
   </script>
 
   <!-- 付费跳转 -->

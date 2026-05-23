@@ -1371,7 +1371,8 @@ app.post('/api/report/share', async (req, res) => {
       expiresAt: expiresAt.toISOString()
     };
     await saveReportShare(record);
-    const shareUrl = `${getBaseUrl()}/report-view.html?id=${shareId}`;
+    const page = String(record.pagePath || 'result.html').replace(/^\//, '');
+    const shareUrl = `${getBaseUrl()}/${page}?share=${shareId}`;
     return res.json({
       success: true,
       shareId,
@@ -1396,6 +1397,7 @@ app.get('/api/report/share/:id', async (req, res) => {
       pagePath: d.pagePath,
       pageTitle: d.pageTitle,
       htmlSnapshot: d.htmlSnapshot,
+      storagePayload: d.storagePayload || {},
       styleLinks: d.styleLinks || [],
       inlineStyles: d.inlineStyles || '',
       expiresAt: d.expiresAt

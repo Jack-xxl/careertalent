@@ -105,6 +105,7 @@
 
   <script src="js/site-config.js"></script>
   <script src="js/format-labels.js"></script>
+  <script src="js/report-share-restore.js"></script>
   <script src="js/t-careers-store.js"></script>
   <script src="js/report-share.js"></script>
   <script>
@@ -180,8 +181,16 @@
       window.location.href = 'talentai_v3.html';
     });
 
-    (function init() {
-      if (!isPathfinderPaid()) {
+    (async function init() {
+      if (window.ReportShareRestore) {
+        const ok = await ReportShareRestore.bootstrap();
+        if (ReportShareRestore.isShareMode() && !ok) {
+          document.getElementById('careersArea').innerHTML =
+            '<p class="warn">' + (window.__TALENTAI_SHARE_ERROR__ || '专属链接无效') + '</p>';
+          return;
+        }
+      }
+      if (!isPathfinderPaid() && !(window.ReportShareRestore && ReportShareRestore.isShareMode())) {
         window.location.href = 'payment.html?package=pathfinder';
         return;
       }

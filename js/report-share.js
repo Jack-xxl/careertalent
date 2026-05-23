@@ -31,11 +31,42 @@
 
   function collectTalentaiStorage() {
     const out = {};
+    const explicitKeys = [
+      'talentai_answers',
+      'talentai_timings',
+      'talentai_completed_at',
+      'talentai_t_scores',
+      'talentai_careers',
+      'talentai_careers_full',
+      'talentai_t_careers_raw',
+      'talentai_p_dims',
+      'talentai_p_energy',
+      'talentai_p_completed',
+      'talentai_p_paid',
+      'talentai_paid',
+      'talentai_premium',
+      'talentai_navigator_paid',
+      'talentai_wma_answers',
+      'talentai_wma_scores',
+      'talentai_wma_completed_at',
+      'talentai_wma_timings',
+      'talentai_user_nickname',
+      'talentai_user_age',
+      't_career_snapshot',
+      't_career_top1',
+      't_career_top3'
+    ];
     try {
+      explicitKeys.forEach((k) => {
+        const v = localStorage.getItem(k);
+        if (v != null) out[k] = v;
+      });
       for (let i = 0; i < localStorage.length; i++) {
         const k = localStorage.key(i);
-        if (k && k.startsWith('talentai_')) out[k] = localStorage.getItem(k);
-        if (k && k.startsWith('t_career_')) out[k] = localStorage.getItem(k);
+        if (!k) continue;
+        if (k.startsWith('talentai_') || k.startsWith('t_career_')) {
+          out[k] = localStorage.getItem(k);
+        }
       }
     } catch (e) {}
     return out;
@@ -53,6 +84,20 @@
     if (!el) return '';
     const clone = el.cloneNode(true);
     clone.querySelectorAll('.report-share-bar, .no-print').forEach((n) => n.remove());
+    clone.querySelectorAll('canvas').forEach((canvas) => {
+      try {
+        const img = document.createElement('img');
+        img.src = canvas.toDataURL('image/png');
+        img.className = canvas.className || '';
+        img.style.cssText = canvas.style.cssText;
+        if (canvas.width) img.width = canvas.width;
+        if (canvas.height) img.height = canvas.height;
+        img.alt = canvas.getAttribute('aria-label') || '图表快照';
+        canvas.parentNode.replaceChild(img, canvas);
+      } catch (e) {
+        /* 跨域 canvas 等场景忽略 */
+      }
+    });
     return clone.outerHTML;
   }
 

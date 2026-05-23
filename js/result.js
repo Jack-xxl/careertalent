@@ -3,6 +3,14 @@ console.log('✅ result.js loaded');
 document.addEventListener('DOMContentLoaded', async () => {
   console.log('=== 开始生成结果 ===');
 
+  if (window.ReportShareRestore) {
+    const shareOk = await ReportShareRestore.bootstrap();
+    if (ReportShareRestore.isShareMode() && !shareOk) {
+      showError(window.__TALENTAI_SHARE_ERROR__ || '专属链接无效或已过期');
+      return;
+    }
+  }
+
   try {
     const userData = loadUserData();
     if (!userData) {
