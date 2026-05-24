@@ -462,6 +462,9 @@ section h2{ font-size: 1.75rem; font-weight: 850; margin-bottom: 8px; letter-spa
   line-height: 1;
 }
 body.pdf-exporting .locked-career-card .unlock-mosaic{ opacity: 1 !important; }
+body.pdf-exporting .locked-career-card .unlock-mosaic::after{ display: none; }
+body.pdf-exporting .locked-career-card .mosaic-cell{ animation: none !important; }
+body.pdf-exporting .locked-career-card{ animation: none !important; }
 body.pdf-exporting .locked-career-hint{ filter: blur(3px); }
 .careers-section .career-card:not(.locked-career-card) .career-desc,
 .careers-section .career-card:not(.locked-career-card) .career-description{ color: #444; }
@@ -526,16 +529,79 @@ body.pdf-exporting .locked-career-hint{ filter: blur(3px); }
 .locked-career-card{
   position: relative;
   overflow: hidden;
-  min-height: 200px;
+  min-height: 220px;
   padding: 0 !important;
   border-radius: var(--radius-md) !important;
-  border: 1px solid rgba(102, 126, 234, 0.4) !important;
-  background: linear-gradient(145deg, #1e1245 0%, #151b38 45%, #0f172a 100%) !important;
-  box-shadow: 0 8px 32px rgba(59, 130, 246, 0.15), inset 0 1px 0 rgba(255,255,255,0.06) !important;
+  border: 1px solid rgba(129, 140, 248, 0.55) !important;
+  background: linear-gradient(145deg, #2a1560 0%, #1a1245 38%, #121a38 72%, #0f172a 100%) !important;
+  box-shadow:
+    0 10px 36px rgba(88, 28, 135, 0.35),
+    0 0 0 1px rgba(139, 92, 246, 0.12) inset,
+    inset 0 1px 0 rgba(255,255,255,0.08) !important;
   cursor: default;
-  animation: none !important;
+  animation: lockedCardReveal 0.75s ease-out backwards, lockedBorderPulse 3.2s ease-in-out 0.75s infinite;
 }
+#locked-career-2.locked-career-card{ animation-delay: 0.12s, 0.87s; }
+
+@keyframes lockedCardReveal {
+  from { opacity: 0; transform: translateY(14px) scale(0.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes lockedBorderPulse {
+  0%, 100% {
+    box-shadow:
+      0 10px 36px rgba(88, 28, 135, 0.35),
+      0 0 0 1px rgba(139, 92, 246, 0.12) inset,
+      inset 0 1px 0 rgba(255,255,255,0.08);
+  }
+  50% {
+    box-shadow:
+      0 14px 44px rgba(124, 58, 237, 0.45),
+      0 0 24px rgba(139, 92, 246, 0.22),
+      0 0 0 1px rgba(167, 139, 250, 0.35) inset,
+      inset 0 1px 0 rgba(255,255,255,0.1);
+  }
+}
+
 .locked-career-card:hover{ transform: none !important; }
+
+/* 卡片底层：模糊的职业预览（马赛克下方若隐若现） */
+.locked-career-ghost{
+  position: absolute;
+  inset: 52px 16px 16px;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.55;
+  filter: blur(5px);
+  user-select: none;
+}
+.locked-career-ghost .ghost-match-big{
+  font-size: 2rem;
+  font-weight: 900;
+  color: #c4b5fd;
+  margin-bottom: 10px;
+}
+.locked-career-ghost .ghost-desc,
+.locked-career-ghost .ghost-meta{
+  font-size: 12px;
+  color: rgba(238,242,255,0.65);
+  line-height: 1.55;
+  margin-top: 8px;
+}
+.locked-career-ghost .ghost-meta-row{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  margin-top: 10px;
+}
+.locked-career-ghost .ghost-tag{
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+  font-size: 11px;
+}
+
 .locked-career-keywords{
   position: absolute;
   inset: 0;
@@ -546,28 +612,76 @@ body.pdf-exporting .locked-career-hint{ filter: blur(3px); }
   gap: 8px;
   pointer-events: none;
   z-index: 0;
-  opacity: 0.5;
+  opacity: 0.35;
 }
 .locked-career-keywords span{
   font-size: 12px;
   letter-spacing: 3px;
-  color: #818cf8;
-  filter: blur(4px);
+  color: #a5b4fc;
+  filter: blur(5px);
   user-select: none;
+  animation: keywordDrift 4s ease-in-out infinite;
 }
+.locked-career-keywords span:nth-child(2){ animation-delay: 0.6s; }
+.locked-career-keywords span:nth-child(3){ animation-delay: 1.2s; }
+.locked-career-keywords span:nth-child(4){ animation-delay: 1.8s; }
+
+@keyframes keywordDrift {
+  0%, 100% { opacity: 0.35; transform: translateY(0); }
+  50% { opacity: 0.65; transform: translateY(-3px); }
+}
+
 .locked-career-card .unlock-mosaic{
   position: absolute;
   inset: 0;
   z-index: 1;
   display: grid;
-  grid-template-columns: repeat(10, 1fr);
-  grid-template-rows: repeat(6, 1fr);
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: repeat(8, 1fr);
   pointer-events: none;
-  opacity: 0.92;
+  opacity: 0.94;
+  overflow: hidden;
 }
-.locked-career-card .unlock-mosaic > div{
-  border: 1px solid rgba(0,0,0,0.25);
+.locked-career-card .unlock-mosaic::after{
+  content: "";
+  position: absolute;
+  inset: -50% -50%;
+  background: linear-gradient(
+    115deg,
+    transparent 42%,
+    rgba(167, 139, 250, 0.12) 48%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(129, 140, 248, 0.1) 52%,
+    transparent 58%
+  );
+  animation: mosaicShimmer 2.8s ease-in-out infinite;
+  pointer-events: none;
 }
+@keyframes mosaicShimmer {
+  0% { transform: translateX(-30%) translateY(-10%) rotate(0deg); }
+  100% { transform: translateX(30%) translateY(10%) rotate(0deg); }
+}
+
+.locked-career-card .unlock-mosaic .mosaic-cell{
+  border: 1px solid rgba(0, 0, 0, 0.22);
+  background: rgba(14, 10, 38, 0.92);
+  animation: mosaicFlicker var(--mosaic-dur, 2s) ease-in-out var(--mosaic-delay, 0s) infinite;
+}
+@keyframes mosaicFlicker {
+  0%, 100% {
+    opacity: 0.92;
+    background: rgba(14, 10, 38, 0.94);
+  }
+  33% {
+    opacity: 0.68;
+    background: rgba(28, 18, 62, 0.88);
+  }
+  66% {
+    opacity: 0.98;
+    background: rgba(10, 8, 28, 0.96);
+  }
+}
+
 .locked-career-body{
   position: relative;
   z-index: 2;
@@ -581,20 +695,37 @@ body.pdf-exporting .locked-career-hint{ filter: blur(3px); }
   margin-bottom: 14px;
 }
 .locked-career-card .lock-icon{
-  font-size: 20px;
+  font-size: 22px;
   line-height: 1;
+  animation: lockIconGlow 2.4s ease-in-out infinite;
+  filter: drop-shadow(0 0 8px rgba(251, 146, 60, 0.85));
+}
+@keyframes lockIconGlow {
+  0%, 100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 6px rgba(251, 146, 60, 0.7));
+  }
+  50% {
+    transform: scale(1.08);
+    filter: drop-shadow(0 0 14px rgba(251, 191, 36, 1));
+  }
 }
 .locked-career-rank{
   font-size: 1rem;
   font-weight: 800;
-  color: #e9d5ff;
+  color: #f3e8ff;
 }
 .locked-name-mask{
   display: inline-block;
-  filter: blur(6px);
-  letter-spacing: 2px;
+  filter: blur(7px);
+  letter-spacing: 3px;
   color: transparent;
-  text-shadow: 0 0 8px rgba(255,255,255,0.35);
+  text-shadow: 0 0 10px rgba(255,255,255,0.45);
+  animation: nameMaskPulse 2.5s ease-in-out infinite;
+}
+@keyframes nameMaskPulse {
+  0%, 100% { opacity: 0.85; }
+  50% { opacity: 1; }
 }
 .locked-career-match{
   margin-left: auto;
@@ -602,24 +733,34 @@ body.pdf-exporting .locked-career-hint{ filter: blur(3px); }
   color: #93c5fd;
 }
 .locked-career-match strong{
-  font-size: 1.25rem;
+  font-size: 1.35rem;
   font-weight: 800;
   color: #67e8f9;
+  animation: matchGlow 2.8s ease-in-out infinite;
+}
+@keyframes matchGlow {
+  0%, 100% { text-shadow: 0 0 0 transparent; }
+  50% { text-shadow: 0 0 12px rgba(103, 232, 249, 0.45); }
 }
 .locked-career-hint{
   padding: 14px 16px;
   border-radius: 12px;
-  background: rgba(102, 126, 234, 0.08);
-  border: 1px solid rgba(102, 126, 234, 0.2);
+  background: rgba(76, 29, 149, 0.22);
+  border: 1px solid rgba(139, 92, 246, 0.35);
   font-size: 13px;
-  color: rgba(238,242,255,0.75);
+  color: rgba(238,242,255,0.82);
   line-height: 1.65;
-  filter: blur(3px);
+  filter: blur(2.5px);
   user-select: none;
   pointer-events: none;
+  animation: hintPeek 3.5s ease-in-out infinite;
 }
-.locked-career-hint strong{ color: #c4b5fd; }
-.locked-career-hint .match-highlight{ color: #818cf8; font-weight: 700; }
+@keyframes hintPeek {
+  0%, 100% { filter: blur(2.5px); opacity: 0.88; }
+  50% { filter: blur(1.8px); opacity: 1; }
+}
+.locked-career-hint strong{ color: #ddd6fe; }
+.locked-career-hint .match-highlight{ color: #a5b4fc; font-weight: 700; }
 
 .career-card.locked::before{
   content: "🔒";

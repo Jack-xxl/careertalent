@@ -425,7 +425,7 @@ function _playSFX_unlock() {
   } catch(e) {}
 }
 
-/* 生成锁定卡片（第1/3名：深紫渐变 + 马赛克 + 可见匹配度） */
+/* 生成锁定卡片（第1/3名：深紫渐变 + 动画马赛克 + 可见匹配度） */
 function _buildLockedCard(c, idx) {
   const rankBadge = ['🥇', '🥈', '🥉', '4️⃣', '5️⃣'][idx] || `${idx + 1}️⃣`;
   const kwMap = {
@@ -433,15 +433,27 @@ function _buildLockedCard(c, idx) {
     2: ['数据洞察', '分析决策', '模式识别', 'AI放大器']
   };
   const kws = kwMap[idx] || ['职业天赋', '未来赛道', '核心能力', 'AI时代'];
-  const mosaicCells = Array.from({ length: 60 }).map(() => {
-    const op = 0.88 + Math.random() * 0.08;
-    const dur = 1.8 + Math.random() * 0.8;
-    const delay = Math.random() * 1.5;
-    return `<div style="background:rgba(15,20,50,${op});animation:mosaicBreath ${dur}s ease-in-out ${delay}s infinite"></div>`;
+  const mosaicCells = Array.from({ length: 96 }).map(() => {
+    const dur = (1.6 + Math.random() * 1.4).toFixed(2);
+    const delay = (Math.random() * 2).toFixed(2);
+    return `<div class="mosaic-cell" style="--mosaic-dur:${dur}s;--mosaic-delay:${delay}s"></div>`;
   }).join('');
+
+  const salaryLabel = window.FormatLabels ? FormatLabels.formatSalaryValue(c.aiImpact?.salaryRange) : (c.aiImpact?.salaryRange || '—');
+  const repRisk = c.aiImpact?.replacementRisk != null ? `${c.aiImpact.replacementRisk}%` : '—';
+  const newbie = c.aiImpact?.newbieAdvantage != null ? `${c.aiImpact.newbieAdvantage}%` : '—';
 
   return `
     <div class="career-card locked-career-card" id="locked-career-${idx}" data-pdf-block="career">
+      <div class="locked-career-ghost" aria-hidden="true">
+        <div class="ghost-match-big">${c.matchScore}%</div>
+        <div class="ghost-desc">${escapeHtml(c.description || '该职业与你的天赋结构高度契合，解锁后可查看完整解读与 AI 时代路径。')}</div>
+        <div class="ghost-meta-row">
+          <span class="ghost-tag">AI替代风险 ${repRisk}</span>
+          <span class="ghost-tag">新人优势 ${newbie}</span>
+          <span class="ghost-tag">薪资 ${salaryLabel}</span>
+        </div>
+      </div>
       <div class="locked-career-keywords" aria-hidden="true">
         ${kws.map((k) => `<span>${k}</span>`).join('')}
       </div>
@@ -449,7 +461,7 @@ function _buildLockedCard(c, idx) {
       <div class="locked-career-body">
         <div class="locked-career-header">
           <span class="lock-icon" aria-hidden="true">🔒</span>
-          <span class="locked-career-rank">${rankBadge} 第${idx + 1}名：<span class="locked-name-mask">████████</span></span>
+          <span class="locked-career-rank">${rankBadge} 第${idx + 1}名：<span class="locked-name-mask">████████████</span></span>
           <span class="locked-career-match">匹配度：<strong>${c.matchScore}%</strong></span>
         </div>
         <span class="career-name-hidden" data-name="${escapeHtml(c.name)}" data-badge="${rankBadge}" hidden></span>
@@ -530,15 +542,11 @@ function renderCareers(top5, scores) {
   // T 层结果页：第 1、3 名职业始终锁定；完整内容在 pathfinder-unlock.html
   const hideIndex = [0, 2];
 
-  // 注入马赛克呼吸动画 CSS（只注入一次）
+  // 注入锁定卡片辅助动画 CSS（主样式在 result.css）
   if (!document.getElementById('mosaic-style')) {
     const style = document.createElement('style');
     style.id = 'mosaic-style';
     style.textContent = `
-      @keyframes mosaicBreath {
-        0%,100% { opacity:1; }
-        50% { opacity:0.65; }
-      }
       .locked-career-card { cursor:default; }
       @keyframes fadeInUp {
         from { opacity:0; transform:translateY(8px); }
