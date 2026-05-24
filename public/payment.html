@@ -594,7 +594,6 @@ body {
   draw();
 })();
 
-// 后端/前端统一域名（Render）
 const API_BASE = window.TALENTAI_API_BASE || 'https://careertalent-1.onrender.com';
 
 // ── Order ID（来自后端）──
@@ -742,7 +741,8 @@ function applyPathfinderPaid() {
     localStorage.setItem('talentai_paid', '1');
     localStorage.setItem('talentai_paid_at', new Date().toISOString());
     localStorage.setItem('talentai_p_paid', '1');
-    localStorage.setItem('talentai_p_remaining', '3');
+    localStorage.setItem('talentai_p_entitlement', '1');
+    localStorage.removeItem('talentai_p_remaining');
     localStorage.setItem('talentai_paid_package_type', 'pathfinder');
     localStorage.setItem('talentai_p_enter_time', String(Date.now()));
     if (orderId) {
@@ -814,7 +814,7 @@ function handlePaidSuccess() {
     return;
   }
 
-  if (pkg === 'navigator' || pkg === '150') {
+  if (pkg === 'navigator' || pkg === '150' || pkg === '99') {
     applyNavigatorPaid();
     console.log('[NAVIGATOR PAYMENT SUCCESS AUTO REDIRECT]', {
       paid: true,
@@ -1104,15 +1104,15 @@ function goBack() {
       displayYuan = 49;
       description = PATHFINDER_DESC;
       clearNavigatorWmaSession();
-    } else if (rawPkg === 'navigator' || rawPkg === '150') {
+    } else if (rawPkg === 'navigator' || rawPkg === '150' || rawPkg === '99') {
       createOrderPackageType = 'navigator';
       checkoutPackageType = 'navigator';
-      displayYuan = 150;
+      displayYuan = 99;
       description = NAVIGATOR_DESC;
     }
 
     if (!displayYuan) {
-      alert('套餐类型不正确（pathfinder / navigator，或 49 / 150）');
+      alert('套餐类型不正确（pathfinder / navigator，或 49 / 99 / 150）');
       return;
     }
 
@@ -1143,7 +1143,7 @@ function goBack() {
     } else {
       if (badgeEl) {
         badgeEl.innerHTML =
-          '<div style="width:5px;height:5px;border-radius:50%;background:var(--neon-cyan)"></div> ORDER · NAVIGATOR · ¥150';
+          '<div style="width:5px;height:5px;border-radius:50%;background:var(--neon-cyan)"></div> ORDER · NAVIGATOR · ¥99';
       }
       if (titleEl) titleEl.textContent = '导航者套餐 · 五层完整报告';
       if (subEl) subEl.textContent = description;
@@ -1152,10 +1152,10 @@ function goBack() {
           '<div class="get-item"><div class="get-dot">✓</div>T层完整报告（天赋DNA）</div>' +
           '<div class="get-item"><div class="get-dot">✓</div>P/W/M/A 四层完整报告</div>' +
           '<div class="get-item"><div class="get-dot">✓</div>Top 5 职业完整解读与 AI 风险分析</div>' +
-          '<div class="get-item"><div class="get-dot">✓</div>职业路径规划 · 实付 ¥150</div>';
+          '<div class="get-item"><div class="get-dot">✓</div>职业路径规划 · 实付 ¥99</div>';
       }
       if (priceOrigEl) priceOrigEl.textContent = '原价 ¥199';
-      if (priceSaveEl) priceSaveEl.textContent = '省 ¥49';
+      if (priceSaveEl) priceSaveEl.textContent = '省 ¥100';
     }
 
     // 更新页面显示价格（与 create-order amount 一致）

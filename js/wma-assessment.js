@@ -103,7 +103,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 
     restoreProgress();
 
-    // 仅 ¥150 Navigator 已付费用户可进入 W/M/A；¥49 寻路者不得仅凭 wma_paid 误入
+    // 仅 ¥99 Navigator 已付费用户可进入 W/M/A；¥49 寻路者不得仅凭 wma_paid 误入
     const navigatorPaid = localStorage.getItem('talentai_navigator_paid') === 'true';
 
     try {

@@ -85,17 +85,19 @@ function getBaseUrl() {
 
 const PACKAGE_MAP = {
   pathfinder: 4900,
-  navigator: 15000,
+  navigator: 9900,
   '49': 4900, 49: 4900,
-  '150': 15000, 150: 15000,
+  '99': 9900, 99: 9900,
+  '150': 9900, 150: 9900,
 };
 
 function packageToTier(packageType) {
   if (packageType === 49 || packageType === '49') return 49;
-  if (packageType === 150 || packageType === '150') return 150;
+  if (packageType === 99 || packageType === '99') return 99;
+  if (packageType === 150 || packageType === '150') return 99;
   const k = String(packageType ?? '').trim().toLowerCase();
   if (k === 'pathfinder') return 49;
-  if (k === 'navigator') return 150;
+  if (k === 'navigator') return 99;
   return null;
 }
 
