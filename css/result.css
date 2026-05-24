@@ -464,6 +464,7 @@ section h2{ font-size: 1.75rem; font-weight: 850; margin-bottom: 8px; letter-spa
 body.pdf-exporting .locked-career-card .unlock-mosaic{ opacity: 1 !important; }
 body.pdf-exporting .locked-career-card .unlock-mosaic::after{ display: none; }
 body.pdf-exporting .locked-career-card .mosaic-cell{ animation: none !important; }
+body.pdf-exporting .locked-career-card .field-mosaic{ opacity: 1 !important; }
 body.pdf-exporting .locked-career-card{ animation: none !important; }
 body.pdf-exporting .locked-career-hint{ filter: blur(3px); }
 .careers-section .career-card:not(.locked-career-card) .career-desc,
@@ -540,6 +541,8 @@ body.pdf-exporting .locked-career-hint{ filter: blur(3px); }
     inset 0 1px 0 rgba(255,255,255,0.08) !important;
   cursor: default;
   animation: lockedCardReveal 0.75s ease-out backwards, lockedBorderPulse 3.2s ease-in-out 0.75s infinite;
+  backdrop-filter: blur(10px) saturate(1.15);
+  -webkit-backdrop-filter: blur(10px) saturate(1.15);
 }
 #locked-career-2.locked-career-card{ animation-delay: 0.12s, 0.87s; }
 
@@ -693,6 +696,8 @@ body.pdf-exporting .locked-career-hint{ filter: blur(3px); }
   align-items: center;
   gap: 10px 14px;
   margin-bottom: 14px;
+  position: relative;
+  z-index: 3;
 }
 .locked-career-card .lock-icon{
   font-size: 22px;
@@ -715,6 +720,58 @@ body.pdf-exporting .locked-career-hint{ filter: blur(3px); }
   font-weight: 800;
   color: #f3e8ff;
 }
+.locked-field-mask{
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  overflow: hidden;
+  border-radius: 4px;
+  z-index: 4;
+}
+.locked-name-field{
+  min-width: 7em;
+  min-height: 1.35em;
+  margin-left: 2px;
+}
+.locked-match-field{
+  min-width: 3.2em;
+  min-height: 1.5em;
+}
+.locked-field-text{
+  visibility: hidden;
+  white-space: nowrap;
+  user-select: none;
+  pointer-events: none;
+}
+.locked-match-field .locked-field-text{
+  font-size: 1.35rem;
+  font-weight: 800;
+}
+.field-mosaic{
+  position: absolute;
+  inset: -1px;
+  display: grid;
+  pointer-events: none;
+  z-index: 2;
+  overflow: hidden;
+  border-radius: 3px;
+}
+.field-mosaic--name{
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+}
+.field-mosaic--match{
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+}
+.mosaic-cell--mini{
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  animation: fieldMosaicFlicker var(--mosaic-dur, 1.6s) ease-in-out var(--mosaic-delay, 0s) infinite;
+}
+@keyframes fieldMosaicFlicker {
+  0%, 100% { opacity: 0.82; filter: brightness(0.92); }
+  50% { opacity: 1; filter: brightness(1.18); }
+}
 .locked-name-mask{
   display: inline-block;
   filter: blur(7px);
@@ -731,16 +788,13 @@ body.pdf-exporting .locked-career-hint{ filter: blur(3px); }
   margin-left: auto;
   font-size: 0.95rem;
   color: #93c5fd;
+  display: inline-flex;
+  align-items: center;
 }
 .locked-career-match strong{
   font-size: 1.35rem;
   font-weight: 800;
   color: #67e8f9;
-  animation: matchGlow 2.8s ease-in-out infinite;
-}
-@keyframes matchGlow {
-  0%, 100% { text-shadow: 0 0 0 transparent; }
-  50% { text-shadow: 0 0 12px rgba(103, 232, 249, 0.45); }
 }
 .locked-career-hint{
   padding: 14px 16px;

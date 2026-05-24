@@ -425,7 +425,21 @@ function _playSFX_unlock() {
   } catch(e) {}
 }
 
-/* 生成锁定卡片（第1/3名：深紫渐变 + 动画马赛克 + 可见匹配度） */
+function _buildMosaicCells(count, cellClass) {
+  const cls = cellClass || 'mosaic-cell';
+  const palette = [
+    'rgba(42, 28, 88, 0.94)', 'rgba(55, 36, 110, 0.92)', 'rgba(36, 24, 78, 0.96)',
+    'rgba(68, 48, 130, 0.9)', 'rgba(30, 22, 68, 0.95)', 'rgba(82, 58, 148, 0.88)'
+  ];
+  return Array.from({ length: count }).map(() => {
+    const dur = (1.2 + Math.random() * 1.4).toFixed(2);
+    const delay = (Math.random() * 2).toFixed(2);
+    const bg = palette[Math.floor(Math.random() * palette.length)];
+    return '<div class="' + cls + '" style="--mosaic-dur:' + dur + 's;--mosaic-delay:' + delay + 's;background:' + bg + '"></div>';
+  }).join('');
+}
+
+/* 生成锁定卡片（第1/3名：深紫渐变 + 动画马赛克 + 局部遮挡名称/匹配度） */
 function _buildLockedCard(c, idx) {
   const rankBadge = ['🥇', '🥈', '🥉', '4️⃣', '5️⃣'][idx] || `${idx + 1}️⃣`;
   const kwMap = {
@@ -433,11 +447,9 @@ function _buildLockedCard(c, idx) {
     2: ['数据洞察', '分析决策', '模式识别', 'AI放大器']
   };
   const kws = kwMap[idx] || ['职业天赋', '未来赛道', '核心能力', 'AI时代'];
-  const mosaicCells = Array.from({ length: 96 }).map(() => {
-    const dur = (1.6 + Math.random() * 1.4).toFixed(2);
-    const delay = (Math.random() * 2).toFixed(2);
-    return `<div class="mosaic-cell" style="--mosaic-dur:${dur}s;--mosaic-delay:${delay}s"></div>`;
-  }).join('');
+  const mosaicCells = _buildMosaicCells(96, 'mosaic-cell');
+  const nameMosaicCells = _buildMosaicCells(12, 'mosaic-cell mosaic-cell--mini');
+  const matchMosaicCells = _buildMosaicCells(8, 'mosaic-cell mosaic-cell--mini');
 
   const salaryLabel = window.FormatLabels ? FormatLabels.formatSalaryValue(c.aiImpact?.salaryRange) : (c.aiImpact?.salaryRange || '—');
   const repRisk = c.aiImpact?.replacementRisk != null ? `${c.aiImpact.replacementRisk}%` : '—';
@@ -461,8 +473,18 @@ function _buildLockedCard(c, idx) {
       <div class="locked-career-body">
         <div class="locked-career-header">
           <span class="lock-icon" aria-hidden="true">🔒</span>
-          <span class="locked-career-rank">${rankBadge} 第${idx + 1}名：<span class="locked-name-mask">████████████</span></span>
-          <span class="locked-career-match">匹配度：<strong>${c.matchScore}%</strong></span>
+          <span class="locked-career-rank">${rankBadge} 第${idx + 1}名：
+            <span class="locked-field-mask locked-name-field">
+              <span class="locked-field-text">${escapeHtml(c.name)}</span>
+              <span class="field-mosaic field-mosaic--name" aria-hidden="true">${nameMosaicCells}</span>
+            </span>
+          </span>
+          <span class="locked-career-match">匹配度：
+            <span class="locked-field-mask locked-match-field">
+              <strong class="locked-field-text">${c.matchScore}%</strong>
+              <span class="field-mosaic field-mosaic--match" aria-hidden="true">${matchMosaicCells}</span>
+            </span>
+          </span>
         </div>
         <span class="career-name-hidden" data-name="${escapeHtml(c.name)}" data-badge="${rankBadge}" hidden></span>
         <div class="locked-career-hint">
