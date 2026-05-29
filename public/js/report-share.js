@@ -118,9 +118,21 @@
     });
   }
 
+  function getPdfVendorBase() {
+    const tag = document.querySelector('script[src*="report-share.js"]');
+    if (tag && tag.src) {
+      try {
+        const u = new URL(tag.src, global.location.href);
+        return u.pathname.replace(/[^/]+$/, '') + 'vendor/';
+      } catch (e) { /* ignore */ }
+    }
+    return 'js/vendor/';
+  }
+
   async function ensurePdfLibs() {
-    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
-    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+    const base = getPdfVendorBase();
+    await loadScript(base + 'html2canvas.min.js');
+    await loadScript(base + 'jspdf.umd.min.js');
   }
 
   const PDF_BG = '#0b1020';
