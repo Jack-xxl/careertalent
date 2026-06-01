@@ -1,13 +1,6 @@
 /**
- * TalentAI WMA层测评系统 - 完整修复版 v2.0
- * W层(28题) + M层(20题) + A层(20题) = 68题
- *
- * 修复清单：
- * 1. CO维度超10分 → 双向维度正确归一化
- * 2. 提前触发结算 → 严格题号边界判断
- * 3. 层标题不同步 → header + 题目区双badge同步
- * 4. 层间过渡题号残留 → 进入过渡卡时强制重置题号
- * 5. 自动跳题触发过早 → 延迟后二次校验答案存在
+ * TalentAI WMA层测评系统
+ * W层(20题) + M层(16题) = 36题（A层已移除，见综合报告说明）
  */
 
 'use strict';
@@ -16,12 +9,14 @@
 // 层配置
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+const WMA_TOTAL_QUESTIONS = 36;
+
 const WMA_LAYERS = [
     {
         key:           'W',
         name:          'W层·驱动价值测评',
         file:          'data/w-layer-questions.json',
-        totalQuestions: 28,
+        totalQuestions: 20,
         icon:          '🧭',
         color:         '#f0c060',
         badge:         'W层 · 价值驱动',
@@ -33,38 +28,27 @@ const WMA_LAYERS = [
             desc:     '我们已经看见你真正在乎什么——\n金钱、影响力、稳定还是创造？\n\n接下来进入M层，测试你的思维操作系统。\n这是决定你能否在AI时代持续进化的关键层。',
             nextName: 'M层·元智能测评',
             nextDesc: '成长思维 · 认知重构 · 系统思维 · AI协作',
-            nextTime: '20题 · 约12分钟'
+            nextTime: '16题 · 约10分钟'
         }
     },
     {
         key:           'M',
         name:          'M层·元智能测评',
         file:          'data/m-layer-questions.json',
-        totalQuestions: 20,
+        totalQuestions: 16,
         icon:          '🧠',
         color:         '#b060ff',
         badge:         'M层 · 元智能',
-        timeEstimate:  '约12分钟',
+        timeEstimate:  '约10分钟',
         cheer: {
             emoji:    '🔥',
-            title:    '一鼓作气！M层完成！',
-            subtitle: '元智能画像已生成',
-            desc:     '你的思维模式和认知结构已经被我们看见了。\n\n最后一层——A层，专门测试你在AI时代的适配力。\n只剩20题，完成后立即生成完整报告！',
-            nextName: 'A层·AI适配力测评',
-            nextDesc: 'AI认知定位 · 人机分工 · 放大策略 · 风险控制',
-            nextTime: '20题 · 约10分钟'
+            title:    '全部完成！',
+            subtitle: 'W层与M层测评已完成',
+            desc:     '你的驱动价值与思维操作系统画像已生成。\n\n正在为你生成五层综合报告……',
+            nextName: '五层综合报告',
+            nextDesc: '天赋 × 性格 × 驱动 × 元智能',
+            nextTime: '即将跳转'
         }
-    },
-    {
-        key:           'A',
-        name:          'A层·AI适配力测评',
-        file:          'data/a-layer-questions.json',
-        totalQuestions: 20,
-        icon:          '🚀',
-        color:         '#4499ee',
-        badge:         'A层 · AI适配力',
-        timeEstimate:  '约10分钟',
-        cheer:         null   // 最后一层，答完直接进结算
     }
 ];
 
@@ -72,11 +56,11 @@ const WMA_LAYERS = [
 // 全局状态
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-let wmaData = { W: null, M: null, A: null };
+let wmaData = { W: null, M: null };
 
 let currentLayerIdx   = 0;
 let currentQuestionIdx = 0;
-let answers = { W: {}, M: {}, A: {} };
+let answers = { W: {}, M: {} };
 let timerSeconds  = 0;
 let timerInterval = null;
 let isSubmitting  = false;   // 防止重复触发结算
@@ -108,7 +92,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 
     try {
         await loadAllLayers();
-        console.log(`✅ WMA题库加载完成 W:${wmaData.W.questions.length} M:${wmaData.M.questions.length} A:${wmaData.A.questions.length}`);
+        console.log(`✅ WMA题库加载完成 W:${wmaData.W.questions.length} M:${wmaData.M.questions.length}`);
 
         if (navigatorPaid) {
             renderQuestion();
@@ -138,7 +122,6 @@ async function loadAllLayers() {
     );
     wmaData.W = results[0];
     wmaData.M = results[1];
-    wmaData.A = results[2];
 }
 
 function getCurrentLayerQuestions() {
@@ -173,7 +156,7 @@ function showTransition(toLayerIdx) {
 
     const layer = WMA_LAYERS[toLayerIdx];
     const totalAnswered = countAnswered();
-    const totalPct = Math.round(totalAnswered / 68 * 100);
+    const totalPct = Math.round(totalAnswered / WMA_TOTAL_QUESTIONS * 100);
 
     let content;
     if (toLayerIdx === 0) {
@@ -182,7 +165,7 @@ function showTransition(toLayerIdx) {
             emoji:    '✨',
             cheer:    '支付成功！开始深度测评',
             title:    '欢迎进入三层深度测评',
-            desc:     '接下来68道题分三个层次完成。\n每层结束后会有短暂休息。\n\n放松心态，诚实作答——\n答案没有对错，只有更接近真实的你。',
+            desc:     `接下来${WMA_TOTAL_QUESTIONS}道题分两个层次完成。\n每层结束后会有短暂休息。\n\n放松心态，诚实作答——\n答案没有对错，只有更接近真实的你。`,
             nextName: layer.name,
             nextDesc: layer.badge + ' · ' + layer.timeEstimate,
             nextTime: `${layer.totalQuestions}道题`
@@ -208,7 +191,7 @@ function showTransition(toLayerIdx) {
     setEl('trans-next-desc', content.nextDesc);
     setEl('trans-next-time', content.nextTime);
     setEl('trans-progress-pct',   totalPct + '%');
-    setEl('trans-progress-label', `总体进度 ${totalAnswered}/68题`);
+    setEl('trans-progress-label', `总体进度 ${totalAnswered}/${WMA_TOTAL_QUESTIONS}题`);
 
     const bar = document.getElementById('trans-progress-fill');
     if (bar) {
@@ -257,10 +240,10 @@ function renderQuestion() {
 
     const q = questions[currentQuestionIdx];
     const totalAnswered = countAnswered();
-    const totalPct = Math.round(totalAnswered / 68 * 100);
+    const totalPct = Math.round(totalAnswered / WMA_TOTAL_QUESTIONS * 100);
 
     // ── Header ──
-    setEl('prog-text', `${totalAnswered}/68`);
+    setEl('prog-text', `${totalAnswered}/${WMA_TOTAL_QUESTIONS}`);
     const progFill = document.getElementById('prog-fill');
     if (progFill) progFill.style.width = totalPct + '%';
 
@@ -411,11 +394,11 @@ window.nextQuestion = nextQuestion;
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 function calcScores() {
-    const rawScores    = { W: {}, M: {}, A: {} };
+    const rawScores    = { W: {}, M: {} };
     const behavTags    = {};
     const flags        = {};
 
-    ['W', 'M', 'A'].forEach(lk => {
+    ['W', 'M'].forEach(lk => {
         const questions   = wmaData[lk].questions;
         const layerAnswers = answers[lk] || {};
 
@@ -448,7 +431,7 @@ function calcScores() {
     });
 
     // ── 归一化到 0~10，严格 clamp ──
-    const normalized = { W: {}, M: {}, A: {} };
+    const normalized = { W: {}, M: {} };
 
     // W层
     wmaData.W.metadata.dimensions.forEach(d => {
@@ -469,28 +452,15 @@ function calcScores() {
         normalized.M[d.id] = clamp10(val);
     });
 
-    // A层
-    wmaData.A.metadata.dimensions.forEach(d => {
-        const raw = rawScores.A[d.id] || 0;
-        const val = (d.max_score && d.max_score > 0) ? (raw / d.max_score) * 10 : 0;
-        normalized.A[d.id] = clamp10(val);
-    });
-
-    // ── AI适配总指数（0~100）──
-    const aVals   = Object.values(normalized.A);
-    const aiIndex = aVals.length > 0
-        ? Math.round(aVals.reduce((a, b) => a + b, 0) / aVals.length * 10)
-        : 0;
-
-    // ── 五维复合指标 ──
-    const W = normalized.W;
+    // ── AI适配参考指数（由 M 层 AI协作维度推算，A层测评已取消）──
     const M = normalized.M;
-    const A = normalized.A;
+    const W = normalized.W;
+    const aiIndex = Math.round(((M.AC || 5) / 10) * 100);
 
     const composite = {
         execution:   r10((W.W2 || 0) * 0.35 + (M.VR || 0) * 0.35 + (M.GM || 0) * 0.30),
         innovation:  r10((W.W4 || 0) * 0.35 + (M.CR || 0) * 0.30 + (W.W5 || 0) * 0.35),
-        social:      r10((W.W3 || 0) * 0.40 + (M.VR || 0) * 0.20 + (A.A2 || 0) * 0.40),
+        social:      r10((W.W3 || 0) * 0.40 + (M.VR || 0) * 0.20 + (M.AC || 0) * 0.40),
         ai_leverage: r10((aiIndex / 10) * 0.50 + (M.AC || 0) * 0.30 + (W.W4 || 0) * 0.20),
         resilience:  r10((W.W2 || 0) * 0.35 + (M.GM || 0) * 0.35 + (M.CR || 0) * 0.30)
     };
@@ -563,7 +533,7 @@ function saveWmaResultsAndRedirect(result) {
         console.error('calcScores 失败，使用兜底数据', e);
         scores = {
             aiIndex: 0,
-            normalized: { W: {}, M: {}, A: {} },
+            normalized: { W: {}, M: {} },
             completedAt: new Date().toISOString()
         };
     }
@@ -576,9 +546,6 @@ function saveWmaResultsAndRedirect(result) {
         }
         if (scores.normalized && scores.normalized.M && Object.keys(scores.normalized.M).length) {
             answers.M = { ...scores.normalized.M };
-        }
-        if (scores.normalized && scores.normalized.A && Object.keys(scores.normalized.A).length) {
-            answers.A = { ...scores.normalized.A };
         }
         localStorage.setItem('talentai_wma_scores', JSON.stringify(scores));
         localStorage.setItem('talentai_wma_answers', JSON.stringify(answers));
@@ -678,7 +645,6 @@ function restoreProgress() {
             if (progress.answers && typeof progress.answers === 'object') {
                 answers.W = progress.answers.W || {};
                 answers.M = progress.answers.M || {};
-                answers.A = progress.answers.A || {};
             }
         } else {
             const savedAnswers = localStorage.getItem('talentai_wma_answers');
@@ -725,7 +691,6 @@ function r10(val) {
 
 function countAnswered() {
     return Object.keys(answers.W).length +
-           Object.keys(answers.M).length +
-           Object.keys(answers.A).length;
+           Object.keys(answers.M).length;
 }
 

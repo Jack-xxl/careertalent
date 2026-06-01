@@ -58,7 +58,7 @@ async function loadQuestions() {
         throw new Error("题库格式错误");
     }
 
-    console.log("成功加载40题");
+    console.log("成功加载32题");
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━
