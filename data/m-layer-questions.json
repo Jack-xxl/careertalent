@@ -8,7 +8,7 @@
         "id": "GM",
         "name": "Growth Mindset",
         "description": {
-          "zh-CN": "µêÉΘò┐µÇ¥τ╗┤∩╝Üσ»╣σñ▒Φ┤ÑτÜäσÅìσ║öσÅèΦâ╜σè¢σÅ»σíæµÇºτÜäσåàΘÜÉΣ┐íσ┐╡",
+          "zh-CN": "成长思维：对失败的反应及能力可塑性的内隐信念",
           "en-US": "Growth Mindset: Implicit beliefs about response to failure and the plasticity of ability."
         },
         "max_score": 10.0
@@ -17,7 +17,7 @@
         "id": "CR",
         "name": "Cognitive Reframing",
         "description": {
-          "zh-CN": "Φ«ñτƒÑΘçìµ₧ä: Φºéτé╣σå▓τ¬üσñäτÉåσÅèΣ╕ìτí«σ«ÜΣ┐íµü»τÜäΦºúΘçèσ╝╣µÇº",
+          "zh-CN": "认知重构: 观点冲突处理及不确定信息的解释弹性",
           "en-US": "Cognitive Reframing: Explanatory flexibility for uncertainty and conflict resolution."
         },
         "max_score": 7.5
@@ -26,7 +26,7 @@
         "id": "ST",
         "name": "Systems Thinking",
         "description": {
-          "zh-CN": "τ│╗τ╗ƒµÇ¥τ╗┤: σñÜτ╗┤σ║ªσ╜Æσ¢áπÇüΘò┐σæ¿µ£ƒσå│τ¡ûσÅèσà¿σ▒Çτ│╗τ╗ƒσêåµ₧ÉΦâ╜σè¢",
+          "zh-CN": "系统思维: 多维度归因、长周期决策及全局系统分析能力",
           "en-US": "Systems Thinking: Multi-dimensional attribution, long-term decision making, and global analysis."
         },
         "max_score": 7.5
@@ -35,7 +35,7 @@
         "id": "VR",
         "name": "Value Realization",
         "description": {
-          "zh-CN": "Σ╗╖σÇ╝σà╖τÄ░: µâ│µ│òΦÉ╜σ£░µëºΦíîσè¢πÇüΦ┐¡Σ╗úµÇ¥τ╗┤σÅèσÅìΘªêσôìσ║öµ£║σê╢",
+          "zh-CN": "价值具现: 想法落地执行力、迭代思维及反馈响应机制",
           "en-US": "Value Realization: Idea implementation, iterative thinking, and feedback response."
         },
         "max_score": 7.5
@@ -44,7 +44,7 @@
         "id": "AC",
         "name": "AI Collaboration",
         "description": {
-          "zh-CN": "AIσìÅΣ╜£: Σ║║µ£║σêåσ╖Ñτ¡ûτòÑπÇüσ╖Ñσà╖σ¡ªΣ╣áΣ╕╗σè¿µÇºσÅèΣ┐íΣ╗╗Φ╛╣τòî",
+          "zh-CN": "AI协作: 人机分工策略、工具学习主动性及信任边界",
           "en-US": "AI Collaboration: Human-AI division of labor, learning proactivity, and trust boundaries."
         },
         "max_score": 10.0
@@ -53,7 +53,7 @@
         "id": "EB",
         "name": "Ethical Balance",
         "description": {
-          "zh-CN": "Σ╝ªτÉåσ╣│Φíí: µ│òσ╛ïΣ╕ÄΘüôσ╛╖µ¥âΦííπÇüµëïµ«╡Σ╕Äτ¢«τÜäτÜäσ╣│Φííµäƒ",
+          "zh-CN": "伦理平衡: 法律与道德权衡、手段与目的的平衡感",
           "en-US": "Ethical Balance: Weighing law vs. morality and the balance between means and ends."
         },
         "max_score": 7.5
@@ -64,44 +64,44 @@
       "per_dimension": "sum(selected_option_scores)",
       "score_range": {
         "per_question": "0.5 to 2.5 points",
-        "GM_AC_total": "1.5 to 10.0 (4 questions each)",
+        "GM_AC_total": "2.0 to 10.0 (4 questions each)",
         "CR_ST_VR_EB_total": "1.5 to 7.5 (3 questions each)"
       },
       "interpretation": {
-        "zh-CN": "σêåµò░Φ╢èΘ½ÿΣ╗úΦí¿Φ»Ñτ╗┤σ║ªτÜäσàâΦ«ñτƒÑΦâ╜σè¢Φ╢èσ╝║πÇéΣ╜ÄσêåσÅìµÿáσç║Φ«ñτƒÑσ▒ÇΘÖÉµêûΣ╣áµâ»µÇºΘÿ▓σ╛íσüÅΦ»»πÇé",
+        "zh-CN": "分数越高代表该维度的元认知能力越强。低分反映出认知局限或习惯性防御偏误。",
         "en-US": "Higher scores indicate stronger meta-cognitive abilities. Low scores reflect cognitive limitations or defensive biases."
       }
     },
     "behavioral_tags_definition": {
       "neuroticism_trigger": {
-        "zh-CN": "σ»╣σ║öPσ▒éµâàτ╗¬Σ╕ìτ¿│σ«ÜµÇº∩╝îσÅìµÿáσÄïσè¢Σ╕ïτÜäΘÿ▓σ╛íµÇºσÅìσ║ö",
+        "zh-CN": "对应P层情绪不稳定性，反映压力下的防御性反应",
         "en-US": "Linked to P-layer Neuroticism, reflecting defensive reactions under pressure."
       },
       "fixed_mindset": {
-        "zh-CN": "σ¢║σ«ÜµÇ¥τ╗┤µáçΦ«░∩╝îΦ«ñΣ╕║Φâ╜σè¢Φ╛╣τòîτö▒σñ⌐Φ╡ïΘöüσ«Ü",
+        "zh-CN": "固定思维标记，认为能力边界由天赋锁定",
         "en-US": "Fixed mindset marker; belief that ability boundaries are locked by innate talent."
       },
       "ai_reliance_risk": {
-        "zh-CN": "AIΦ┐çσ║ªΣ╛¥Φ╡ûΘúÄΘÖ⌐∩╝îσÇ╛σÉæΣ║Äτë║τë▓µë╣σêñµÇºµÇ¥τ╗┤µìóσÅûµòêτÄç",
+        "zh-CN": "AI过度依赖风险，倾向于牺牲批判性思维换取效率",
         "en-US": "AI over-reliance risk; tendency to sacrifice critical thinking for efficiency."
       }
     },
     "fusion_rules_explanation": {
       "purpose": {
-        "zh-CN": "P├ùW├ùM Σ╕ëσ▒éσå▓τ¬üΣ║ñσÅëΦºúµ₧ÉΣ╕ÄΦüîΣ╕ÜΦ╡¢Θüôτåöµû¡",
-        "en-US": "P├ùW├ùM cross-layer analysis and career track cutoffs."
+        "zh-CN": "P×W×M 三层冲突交叉解析与职业赛道熔断",
+        "en-US": "P×W×M cross-layer analysis and career track cutoffs."
       },
       "soft_cutoff": {
         "definition": {
-          "zh-CN": "µƒöµÇºΘÿêσÇ╝∩╝ÜΦ»åσê½Σ╕¬Σ╜ôΣ╕ÄΦüîΣ╕ÜτÄ»σóâΣ╣ïΘù┤τÜäΦ«ñτƒÑµæ⌐µôªσè¢πÇé",
+          "zh-CN": "柔性阈值：识别个体与职业环境之间的认知摩擦力。",
           "en-US": "Soft Cutoff: Identifying cognitive friction between individuals and career environments."
         },
         "critical": {
-          "zh-CN": "τ║óµùù∩╝ÜΣ╗úΦí¿µ₧üσñºµªéτÄçσ£¿Φ╡¢Θüôµá╕σ┐âτÄ»ΦèéΣ║ºτöƒσ┐âµÖ║σ┤⌐µ║âπÇé",
+          "zh-CN": "红旗：代表极大概率在赛道核心环节产生心智崩溃。",
           "en-US": "Critical: High probability of mental collapse in core track areas."
         },
         "warning": {
-          "zh-CN": "Θ╗äµùù∩╝ÜΣ╗úΦí¿σ£¿Φ»ÑΦ╡¢Θüôσ╖ÑΣ╜£Σ╝Üµäƒσê░µÿÄµÿ╛τÜäΦ«ñτƒÑτû▓σè│πÇé",
+          "zh-CN": "黄旗：代表在该赛道中会感到明显的认知疲劳。",
           "en-US": "Warning: Indicates significant cognitive fatigue in this track."
         }
       }
@@ -112,7 +112,7 @@
       "id": "M02",
       "dimension": "GM",
       "question": {
-        "zh-CN": "Φ║½Φ╛╣µ£ëΣ║║µÿÄµÿ╛µ»öΣ╜áσ╝║σ╛êσñÜ∩╝îΣ╜áΣ╝Üµâ│∩╝Ü",
+        "zh-CN": "身边有人明显比你强很多，你会想：",
         "en-US": "Someone is much better than you:"
       },
       "career_impact": {
@@ -125,7 +125,7 @@
         {
           "id": "A",
           "text": {
-            "zh-CN": "Σ╗ûΣ╗ÿσç║Σ║åσ╛êσñÜ∩╝îµêæΣ╣ƒσÅ»Σ╗Ñτ╗â",
+            "zh-CN": "他付出了很多，我也可以练",
             "en-US": "He worked hard, I can too"
           },
           "scoring": {
@@ -135,7 +135,7 @@
         {
           "id": "B",
           "text": {
-            "zh-CN": "µêæµ£ëσê½τÜäσ╝║Θí╣",
+            "zh-CN": "我有别的强项",
             "en-US": "I have other strengths"
           },
           "scoring": {
@@ -145,7 +145,7 @@
         {
           "id": "C",
           "text": {
-            "zh-CN": "µ▓íµù╢Θù┤τ╗âΦ┐ÖΣ╕¬",
+            "zh-CN": "没时间练这个",
             "en-US": "No time to practice"
           },
           "scoring": {
@@ -155,7 +155,7 @@
         {
           "id": "D",
           "text": {
-            "zh-CN": "Σ╗ûσñ⌐τöƒµôàΘò┐∩╝îµêæσ¡ªΣ╕ìµ¥Ñ",
+            "zh-CN": "他天生擅长，我学不来",
             "en-US": "He's a natural, I can't"
           },
           "scoring": {
@@ -171,7 +171,7 @@
       "id": "M03",
       "dimension": "GM",
       "question": {
-        "zh-CN": "σ¡ªµû░µèÇΦâ╜σìíΣ╜ÅΣ╕Çσæ¿µ▓íΦ┐¢σ▒ò∩╝Ü",
+        "zh-CN": "学新技能卡住一周没进展：",
         "en-US": "Stuck for a week on new skill:"
       },
       "career_impact": {
@@ -184,7 +184,7 @@
         {
           "id": "A",
           "text": {
-            "zh-CN": "µìóΣ╕¬ΦºÆσ║ªµë╛µû░µû╣µ│ò",
+            "zh-CN": "换个角度找新方法",
             "en-US": "Change angles"
           },
           "scoring": {
@@ -194,7 +194,7 @@
         {
           "id": "B",
           "text": {
-            "zh-CN": "σàêΦ╖│Φ┐ç∩╝îσ¢₧σñ┤τ£ï",
+            "zh-CN": "先跳过，回头看",
             "en-US": "Skip and revisit"
           },
           "scoring": {
@@ -204,7 +204,7 @@
         {
           "id": "C",
           "text": {
-            "zh-CN": "σÅìσñìτ╗âΣ╣áτ¢┤σê░τ¬üτá┤",
+            "zh-CN": "反复练习直到突破",
             "en-US": "Keep practicing"
           },
           "scoring": {
@@ -214,7 +214,7 @@
         {
           "id": "D",
           "text": {
-            "zh-CN": "µÜéµù╢µö╛σ╝â",
+            "zh-CN": "暂时放弃",
             "en-US": "Give up"
           },
           "scoring": {
@@ -227,7 +227,7 @@
       "id": "M04",
       "dimension": "GM",
       "question": {
-        "zh-CN": "Φ»¡µ░öτ¢┤µÄÑτÜäµë╣Φ»ä∩╝îτ¼¼Σ╕ÇσÅìσ║ö∩╝Ü",
+        "zh-CN": "语气直接的批评，第一反应：",
         "en-US": "Direct criticism reaction:"
       },
       "career_impact": {
@@ -240,7 +240,7 @@
         {
           "id": "A",
           "text": {
-            "zh-CN": "σà│µ│¿σåàσ«╣µÿ»σÉªµ£ëΘüôτÉå",
+            "zh-CN": "关注内容是否有道理",
             "en-US": "Focus on content logic"
           },
           "scoring": {
@@ -250,7 +250,7 @@
         {
           "id": "B",
           "text": {
-            "zh-CN": "µ│óσè¿σÉÄµÇ¥ΦÇâσÅìΘªê",
+            "zh-CN": "波动后思考反馈",
             "en-US": "Reflect after emotion"
           },
           "scoring": {
@@ -260,7 +260,7 @@
         {
           "id": "C",
           "text": {
-            "zh-CN": "Φºëσ╛ùΦó½σÉªσ«ÜΣ║å",
+            "zh-CN": "觉得被否定了",
             "en-US": "Feel rejected"
           },
           "scoring": {
@@ -270,7 +270,7 @@
         {
           "id": "D",
           "text": {
-            "zh-CN": "σ╛êΘÜ╛µÄÑσÅù∩╝îσ┐╜τòÑσ«â",
+            "zh-CN": "很难接受，忽略它",
             "en-US": "Ignore it"
           },
           "scoring": {
@@ -283,7 +283,7 @@
       "id": "M05",
       "dimension": "CR",
       "question": {
-        "zh-CN": "Φºéτé╣Σ║ëΦ«║µùáµ│òΦ»┤µ£ìσ»╣µû╣∩╝Ü",
+        "zh-CN": "观点争论无法说服对方：",
         "en-US": "Unable to convince colleague:"
       },
       "career_impact": {
@@ -296,7 +296,7 @@
         {
           "id": "A",
           "text": {
-            "zh-CN": "τ½ÖΣ╜ìσ»╣µû╣Θçìµû░τÉåΦºú",
+            "zh-CN": "站位对方重新理解",
             "en-US": "Take their view"
           },
           "scoring": {
@@ -306,7 +306,7 @@
         {
           "id": "B",
           "text": {
-            "zh-CN": "µÉüτ╜«Σ║ëΦ«║∩╝îτï¼τ½ïµÇ¥ΦÇâ",
+            "zh-CN": "搁置争论，独立思考",
             "en-US": "Pause and think"
           },
           "scoring": {
@@ -316,7 +316,7 @@
         {
           "id": "C",
           "text": {
-            "zh-CN": "σ¥ÜµîüΦç¬σ╖▒∩╝îσ░èΘçìσ╖«σ╝é",
+            "zh-CN": "坚持自己，尊重差异",
             "en-US": "Stick to my view"
           },
           "scoring": {
@@ -326,7 +326,7 @@
         {
           "id": "D",
           "text": {
-            "zh-CN": "Φ«ñΣ╕║σ»╣µû╣µÇ¥τ╗┤µ£ëΘù«Θóÿ",
+            "zh-CN": "认为对方思维有问题",
             "en-US": "Their logic is bad"
           },
           "scoring": {
@@ -339,7 +339,7 @@
       "id": "M07",
       "dimension": "CR",
       "question": {
-        "zh-CN": "σ¢₧µâ│Θçìσñºσñ▒Φ┤ÑσÉÄ∩╝îΣ╜áΣ╝Ü∩╝Ü",
+        "zh-CN": "回想重大失败后，你会：",
         "en-US": "Reflecting on major failure:"
       },
       "career_impact": {
@@ -352,7 +352,7 @@
         {
           "id": "A",
           "text": {
-            "zh-CN": "τ£ïσê░σ╖«Φ╖¥∩╝îτƒÑΘüôΦíÑΣ╗ÇΣ╣ê",
+            "zh-CN": "看到差距，知道补什么",
             "en-US": "See the gap"
           },
           "scoring": {
@@ -362,7 +362,7 @@
         {
           "id": "B",
           "text": {
-            "zh-CN": "σ¡ªσê░Σ║åσ╛êσñÜΦ┐çτ¿ïτ╗ÅΘ¬î",
+            "zh-CN": "学到了很多过程经验",
             "en-US": "Learned from process"
           },
           "scoring": {
@@ -372,7 +372,7 @@
         {
           "id": "C",
           "text": {
-            "zh-CN": "Φ┐Éµ░öΣ╕ìσÑ╜∩╝îΣ╕ïµ¼íΣ╝ÜσÑ╜",
+            "zh-CN": "运气不好，下次会好",
             "en-US": "Bad luck"
           },
           "scoring": {
@@ -382,7 +382,7 @@
         {
           "id": "D",
           "text": {
-            "zh-CN": "µâ│Σ╕ìΘÇÜΣ╕║Σ╗ÇΣ╣êσñ▒Φ┤Ñ",
+            "zh-CN": "想不通为什么失败",
             "en-US": "Still confused"
           },
           "scoring": {
@@ -395,7 +395,7 @@
       "id": "M08",
       "dimension": "ST",
       "question": {
-        "zh-CN": "Θí╣τ¢«σÅìσñìσ╗╢µ£ƒ∩╝îΦí¿Θ¥óσÄƒσ¢áµÿ»µëºΦíîσè¢∩╝Ü",
+        "zh-CN": "项目反复延期，表面原因是执行力：",
         "en-US": "Delays blamed on execution:"
       },
       "career_impact": {
@@ -408,7 +408,7 @@
         {
           "id": "A",
           "text": {
-            "zh-CN": "τ£ïτ│╗τ╗ƒµÇºµ╡üτ¿ï/τ¢«µáçΘù«Θóÿ",
+            "zh-CN": "看系统性流程/目标问题",
             "en-US": "Systemic check"
           },
           "scoring": {
@@ -418,7 +418,7 @@
         {
           "id": "B",
           "text": {
-            "zh-CN": "µë╛σà│Θö«σ╗╢Φ»»Φèéτé╣",
+            "zh-CN": "找关键延误节点",
             "en-US": "Find delay nodes"
           },
           "scoring": {
@@ -428,7 +428,7 @@
         {
           "id": "C",
           "text": {
-            "zh-CN": "τí«σ«₧µÿ»µëºΦíîσè¢Θù«Θóÿ",
+            "zh-CN": "确实是执行力问题",
             "en-US": "It is execution"
           },
           "scoring": {
@@ -438,7 +438,7 @@
         {
           "id": "D",
           "text": {
-            "zh-CN": "σ╗╢µ£ƒσ╛êµ¡úσ╕╕",
+            "zh-CN": "延期很正常",
             "en-US": "Normal delay"
           },
           "scoring": {
@@ -451,7 +451,7 @@
       "id": "M09",
       "dimension": "ST",
       "question": {
-        "zh-CN": "τ£ïσê░τƒ¡µ£ƒσ╖¿σñºµêÉσèƒ∩╝îσà│µ│¿∩╝Ü",
+        "zh-CN": "看到短期巨大成功，关注：",
         "en-US": "Focus on short-term success:"
       },
       "career_impact": {
@@ -464,7 +464,7 @@
         {
           "id": "A",
           "text": {
-            "zh-CN": "µù╢Σ╗úµ£║ΘüçΣ╕ÄΦ╢ïσè┐",
+            "zh-CN": "时代机遇与趋势",
             "en-US": "Eras and trends"
           },
           "scoring": {
@@ -474,7 +474,7 @@
         {
           "id": "B",
           "text": {
-            "zh-CN": "Σ╕¬Σ║║Φâ╜σè¢Σ╕Äτ¡ûτòÑ",
+            "zh-CN": "个人能力与策略",
             "en-US": "Skills and strategy"
           },
           "scoring": {
@@ -484,7 +484,7 @@
         {
           "id": "C",
           "text": {
-            "zh-CN": "Φ┐Éµ░öΣ╕ÄΣ║║Φäë",
+            "zh-CN": "运气与人脉",
             "en-US": "Luck and network"
           },
           "scoring": {
@@ -494,7 +494,7 @@
         {
           "id": "D",
           "text": {
-            "zh-CN": "σÅ¬τ£ïτ╗ôµ₧£",
+            "zh-CN": "只看结果",
             "en-US": "Only results"
           },
           "scoring": {
@@ -507,7 +507,7 @@
       "id": "M12",
       "dimension": "VR",
       "question": {
-        "zh-CN": "Σ╜£σôüσ╖▓70σêå∩╝îσê░90σêåΘ£ÇΣ╕ñσÇìµù╢Θù┤∩╝Ü",
+        "zh-CN": "作品已70分，到90分需两倍时间：",
         "en-US": "70% done, 90% takes 2x time:"
       },
       "career_impact": {
@@ -520,7 +520,7 @@
         {
           "id": "A",
           "text": {
-            "zh-CN": "σÅæ70σêåτëêσ┐½ΘÇƒΦ┐¡Σ╗ú",
+            "zh-CN": "发70分版快速迭代",
             "en-US": "Ship 70% and iterate"
           },
           "scoring": {
@@ -530,7 +530,7 @@
         {
           "id": "B",
           "text": {
-            "zh-CN": "σüÜσê░80σêåσ╣│Φíí",
+            "zh-CN": "做到80分平衡",
             "en-US": "Balance at 80%"
           },
           "scoring": {
@@ -540,7 +540,7 @@
         {
           "id": "C",
           "text": {
-            "zh-CN": "σüÜσê░90σêåσåìσÅæ",
+            "zh-CN": "做到90分再发",
             "en-US": "90% before ship"
           },
           "scoring": {
@@ -550,7 +550,7 @@
         {
           "id": "D",
           "text": {
-            "zh-CN": "σê░Deadlineσ░▒σÅæ",
+            "zh-CN": "到Deadline就发",
             "en-US": "Ship at deadline"
           },
           "scoring": {
@@ -563,7 +563,7 @@
       "id": "M13",
       "dimension": "VR",
       "question": {
-        "zh-CN": "Φ┤ƒΘ¥óσÅìΘªêΦ»┤Σ╜ôΘ¬îΣ╕ìσÑ╜/τ£ïΣ╕ìµçé∩╝Ü",
+        "zh-CN": "负面反馈说体验不好/看不懂：",
         "en-US": "Feedback: bad UX/confusing:"
       },
       "career_impact": {
@@ -576,7 +576,7 @@
         {
           "id": "A",
           "text": {
-            "zh-CN": "τ£ïσÅìΘªêµ»öΣ╛ïΘ½ÿΣ╜Ä",
+            "zh-CN": "看反馈比例高低",
             "en-US": "Check feedback ratio"
           },
           "scoring": {
@@ -586,7 +586,7 @@
         {
           "id": "B",
           "text": {
-            "zh-CN": "Θ⌐¼Σ╕èµö╣",
+            "zh-CN": "马上改",
             "en-US": "Fix immediately"
           },
           "scoring": {
@@ -596,7 +596,7 @@
         {
           "id": "C",
           "text": {
-            "zh-CN": "τ¼ªσÉêτÉåσ┐╡µëìµö╣",
+            "zh-CN": "符合理念才改",
             "en-US": "Fix if vision-aligned"
           },
           "scoring": {
@@ -606,7 +606,7 @@
         {
           "id": "D",
           "text": {
-            "zh-CN": "Σ╕ïΣ╕¬τëêµ£¼σåìΦ»┤",
+            "zh-CN": "下个版本再说",
             "en-US": "Next version"
           },
           "scoring": {
@@ -619,7 +619,7 @@
       "id": "M14",
       "dimension": "AC",
       "question": {
-        "zh-CN": "σåÖ3000σ¡ùµèÑσæè∩╝îµÇÄΣ╣êτö¿AI∩╝Ü",
+        "zh-CN": "写3000字报告，怎么用AI：",
         "en-US": "3k report with AI:"
       },
       "career_impact": {
@@ -632,7 +632,7 @@
         {
           "id": "A",
           "text": {
-            "zh-CN": "µÉ£Θ¢åΦ╡äµûÖ∩╝îµá╕σ┐âΦç¬σåÖ",
+            "zh-CN": "搜集资料，核心自写",
             "en-US": "Research only"
           },
           "scoring": {
@@ -642,7 +642,7 @@
         {
           "id": "B",
           "text": {
-            "zh-CN": "AIτöƒσñºτ║▓∩╝îµêæσí½σåàσ«╣",
+            "zh-CN": "AI生大纲，我填内容",
             "en-US": "AI for outline"
           },
           "scoring": {
@@ -652,7 +652,7 @@
         {
           "id": "C",
           "text": {
-            "zh-CN": "AIσê¥τ¿┐∩╝îµêæσñºΣ┐«",
+            "zh-CN": "AI初稿，我大修",
             "en-US": "AI draft, heavy edit"
           },
           "scoring": {
@@ -662,7 +662,7 @@
         {
           "id": "D",
           "text": {
-            "zh-CN": "Φç¬σåÖ∩╝îAIσÅ¬µƒÑΦ»¡µ│ò",
+            "zh-CN": "自写，AI只查语法",
             "en-US": "Solo, AI for grammar"
           },
           "scoring": {
@@ -675,7 +675,7 @@
       "id": "M15",
       "dimension": "AC",
       "question": {
-        "zh-CN": "AIσ╖Ñσà╖Φâ╜µ¢┐Σ╗úΣ╜áµôàΘò┐τÜäσ╖ÑΣ╜£∩╝Ü",
+        "zh-CN": "AI工具能替代你擅长的事情（比如写作、做题、做展示、整理资料）：",
         "en-US": "AI replaces your skills:"
       },
       "career_impact": {
@@ -688,7 +688,7 @@
         {
           "id": "A",
           "text": {
-            "zh-CN": "ΦüÜτäªµ¢┤Θ½ÿΣ╗╖σÇ╝Θâ¿σêå",
+            "zh-CN": "聚焦更高价值部分",
             "en-US": "Higher value focus"
           },
           "scoring": {
@@ -698,7 +698,7 @@
         {
           "id": "B",
           "text": {
-            "zh-CN": "µÄÑσÅùσÅÿσîû∩╝îΦ░âµò┤σ«ÜΣ╜ì",
+            "zh-CN": "接受变化，调整定位",
             "en-US": "Accept and adjust"
           },
           "scoring": {
@@ -708,7 +708,7 @@
         {
           "id": "C",
           "text": {
-            "zh-CN": "Σ╕ìσ«ë∩╝îΦºéµ£¢Φ╢ïσè┐",
+            "zh-CN": "不安，观望趋势",
             "en-US": "Unease watching"
           },
           "scoring": {
@@ -718,7 +718,7 @@
         {
           "id": "D",
           "text": {
-            "zh-CN": "µèùµïÆ∩╝îσëèσ╝▒Σ╗╖σÇ╝",
+            "zh-CN": "抗拒，削弱价值",
             "en-US": "Resist"
           },
           "scoring": {
@@ -731,7 +731,7 @@
       "id": "M16",
       "dimension": "AC",
       "question": {
-        "zh-CN": "AIτöƒµêÉτÜäΦ╛ôσç║τ£ïΦ╡╖µ¥ÑΣ╕ìΘöÖ∩╝Ü",
+        "zh-CN": "AI生成的输出看起来不错：",
         "en-US": "AI output looks good:"
       },
       "career_impact": {
@@ -744,7 +744,7 @@
         {
           "id": "A",
           "text": {
-            "zh-CN": "Σ╕ÑµƒÑΘÇ╗Φ╛æΣ╕ÄΣ║ïσ«₧",
+            "zh-CN": "严查逻辑与事实",
             "en-US": "Verify logic/facts"
           },
           "scoring": {
@@ -754,7 +754,7 @@
         {
           "id": "B",
           "text": {
-            "zh-CN": "µúÇσà│Θö«τé╣∩╝îΣ╜ÖΣ┐íAI",
+            "zh-CN": "检关键点，余信AI",
             "en-US": "Key check only"
           },
           "scoring": {
@@ -764,7 +764,7 @@
         {
           "id": "C",
           "text": {
-            "zh-CN": "Σ╗àτü╡µäƒ∩╝îµëïσè¿ΘçìσåÖ",
+            "zh-CN": "仅灵感，手动重写",
             "en-US": "Inspiration only"
           },
           "scoring": {
@@ -774,7 +774,7 @@
         {
           "id": "D",
           "text": {
-            "zh-CN": "τ¢┤µÄÑΣ╜┐τö¿",
+            "zh-CN": "直接使用",
             "en-US": "Use directly"
           },
           "scoring": {
@@ -790,7 +790,7 @@
       "id": "M17",
       "dimension": "AC",
       "question": {
-        "zh-CN": "µû░AIσ╖Ñσà╖σ╛êτü½∩╝îΣ╜áΣ╝Ü∩╝Ü",
+        "zh-CN": "新AI工具很火，你会：",
         "en-US": "New viral AI tool:"
       },
       "career_impact": {
@@ -803,7 +803,7 @@
         {
           "id": "A",
           "text": {
-            "zh-CN": "Θ⌐¼Σ╕èτáöτ⌐╢µÇÄΣ╣êτö¿",
+            "zh-CN": "马上研究怎么用",
             "en-US": "Study immediately"
           },
           "scoring": {
@@ -813,7 +813,7 @@
         {
           "id": "B",
           "text": {
-            "zh-CN": "τ£ïµíêΣ╛ïµ£ëτö¿σåìσ¡ª",
+            "zh-CN": "看案例有用再学",
             "en-US": "Cases first"
           },
           "scoring": {
@@ -823,7 +823,7 @@
         {
           "id": "C",
           "text": {
-            "zh-CN": "Θ£ÇΦªüµù╢σåìσ¡ª",
+            "zh-CN": "需要时再学",
             "en-US": "Learn when needed"
           },
           "scoring": {
@@ -833,7 +833,7 @@
         {
           "id": "D",
           "text": {
-            "zh-CN": "Σ╕ìτ¢╕Σ┐íAIΦâ╜σè¢",
+            "zh-CN": "不相信AI能力",
             "en-US": "Doubt AI"
           },
           "scoring": {
@@ -846,7 +846,7 @@
       "id": "M18",
       "dimension": "EB",
       "question": {
-        "zh-CN": "τü░Φë▓µôìΣ╜£ΦÄ╖σê⌐Σ╜åΣ╕ìΦ┐¥µ│ò∩╝Ü",
+        "zh-CN": "灰色操作获利但不违法：",
         "en-US": "Grey ops profit:"
       },
       "career_impact": {
@@ -859,7 +859,7 @@
         {
           "id": "A",
           "text": {
-            "zh-CN": "µÿÄτí«µïÆτ╗¥",
+            "zh-CN": "明确拒绝",
             "en-US": "Refuse"
           },
           "scoring": {
@@ -869,7 +869,7 @@
         {
           "id": "B",
           "text": {
-            "zh-CN": "σÇ╛σÉæΣ╕ìτö¿",
+            "zh-CN": "倾向不用",
             "en-US": "Avoid"
           },
           "scoring": {
@@ -879,7 +879,7 @@
         {
           "id": "C",
           "text": {
-            "zh-CN": "σñºσ«╢Θâ╜τö¿µêæΣ╣ƒτö¿",
+            "zh-CN": "大家都用我也用",
             "en-US": "Follow others"
           },
           "scoring": {
@@ -889,7 +889,7 @@
         {
           "id": "D",
           "text": {
-            "zh-CN": "Σ╕ìΦ┐¥µ│òσ░▒Φíî",
+            "zh-CN": "不违法就行",
             "en-US": "As long as legal"
           },
           "scoring": {
@@ -902,7 +902,7 @@
       "id": "M19",
       "dimension": "EB",
       "question": {
-        "zh-CN": "Σ╕ìσàëσ╜⌐µëïµ«╡Φâ╜σà▒Φ╡ó∩╝Ü",
+        "zh-CN": "不光彩手段能共赢：",
         "en-US": "Dirty means for win-win:"
       },
       "career_impact": {
@@ -915,7 +915,7 @@
         {
           "id": "A",
           "text": {
-            "zh-CN": "µû╣σ╝ÅσÉîµá╖ΘçìΦªü",
+            "zh-CN": "方式同样重要",
             "en-US": "Means matter"
           },
           "scoring": {
@@ -925,7 +925,7 @@
         {
           "id": "B",
           "text": {
-            "zh-CN": "µÄÑσÅùΣ╜åµ£ëσ┐âτÉåΦ┤ƒµïà",
+            "zh-CN": "接受但有心理负担",
             "en-US": "Accept with guilt"
           },
           "scoring": {
@@ -935,7 +935,7 @@
         {
           "id": "C",
           "text": {
-            "zh-CN": "τ╗ôµ₧£µ£ÇΘçìΦªü",
+            "zh-CN": "结果最重要",
             "en-US": "Ends over means"
           },
           "scoring": {
@@ -945,7 +945,7 @@
         {
           "id": "D",
           "text": {
-            "zh-CN": "µêÉσèƒσ░▒Φíî",
+            "zh-CN": "成功就行",
             "en-US": "Success only"
           },
           "scoring": {
@@ -958,7 +958,7 @@
       "id": "M20",
       "dimension": "EB",
       "question": {
-        "zh-CN": "Σ┐«µ¡úAIσüÅΦºüΣ╝ÜΘÖìσçåσó₧µ£¼∩╝Ü",
+        "zh-CN": "修正AI偏见会降准增本：",
         "en-US": "Fixing AI bias:"
       },
       "career_impact": {
@@ -971,7 +971,7 @@
         {
           "id": "A",
           "text": {
-            "zh-CN": "Σ┐«µ¡úσüÅΦºü∩╝îσà¼σ╣│τ¼¼Σ╕Ç",
+            "zh-CN": "修正偏见，公平第一",
             "en-US": "Fix bias; fairness"
           },
           "scoring": {
@@ -981,7 +981,7 @@
         {
           "id": "B",
           "text": {
-            "zh-CN": "ΘÇÅµÿÄµè½Θ£▓Φ«⌐τö¿µê╖σ«Ü",
+            "zh-CN": "透明披露让用户定",
             "en-US": "Disclose to users"
           },
           "scoring": {
@@ -991,7 +991,7 @@
         {
           "id": "C",
           "text": {
-            "zh-CN": "Σ║║σ╖Ñσñìµá╕σà│Θö«τé╣",
+            "zh-CN": "人工复核关键点",
             "en-US": "Human review"
           },
           "scoring": {
@@ -1001,7 +1001,7 @@
         {
           "id": "D",
           "text": {
-            "zh-CN": "µòêτÄçΣ╝ÿσàê",
+            "zh-CN": "效率优先",
             "en-US": "Efficiency first"
           },
           "scoring": {
