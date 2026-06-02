@@ -452,7 +452,7 @@ body {
 
       <div class="order-badge">
         <div style="width:5px;height:5px;border-radius:50%;background:var(--neon-cyan)"></div>
-        ORDER · PATHFINDER · ¥49
+        ORDER · PATHFINDER · ¥29
       </div>
 
       <div class="order-title">寻路者套餐 · T层完整解锁</div>
@@ -470,11 +470,11 @@ body {
       <div class="price-block">
         <div class="price-left">
           <div class="price-label">// TOTAL_AMOUNT</div>
-          <div class="price-val"><span>¥</span>49</div>
+          <div class="price-val"><span>¥</span>29</div>
         </div>
         <div class="price-right">
-          <div class="price-orig">原价 ¥99</div>
-          <div class="price-save">省 ¥50</div>
+          <div class="price-orig">原价 ¥59</div>
+          <div class="price-save">省 ¥30</div>
         </div>
       </div>
 
@@ -486,7 +486,7 @@ body {
 
       <!-- Step 2: QR Code section -->
       <div id="qr-section">
-        <div class="qr-hint">打开微信 → 扫一扫 → 确认支付 <strong>¥49</strong></div>
+        <div class="qr-hint">打开微信 → 扫一扫 → 确认支付 <strong>¥29</strong></div>
         <div class="qr-wrap">
           <div class="scan-ring"></div>
           <div class="scan-line"></div>
@@ -1096,23 +1096,23 @@ function goBack() {
     let description = '';
 
     const PATHFINDER_DESC = 'TalentAI Pathfinder · T层完整解锁';
-    const NAVIGATOR_DESC = 'TalentAI Navigator · 五层完整报告';
+    const NAVIGATOR_DESC = 'TalentAI Navigator · 四层成长路径报告';
 
-    if (rawPkg === 'pathfinder' || rawPkg === '49') {
+    if (rawPkg === 'pathfinder' || rawPkg === '49' || rawPkg === '29') {
       createOrderPackageType = 'pathfinder';
       checkoutPackageType = 'pathfinder';
-      displayYuan = 49;
+      displayYuan = 29;
       description = PATHFINDER_DESC;
       clearNavigatorWmaSession();
     } else if (rawPkg === 'navigator' || rawPkg === '150' || rawPkg === '99') {
       createOrderPackageType = 'navigator';
       checkoutPackageType = 'navigator';
-      displayYuan = 99;
+      displayYuan = 29;
       description = NAVIGATOR_DESC;
     }
 
     if (!displayYuan) {
-      alert('套餐类型不正确（pathfinder / navigator，或 49 / 99 / 150）');
+      alert('套餐类型不正确（pathfinder / navigator，或 29 / 49 / 99）');
       return;
     }
 
@@ -1124,10 +1124,10 @@ function goBack() {
     const priceOrigEl = document.querySelector('.price-orig');
     const priceSaveEl = document.querySelector('.price-save');
 
-    if (displayYuan === 49) {
+    if (createOrderPackageType === 'pathfinder') {
       if (badgeEl) {
         badgeEl.innerHTML =
-          '<div style="width:5px;height:5px;border-radius:50%;background:var(--neon-cyan)"></div> ORDER · PATHFINDER · ¥49';
+          '<div style="width:5px;height:5px;border-radius:50%;background:var(--neon-cyan)"></div> ORDER · PATHFINDER · ¥29';
       }
       if (titleEl) titleEl.textContent = '寻路者套餐 · T层完整解锁';
       if (subEl) subEl.textContent = description;
@@ -1138,24 +1138,24 @@ function goBack() {
           '<div class="get-item"><div class="get-dot">✓</div>T×P 综合职业匹配报告（6屏深度分析）</div>' +
           '<div class="get-item"><div class="get-dot">✓</div>个人化风险地图 + 家长行动指令手册</div>';
       }
-      if (priceOrigEl) priceOrigEl.textContent = '原价 ¥99';
-      if (priceSaveEl) priceSaveEl.textContent = '省 ¥50';
+      if (priceOrigEl) priceOrigEl.textContent = '原价 ¥59';
+      if (priceSaveEl) priceSaveEl.textContent = '省 ¥30';
     } else {
       if (badgeEl) {
         badgeEl.innerHTML =
-          '<div style="width:5px;height:5px;border-radius:50%;background:var(--neon-cyan)"></div> ORDER · NAVIGATOR · ¥99';
+          '<div style="width:5px;height:5px;border-radius:50%;background:var(--neon-cyan)"></div> ORDER · NAVIGATOR · ¥29';
       }
-      if (titleEl) titleEl.textContent = '导航者套餐 · 五层完整报告';
+      if (titleEl) titleEl.textContent = '导航者套餐 · 四层成长路径报告';
       if (subEl) subEl.textContent = description;
       if (getListEl) {
         getListEl.innerHTML =
           '<div class="get-item"><div class="get-dot">✓</div>T层完整报告（天赋DNA）</div>' +
-          '<div class="get-item"><div class="get-dot">✓</div>P/W/M/A 四层完整报告</div>' +
+          '<div class="get-item"><div class="get-dot">✓</div>P/W/M 四层完整报告 + AI成长加速指数</div>' +
           '<div class="get-item"><div class="get-dot">✓</div>Top 5 职业完整解读与 AI 风险分析</div>' +
-          '<div class="get-item"><div class="get-dot">✓</div>职业路径规划 · 实付 ¥99</div>';
+          '<div class="get-item"><div class="get-dot">✓</div>职业路径规划 · 实付 ¥29</div>';
       }
-      if (priceOrigEl) priceOrigEl.textContent = '原价 ¥199';
-      if (priceSaveEl) priceSaveEl.textContent = '省 ¥100';
+      if (priceOrigEl) priceOrigEl.textContent = '原价 ¥59';
+      if (priceSaveEl) priceSaveEl.textContent = '省 ¥30';
     }
 
     // 更新页面显示价格（与 create-order amount 一致）

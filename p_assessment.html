@@ -120,7 +120,22 @@ async function loadQuestions(){
 
 // 渲染题目
 function renderQuestion(){
+  if (!questions.length) return;
+  if (currentIndex >= questions.length) {
+    calculateResult();
+    return;
+  }
+
   const q = questions[currentIndex];
+  if (!q) {
+    if (currentIndex < questions.length - 1) {
+      currentIndex++;
+      renderQuestion();
+    } else {
+      calculateResult();
+    }
+    return;
+  }
 
   document.getElementById("questionTitle").innerText =
     `第 ${currentIndex+1} 题 / ${questions.length}\n` +

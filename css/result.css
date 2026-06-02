@@ -1088,6 +1088,10 @@ body.pdf-exporting .locked-career-hint{ filter: blur(3px); }
 .layers-section .section-desc{ color: var(--muted); }
 
 .layers-grid{ margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+.layers-grid--four{ grid-template-columns: repeat(2, 1fr); }
+@media (max-width: 640px){
+  .layers-grid--four{ grid-template-columns: 1fr; }
+}
 
 .layer-card{
   border-radius: var(--radius-md);

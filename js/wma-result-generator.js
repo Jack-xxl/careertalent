@@ -1,4 +1,4 @@
-console.log('✅ wma-result-generator.js loaded (TalentAI 五层完整报告)');
+console.log('✅ wma-result-generator.js loaded (TalentAI 四层完整报告)');
 
 // ── window 提前注册（防止文件中间报错导致底部注册失败）──
 // 函数声明会被提升(hoisting)，setTimeout(0)时已可访问
@@ -546,7 +546,7 @@ function wmaRenderUpgrade(result) {
 function wmaRenderSocialProof() {
   const box = document.getElementById('wma-social-proof');
   if (!box) return;
-  box.innerHTML = `💡 已有 <strong>2,318</strong> 人通过完整五层测评找到方向 ·
+  box.innerHTML = `💡 已有 <strong>2,318</strong> 人通过完整四层测评找到方向 ·
     ⭐⭐⭐⭐⭐ <strong>4.9/5.0</strong>（基于 386 条真实评价）`;
 }
 

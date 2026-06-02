@@ -1,4 +1,4 @@
-console.log('✅ wma-result.js loaded (TalentAI 五层完整报告)');
+console.log('✅ wma-result.js loaded (TalentAI 四层完整报告)');
 
 document.addEventListener('DOMContentLoaded', async () => {
   console.log('=== 五层完整报告：开始生成 ===');

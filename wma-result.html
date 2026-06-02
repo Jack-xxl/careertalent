@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TalentAI 五层完整报告</title>
+  <title>TalentAI 四层完整报告</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     :root{
@@ -297,6 +297,22 @@
     .ecosystem-layer{display:flex;flex-wrap:wrap;gap:14px;margin-top:12px}
     .ecosystem-chip{padding:14px 20px;border-radius:14px;background:rgba(139,92,246,0.12);border:1px solid rgba(139,92,246,0.35);font-size:15px;font-weight:600;color:#e0e7ff}
     .ecosystem-chip .pct{font-size:18px;color:#a78bfa;margin-left:6px}
+    .growth-eco-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;margin-top:16px}
+    .growth-eco-card{padding:22px;border-radius:18px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08)}
+    .growth-eco-card.primary{border-color:rgba(167,139,250,0.55);background:rgba(139,92,246,0.12)}
+    .growth-eco-card.secondary{border-color:rgba(96,165,250,0.45)}
+    .growth-eco-card.tertiary{border-color:rgba(52,211,153,0.4)}
+    .growth-eco-rank{font-size:22px;margin-bottom:8px}
+    .growth-eco-title{font-size:20px;font-weight:700;margin-bottom:4px}
+    .growth-eco-en{font-size:13px;color:var(--muted2);margin-bottom:10px}
+    .growth-eco-score{font-size:28px;font-weight:800;color:#a78bfa;margin:8px 0}
+    .growth-eco-tagline{font-size:14px;line-height:1.65;color:var(--muted);margin-bottom:12px}
+    .growth-eco-careers{font-size:13px;color:#cbd5e1;margin-bottom:12px}
+    .growth-eco-rep{font-size:13px;color:#94a3b8;padding-top:10px;border-top:1px solid rgba(255,255,255,0.06)}
+    .ai-accel-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:16px}
+    .ai-accel-stat{padding:16px;border-radius:14px;background:rgba(68,153,238,0.1);border:1px solid rgba(68,153,238,0.25)}
+    .ai-accel-stat .num{font-size:26px;font-weight:800;color:#60a5fa}
+    .ai-accel-stat .lbl{font-size:13px;color:var(--muted);margin-top:6px}
     .extended-chip{
       padding:12px 16px;border-radius:12px;
       background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);
@@ -330,16 +346,16 @@
 <body>
   <div id="loading" class="loading-screen">
     <div class="spinner"></div>
-    <p>正在生成你的五层完整报告...</p>
-    <p style="font-size:13px;color:rgba(255,255,255,0.55)">T · P · W · M · A 五层动态匹配中</p>
+    <p>正在生成你的四层完整报告...</p>
+    <p style="font-size:13px;color:rgba(255,255,255,0.55)">T · P · W · M 四层动态匹配中</p>
   </div>
 
   <div id="main-content" class="container" style="display:none;">
     <section class="welcome-section">
       <div class="hero-grid">
         <div>
-          <h1 id="report-title">🎯 TalentAI 五层完整报告</h1>
-          <p class="subtitle">基于 T天赋 · P性格 · W驱动 · M元智能 · A时代适配力 的动态职业生态匹配。</p>
+          <h1 id="report-title">🎯 TalentAI 四层完整报告</h1>
+          <p class="subtitle">基于 T天赋 · P性格 · W驱动 · M元智能 的成长生态匹配；AI 适配力单独作为成长加速器输出。</p>
 
           <div class="metadata">
             <span class="meta-chip">⏱️ 测评用时：<strong id="completion-time">-</strong> 分钟</span>
@@ -350,7 +366,7 @@
           <div class="talent-label-card">
             <div class="label-icon">🏷️</div>
             <div>
-              <div class="label-title">你的五层综合标签</div>
+              <div class="label-title">你的四层综合标签</div>
               <div id="talent-label" class="talent-label">-</div>
               <p id="talent-sublabel" style="margin-top:8px">-</p>
             </div>
@@ -384,7 +400,7 @@
 
     <section>
       <h2>📊 五维复合指标总览</h2>
-      <p class="section-desc">这5个复合指标来自五层数据的交叉计算，不是单一问卷的简单平均，而是反映你在真实职业环境中的综合表现。</p>
+      <p class="section-desc">这5个复合指标来自四层数据的交叉计算，不是单一问卷的简单平均，而是反映你在真实职业环境中的综合表现。</p>
       <div class="grid-2" style="margin-top:16px">
         <div class="chart-wrap">
           <canvas id="composite-radar"></canvas>
@@ -428,23 +444,37 @@
     </section>
 
     <section>
+      <div class="wma-badge badge-eco">🌱 成长生态</div>
+      <h2>你的成长生态（T · P · W · M 四层模型）</h2>
+      <p class="section-desc">成长生态由天赋、人格、驱动力与成长潜力共同决定，不含 AI 适配力。以下展示主生态、副生态与第三生态。</p>
+      <div id="growth-ecosystem-cards" class="growth-eco-grid"></div>
+    </section>
+
+    <section>
+      <div class="wma-badge badge-a">🚀 AI 成长加速器</div>
+      <h2>AI成长加速指数</h2>
+      <p class="section-desc">AI 适配力属于后天可快速提升的能力，不参与生态归类，单独衡量 AI 时代的成长加速潜力。</p>
+      <div id="ai-accelerator-panel"></div>
+    </section>
+
+    <section>
       <div class="wma-badge badge-a">ℹ️ 关于 AI 适配力</div>
       <h2>AI 适配力说明</h2>
       <p class="section-desc">AI适配力是可训练技能，不影响天赋判断，建议通过持续学习提升。</p>
       <div class="soft-card" style="margin-top:16px;padding:20px 22px;line-height:1.75;color:var(--muted)">
-        <p style="margin:0">本报告不再单独测评 A 层。你在 M 层「AI协作」维度上的得分，可作为当前人机协作习惯的参考；真正的 AI 适配力需要通过实践、工具学习与项目复盘持续培养，而非一次问卷所能定论。</p>
+        <p style="margin:0">本报告不再单独测评 A 层问卷。上方「AI成长加速指数」由 M 层 AI 协作维度与综合画像推算；真正的 AI 适配力需要通过实践、工具学习与项目复盘持续培养。</p>
       </div>
     </section>
 
     <section>
-      <h2>⚡ 五层冲突诊断</h2>
-      <p class="section-desc">真正影响职业质量的，不只是“强项”，而是五层之间有没有相互打架。这里识别你当前最关键的结构性冲突。</p>
+      <h2>⚡ 四层冲突诊断</h2>
+      <p class="section-desc">真正影响职业质量的，不只是“强项”，而是四层之间有没有相互打架。这里识别你当前最关键的结构性冲突。</p>
       <div id="conflicts-container" style="margin-top:16px"></div>
     </section>
 
     <section>
       <h2>🗺️ TalentAI 职业生态引擎</h2>
-      <p class="section-desc">五层人格 → 职业生态 → 职业方向 → 具体职业。你不是一个岗位，而是一组生态与方向的组合。</p>
+      <p class="section-desc">四层人格 → 职业生态 → 职业方向 → 具体职业。你不是一个岗位，而是一组生态与方向的组合。</p>
       <div style="display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-bottom:18px">
         <button type="button" id="btn-adjust-preference" class="pref-btn">
           ⚙️ 调整职业偏好
@@ -453,7 +483,7 @@
       </div>
 
       <h3 style="margin:20px 0 10px;font-size:18px">第一层 · 你的职业生态</h3>
-      <p class="section-desc" style="margin-bottom:12px">未来你更可能扎根的 1～2 个生态，而不是单一职业。</p>
+      <p class="section-desc" style="margin-bottom:12px">与上方成长生态一致的主、副、第三生态摘要（T·P·W·M 四层，不含 A）。</p>
       <div id="ecosystem-layer" class="ecosystem-layer"></div>
 
       <h3 style="margin:24px 0 10px;font-size:18px">第二层 · 最适合的职业方向</h3>
@@ -495,7 +525,7 @@
     <section class="result-disclaimer" aria-label="关于本测评结果的说明">
       <h2 class="result-disclaimer__title">关于本测评结果的说明</h2>
       <div class="result-disclaimer__body">
-        <p>TalentAI 五层模型（T/P/W/M，以及可训练的 AI 适配力）分析的是孩子更底层的人才结构——天赋优势、性格特征、内在驱动力、成长潜力与 AI 时代协作习惯。这些底层特质具有较高的稳定性与长期参考价值，测的不是短期兴趣，而是更深层的成长方向。</p>
+        <p>TalentAI 四层模型（T/P/W/M）分析的是孩子更底层的人才结构——天赋优势、性格特征、内在驱动力与成长潜力。AI 成长路径单独作为加速器模块输出。这些底层特质具有较高的稳定性与长期参考价值，测的不是短期兴趣，而是更深层的成长方向。</p>
         <p>但需要说明的是：职业本身是动态的。随着 AI 发展、行业演变与孩子自身成长经历的变化，具体岗位会持续迭代。因此，职业匹配结果更适合作为方向性参考，而非固定答案。</p>
         <p>TalentAI 真正关注的，是帮助孩子找到适合长期发展的成长生态与未来方向。</p>
         <p>为获得更精准的落地路径，建议结合专业 AI 时代成长路径导师，根据孩子实际情况持续动态优化。微信号：<strong>shfeducation</strong></p>
@@ -530,6 +560,7 @@
 
   <script src="js/site-config.js"></script>
   <script src="js/report-share-restore.js"></script>
+  <script src="js/growth-ecosystem-engine.js"></script>
   <script src="js/career-matching-engine.js"></script>
   <script src="js/careerEcosystems.js"></script>
   <script src="js/careerArchetypes.js"></script>
@@ -617,56 +648,56 @@
 
     const ECO_POOLS = {
       creator: {
-        name: "创新创造生态",
+        name: "创造生态",
         emoji: "🚀",
         color: "#a78bfa",
         desc: "适合把创意、表达、审美和新工具整合成可见作品的人。",
         roles: ["AI内容创作者", "Prompt工程方向", "XR设计", "创意导演", "品牌表达"]
       },
       solver: {
-        name: "系统构建生态",
+        name: "解决生态",
         emoji: "🧠",
         color: "#34d399",
         desc: "适合分析复杂问题、设计系统、搭建流程和做方案的人。",
         roles: ["AI解决方案", "产品经理", "自动化顾问", "数据叙事", "仿真建模"]
       },
       organizer: {
-        name: "协同运营生态",
+        name: "组织生态",
         emoji: "📊",
         color: "#60a5fa",
         desc: "适合做组织、流程、协调、项目推进与长期稳定交付的人。",
         roles: ["项目协调", "知识管理", "留学规划", "运营分析", "研究运营"]
       },
       helper: {
-        name: "陪伴服务生态",
+        name: "助人生态",
         emoji: "💞",
         color: "#f472b6",
         desc: "适合在人、成长、教育、支持和长期关系中创造价值的人。",
         roles: ["家庭教育顾问", "职业教练", "健康教练", "学习教练", "客户成功"]
       },
       guardian: {
-        name: "规则守护生态",
+        name: "守护生态",
         emoji: "🛡️",
         color: "#f59e0b",
         desc: "适合在风险、合规、安全、审计和长期稳定中建立价值的人。",
         roles: ["AI安全审计", "隐私合规", "政策治理", "合同分析", "反欺诈"]
       },
-      operator: {
-        name: "技术执行生态",
+      builder: {
+        name: "实践生态",
         emoji: "🔧",
         color: "#fb923c",
         desc: "适合把技术、工具和动作能力转化为现场成果的人。",
-        roles: ["无人机运营", "机器人维护", "新能源安装", "质检工程", "IoT运维"]
+        roles: ["制造工程", "现场实施", "产品落地", "质检工程", "IoT运维"]
       },
       explorer: {
-        name: "探索进化生态",
+        name: "探索生态",
         emoji: "🌍",
         color: "#84cc16",
         desc: "适合研究自然、空间、未来产业与新边界机会的人。",
         roles: ["环境数据", "精准农业", "GIS空间分析", "生物监测", "合成生物"]
       },
       influencer: {
-        name: "影响赋能生态",
+        name: "影响生态",
         emoji: "📣",
         color: "#ec4899",
         desc: "适合通过表达、传播、社群和说服去连接资源与机会的人。",
@@ -1134,7 +1165,7 @@
       const W = data.normalized.W;
       const A = data.aiIndex;
       let title = "多维均衡发展型";
-      let sub = "你的五层结构比较均衡，说明你具备多条职业路径的可能性。";
+      let sub = "你的四层结构比较均衡，说明你具备多条职业路径的可能性。";
 
       if(A >= 82 && C.innovation >= 7.2 && C.ai_leverage >= 7.2){
         title = "AI时代创新领航者";
@@ -1171,7 +1202,7 @@
         let nick = "";
         try{ nick = String(localStorage.getItem("talentai_user_nickname") || "").trim(); }catch(e){}
         const hasNick = !!nick && nick !== "同学";
-        titleEl.textContent = hasNick ? `🎯 ${nick}的TalentAI五层完整报告` : "🎯 你的TalentAI五层完整报告";
+        titleEl.textContent = hasNick ? `🎯 ${nick}的TalentAI四层完整报告` : "🎯 你的TalentAI四层完整报告";
       })();
 
       setHTML("report-time", new Date().toLocaleString("zh-CN"));
@@ -1428,8 +1459,8 @@
       if(list.length === 0){
         list.push({
           level:"blue",
-          title:"🔵 五层整体协调",
-          desc:"你的五层结构目前没有发现特别明显的内耗型冲突，职业发展的关键更多在于选对赛道并持续行动。",
+          title:"🔵 四层整体协调",
+          desc:"你的四层结构目前没有发现特别明显的内耗型冲突，职业发展的关键更多在于选对赛道并持续行动。",
           action:"下一步重点应放在聚焦和执行。"
         });
       }
@@ -1624,13 +1655,65 @@
       ].filter(x=>x.item);
     }
 
+    function renderGrowthEcosystems(matchResult){
+      const el = document.getElementById("growth-ecosystem-cards");
+      if(!el) return;
+      const top3 = (matchResult.growthEcosystemTop3 || matchResult.ecosystemScores || []).slice(0, 3);
+      const medals = ["🥇 主生态", "🥈 副生态", "🥉 第三生态"];
+      const classes = ["primary", "secondary", "tertiary"];
+      if(!top3.length){
+        el.innerHTML = "<span class=\"chip\">暂无生态数据</span>";
+        return;
+      }
+      el.innerHTML = top3.map((eco, i)=>`
+        <div class="growth-eco-card ${classes[i] || ""}">
+          <div class="growth-eco-rank">${medals[i] || (i+1)}</div>
+          <div class="growth-eco-title">${eco.ecosystemLabel || eco.nameZh || eco.family}</div>
+          <div class="growth-eco-en">${eco.nameEn || eco.family}</div>
+          <div class="growth-eco-score">${eco.score || 0}% <span style="font-size:14px;font-weight:500;color:var(--muted2)">匹配度</span></div>
+          <div class="growth-eco-tagline">${eco.tagline || ""}</div>
+          <div class="growth-eco-careers"><strong>代表职业方向：</strong>${(eco.careers || []).slice(0,3).join(" · ") || "—"}</div>
+          <div class="growth-eco-rep"><strong>代表人物：</strong>${eco.representative || "—"}（${eco.ecosystemLabel || eco.nameZh || ""}）</div>
+        </div>
+      `).join("");
+    }
+
+    function renderAIGrowthAccelerator(data, matchResult){
+      const el = document.getElementById("ai-accelerator-panel");
+      if(!el) return;
+      const accel = matchResult?.aiGrowthAccelerator
+        || (window.TalentAI?.GrowthEcosystem?.buildAIGrowthAccelerator
+          ? TalentAI.GrowthEcosystem.buildAIGrowthAccelerator(data)
+          : null);
+      if(!accel){
+        el.innerHTML = "<span class=\"chip\">暂无 AI 加速指数数据</span>";
+        return;
+      }
+      el.innerHTML = `
+        <div class="ai-accel-grid">
+          <div class="ai-accel-stat"><div class="num">${accel.aiAdaptIndex}</div><div class="lbl">AI时代适配指数</div></div>
+          <div class="ai-accel-stat"><div class="num">${accel.aiLearningPotential}</div><div class="lbl">AI学习潜力</div></div>
+          <div class="ai-accel-stat"><div class="num">${accel.aiToolAbility}</div><div class="lbl">AI工具应用能力</div></div>
+        </div>
+        <div class="soft-card" style="margin-top:16px">
+          <h3 style="margin-bottom:10px">AI时代成长建议</h3>
+          <ul style="margin:0;padding-left:18px;line-height:1.75;color:var(--muted)">
+            ${(accel.aiGrowthAdvice || []).map(t=>`<li>${t}</li>`).join("")}
+          </ul>
+        </div>
+        <div class="soft-card" style="margin-top:14px">
+          <h3 style="margin-bottom:10px">AI成长路径推荐</h3>
+          <div class="chip-row">${(accel.aiGrowthPaths || []).map(p=>`<span class="chip">${p}</span>`).join("")}</div>
+        </div>
+      `;
+    }
+
     function renderEcosystemLayer(matchResult){
       const el = document.getElementById("ecosystem-layer");
       if(!el) return;
-      const list = (matchResult.ecosystemScores || []).filter(e=> (e.score || 0) >= 55);
-      const top3 = list.slice(0, 3);
-      el.innerHTML = top3.length
-        ? top3.map(e=>`<div class="ecosystem-chip">${e.ecosystemLabel || e.family}<span class="pct">${e.score || 0}%</span></div>`).join("")
+      const list = (matchResult.growthEcosystemTop3 || matchResult.ecosystemScores || []).slice(0, 3);
+      el.innerHTML = list.length
+        ? list.map(e=>`<div class="ecosystem-chip">${e.ecosystemLabel || e.family}<span class="pct">${e.score || 0}%</span></div>`).join("")
         : "<span class=\"chip\">暂无生态数据</span>";
     }
 
@@ -1750,6 +1833,8 @@
     }
 
     function renderCareerSection(matchResult, careerResults, ecoPools, data){
+      renderGrowthEcosystems(matchResult);
+      renderAIGrowthAccelerator(data, matchResult);
       renderEcosystemLayer(matchResult);
       renderDirectionLayer(matchResult);
       renderCoreCareerType(matchResult);
@@ -1770,7 +1855,7 @@
             Career_Family_Scores: debug.careerFamilyScores,
             Career_Track_Scores: debug.careerTrackScores,
             Career_Score_per_recommended: debug.topCareersDetail,
-            公式: "Career Score = 0.30*(User_T*fit_T)+0.20*(User_P*fit_P)+0.20*(User_W*fit_W)+0.20*(User_M*fit_M)+0.10*(User_A*fit_A)，按 Career Score 排序"
+            公式: "成长生态 = T×55% + W×25% + P×10% + M×10%（A不参与）；Career Score 含 fit 权重"
           }, null, 2) + "</pre>";
         }
       }
@@ -1933,7 +2018,7 @@
         <p style="margin-top:12px"><strong>2）成长方式：</strong>成长思维 ${round1(M.GM || 0)}/10。请多用“过程语言、复盘语言、成长语言”，少用单纯贴标签式评价。</p>
         <p style="margin-top:12px"><strong>3）时代准备度：</strong>${aiText}</p>
         <p style="margin-top:12px"><strong>更重要的是：</strong>家长不必急着替孩子决定职业，而应先帮助孩子在 <strong>${ecoName}</strong> 这一类更匹配的生态里，建立优势、积累体验，再逐渐细化到具体方向，例如 ${topCareer?.name || "更适合的职业方向"}。</p>
-        <p style="margin-top:16px;font-size:13px;color:var(--muted2)">⚠️ 对18岁以下用户，五层数据更适合用来做“方向筛选”和“教育支持”，不适合过早做刚性定性。</p>
+        <p style="margin-top:16px;font-size:13px;color:var(--muted2)">⚠️ 对18岁以下用户，四层数据更适合用来做“方向筛选”和“教育支持”，不适合过早做刚性定性。</p>
       `);
     }
 
@@ -2031,8 +2116,8 @@
       } else {
         const r = matchCareers(data, careers);
         const families = [...new Set(r.slice(0,20).map(c=>c.family))].slice(0,3);
-        const familyNames = { creator:"Creator", solver:"Solver", organizer:"Organizer", helper:"Helper", guardian:"Builder", influencer:"Influencer", explorer:"Explorer", operator:"Operator" };
-        const trackLabels = { creator:"创意内容", solver:"技术方案", organizer:"运营协调", helper:"服务陪伴", guardian:"合规安全", influencer:"传播影响", explorer:"研究探索", operator:"现场执行" };
+        const familyNames = { creator:"Creator", solver:"Solver", organizer:"Organizer", helper:"Helper", guardian:"Guardian", builder:"Builder", influencer:"Influencer", explorer:"Explorer", operator:"Builder" };
+        const trackLabels = { creator:"创意内容", solver:"技术方案", organizer:"运营协调", helper:"服务陪伴", guardian:"合规守护", builder:"实践落地", influencer:"传播影响", explorer:"研究探索", operator:"现场执行" };
         matchResult = {
           careerResults: r,
           topCareers: r.slice(0,3),
@@ -2040,6 +2125,12 @@
           topTracks: families.map(f=>trackLabels[f]||f),
           extendedPool: r.slice(3,15)
         };
+      }
+      if (window.TalentAI?.GrowthEcosystem?.rankGrowthEcosystems) {
+        const ranked = TalentAI.GrowthEcosystem.rankGrowthEcosystems(data);
+        matchResult.growthEcosystemTop3 = ranked.slice(0, 3);
+        matchResult.ecosystemScores = ranked;
+        matchResult.aiGrowthAccelerator = TalentAI.GrowthEcosystem.buildAIGrowthAccelerator(data);
       }
       const careerResults = matchResult.careerResults || matchCareers(data, careers);
       window._lastMatchResult = matchResult;
@@ -2064,7 +2155,7 @@
       if (!window.ReportShare) return;
       ReportShare.mount({
         reportType: 'wma-full',
-        reportTitle: 'TalentAI 五层完整报告',
+        reportTitle: 'TalentAI 四层完整报告',
         pagePath: 'wma-result.html',
         captureSelector: '#main-content',
         insertBefore: 'footer.footer',
@@ -2130,7 +2221,7 @@
           document.getElementById("loading").innerHTML = `
             <div class="empty-state" style="max-width:560px">
               <h3 style="margin-bottom:8px">结果页加载失败</h3>
-              <p>请先确认同目录下存在 careers-database.json，或检查 localStorage 中是否已有五层测评数据。</p>
+              <p>请先确认同目录下存在 careers-database.json，或检查 localStorage 中是否已有四层测评数据。</p>
               <p style="margin-top:10px;color:rgba(255,255,255,0.5)">当前页面已内置备用职业库，但如果脚本报错，多半是复制时没有完整覆盖文件。</p>
             </div>
           `;

@@ -58,7 +58,24 @@ async function loadQuestions() {
         throw new Error("题库格式错误");
     }
 
-    console.log("成功加载32题");
+    console.log("成功加载" + getTotalQuestionCount() + "题");
+}
+
+function getDimQuestionCount(dimIdx) {
+    const key = dimensions[dimIdx].key;
+    return questionsData.questions[key].length;
+}
+
+function getTotalQuestionCount() {
+    return dimensions.reduce((sum, _, i) => sum + getDimQuestionCount(i), 0);
+}
+
+function getCurrentQuestionPosition() {
+    let pos = 0;
+    for (let i = 0; i < currentDimensionIndex; i++) {
+        pos += getDimQuestionCount(i);
+    }
+    return pos + currentQuestionIndex + 1;
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -83,14 +100,31 @@ window.startAssessment = function () {
 function showQuestion() {
 
     const dimension = dimensions[currentDimensionIndex];
-    const question = questionsData.questions[dimension.key][currentQuestionIndex];
+    const dimQuestions = questionsData.questions[dimension.key];
+
+    if (currentQuestionIndex >= dimQuestions.length) {
+        if (currentDimensionIndex < dimensions.length - 1) {
+            currentDimensionIndex++;
+            currentQuestionIndex = 0;
+            showQuestion();
+            return;
+        }
+        completeAssessment();
+        return;
+    }
+
+    const question = dimQuestions[currentQuestionIndex];
+    if (!question) {
+        nextQuestion();
+        return;
+    }
 
     document.getElementById("current-dimension").textContent = dimension.name;
     document.getElementById("question-text").textContent =
         question.question["zh-CN"] || question.question;
 
     document.getElementById("question-number").textContent =
-        currentDimensionIndex * 5 + currentQuestionIndex + 1;
+        getCurrentQuestionPosition();
 
     renderOptions(question.options);
 
@@ -153,17 +187,16 @@ function selectAnswer(optionId, element) {
 
 window.nextQuestion = function () {
 
-    if (currentQuestionIndex < 4) {
-        currentQuestionIndex++;
-    } else {
+    const dimLen = getDimQuestionCount(currentDimensionIndex);
 
-        if (currentDimensionIndex < dimensions.length - 1) {
-            currentDimensionIndex++;
-            currentQuestionIndex = 0;
-        } else {
-            completeAssessment();
-            return;
-        }
+    if (currentQuestionIndex < dimLen - 1) {
+        currentQuestionIndex++;
+    } else if (currentDimensionIndex < dimensions.length - 1) {
+        currentDimensionIndex++;
+        currentQuestionIndex = 0;
+    } else {
+        completeAssessment();
+        return;
     }
 
     showQuestion();
@@ -179,7 +212,7 @@ window.previousQuestion = function () {
         currentQuestionIndex--;
     } else if (currentDimensionIndex > 0) {
         currentDimensionIndex--;
-        currentQuestionIndex = 4;
+        currentQuestionIndex = getDimQuestionCount(currentDimensionIndex) - 1;
     }
 
     showQuestion();
@@ -197,15 +230,12 @@ function getTotalAnswered() {
     return total;
 }
 
-function getCurrentQuestionPosition() {
-    return currentDimensionIndex * 5 + currentQuestionIndex + 1;
-}
-
 function updateProgress() {
-    const percent = (getTotalAnswered() / 40) * 100;
+    const total = getTotalQuestionCount();
+    const percent = (getTotalAnswered() / total) * 100;
     document.getElementById("progress-bar").style.width = percent + "%";
     document.getElementById("progress-text").textContent =
-        getCurrentQuestionPosition() + "/40";
+        getCurrentQuestionPosition() + "/" + total;
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -214,8 +244,9 @@ function updateProgress() {
 
 function completeAssessment() {
     let unanswered = 0;
-    dimensions.forEach(d => {
-        for (let i = 0; i < 5; i++) {
+    dimensions.forEach((d, di) => {
+        const len = getDimQuestionCount(di);
+        for (let i = 0; i < len; i++) {
             if (!answers[d.key] || !answers[d.key][i]) unanswered++;
         }
     });

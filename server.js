@@ -478,18 +478,20 @@ function getBaseUrl() {
 }
 
 const PACKAGE_MAP = {
-  pathfinder: 4900, navigator: 9900,
-  '49': 4900, 49: 4900, '99': 9900, 99: 9900,
-  '150': 9900, 150: 9900,
+  pathfinder: 2900, navigator: 2900,
+  '29': 2900, 29: 2900,
+  '49': 2900, 49: 2900, '99': 2900, 99: 2900,
+  '150': 2900, 150: 2900,
 };
 
 function packageToTier(packageType) {
-  if (packageType === 49 || packageType === '49') return 49;
-  if (packageType === 99 || packageType === '99') return 99;
-  if (packageType === 150 || packageType === '150') return 99;
+  if (packageType === 29 || packageType === '29') return 29;
+  if (packageType === 49 || packageType === '49') return 29;
+  if (packageType === 99 || packageType === '99') return 29;
+  if (packageType === 150 || packageType === '150') return 29;
   const k = String(packageType ?? '').trim().toLowerCase();
-  if (k === 'pathfinder') return 49;
-  if (k === 'navigator') return 99;
+  if (k === 'pathfinder') return 29;
+  if (k === 'navigator') return 29;
   return null;
 }
 
@@ -1083,9 +1085,9 @@ app.post('/api/create-order', async (req, res) => {
   if (!amount || !tier) return res.status(400).json({ ok: false, message: '套餐类型不正确' });
 
   const rawStr = String(packageType).trim().toLowerCase();
-  const description = (rawStr === 'pathfinder' || rawStr === '49' || tier === 49)
+  const description = (rawStr === 'pathfinder' || rawStr === '49' || tier === 29)
     ? 'TalentAI寻路者套餐·T层完整解锁'
-    : 'TalentAI领航者套餐·五层完整报告';
+    : 'TalentAI领航者套餐·四层成长路径报告';
 
   const out_trade_no = `TALENT${Date.now()}${ph.slice(-4)}`;
   const sessionToken = newSessionToken();

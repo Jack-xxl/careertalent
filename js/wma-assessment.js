@@ -9,7 +9,8 @@
 // 层配置
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-const WMA_TOTAL_QUESTIONS = 36;
+let WMA_TOTAL_QUESTIONS = 36;
+const WMA_BANK_VERSION = '2026-06-w20-m16';
 
 const WMA_LAYERS = [
     {
@@ -44,8 +45,8 @@ const WMA_LAYERS = [
             emoji:    '🔥',
             title:    '全部完成！',
             subtitle: 'W层与M层测评已完成',
-            desc:     '你的驱动价值与思维操作系统画像已生成。\n\n正在为你生成五层综合报告……',
-            nextName: '五层综合报告',
+            desc:     '你的驱动价值与思维操作系统画像已生成。\n\n正在为你生成四层综合报告……',
+            nextName: '四层综合报告',
             nextDesc: '天赋 × 性格 × 驱动 × 元智能',
             nextTime: '即将跳转'
         }
@@ -85,9 +86,10 @@ window.addEventListener('DOMContentLoaded', async () => {
         } catch (e) {}
     }
 
+    invalidateStaleWmaProgress();
     restoreProgress();
 
-    // 仅 ¥99 Navigator 已付费用户可进入 W/M/A；¥49 寻路者不得仅凭 wma_paid 误入
+    // 仅 ¥29 Navigator 已付费用户可进入 W/M；寻路者不得仅凭 wma_paid 误入
     const navigatorPaid = localStorage.getItem('talentai_navigator_paid') === 'true';
 
     try {
@@ -122,10 +124,62 @@ async function loadAllLayers() {
     );
     wmaData.W = results[0];
     wmaData.M = results[1];
+    syncLayerTotals();
+    clampWmaProgress();
+}
+
+function syncLayerTotals() {
+    let total = 0;
+    WMA_LAYERS.forEach(layer => {
+        const qs = wmaData[layer.key]?.questions;
+        layer.totalQuestions = qs ? qs.length : 0;
+        total += layer.totalQuestions;
+    });
+    WMA_TOTAL_QUESTIONS = total;
+    return total;
 }
 
 function getCurrentLayerQuestions() {
     return wmaData[WMA_LAYERS[currentLayerIdx].key].questions;
+}
+
+function getGlobalWmaQuestionNumber() {
+    let n = 0;
+    for (let i = 0; i < currentLayerIdx; i++) {
+        n += wmaData[WMA_LAYERS[i].key].questions.length;
+    }
+    return n + currentQuestionIdx + 1;
+}
+
+function clampWmaProgress() {
+    const maxLayer = WMA_LAYERS.length - 1;
+    currentLayerIdx = Math.max(0, Math.min(maxLayer, currentLayerIdx));
+    const questions = getCurrentLayerQuestions();
+    if (questions && questions.length) {
+        currentQuestionIdx = Math.max(0, Math.min(questions.length - 1, currentQuestionIdx));
+    } else {
+        currentQuestionIdx = 0;
+    }
+}
+
+function invalidateStaleWmaProgress() {
+    try {
+        if (localStorage.getItem('talentai_wma_bank_v') === WMA_BANK_VERSION) return;
+        [
+            'talentai_wma_progress',
+            'talentai_wma_layer',
+            'talentai_wma_q',
+            'talentai_wma_timer',
+            'talentai_wma_answers',
+            'talentai_wma_completed_at',
+            'talentai_wma_scores',
+            'talentai_wma_result'
+        ].forEach(k => localStorage.removeItem(k));
+        localStorage.setItem('talentai_wma_bank_v', WMA_BANK_VERSION);
+        currentLayerIdx = 0;
+        currentQuestionIdx = 0;
+        answers = { W: {}, M: {} };
+    } catch (e) {}
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -232,13 +286,24 @@ function renderQuestion() {
     const questions = getCurrentLayerQuestions();
     const layerKey  = layer.key;
 
-    // 边界保护
+    if (!questions.length) return;
+
     if (currentQuestionIdx >= questions.length) {
-        console.warn(`题号越界: layer=${layerKey} idx=${currentQuestionIdx} total=${questions.length}`);
         currentQuestionIdx = questions.length - 1;
     }
 
     const q = questions[currentQuestionIdx];
+    if (!q) {
+        if (currentQuestionIdx < questions.length - 1) {
+            currentQuestionIdx++;
+            renderQuestion();
+        } else if (currentLayerIdx < WMA_LAYERS.length - 1) {
+            showTransition(currentLayerIdx + 1);
+        } else {
+            startCalc();
+        }
+        return;
+    }
     const totalAnswered = countAnswered();
     const totalPct = Math.round(totalAnswered / WMA_TOTAL_QUESTIONS * 100);
 
@@ -250,8 +315,8 @@ function renderQuestion() {
     // ── 双Badge同步（header + 题目区）──
     setEl('current-layer-badge',   `${layer.icon} ${layer.badge}`);
     setEl('current-layer-badge-q', `${layer.icon} ${layer.badge}`);
-    setEl('current-layer-q', `第 ${currentQuestionIdx + 1} / ${layer.totalQuestions} 题`);
-    setEl('question-number-global', String(totalAnswered + 1));
+    setEl('current-layer-q', `第 ${currentQuestionIdx + 1} / ${questions.length} 题`);
+    setEl('question-number-global', String(getGlobalWmaQuestionNumber()));
 
     // ── 题目文字 ──
     const qText = (q.question && q.question['zh-CN']) ? q.question['zh-CN'] : (q.question || '');
@@ -308,8 +373,9 @@ function renderQuestion() {
     }
     if (nextBtn) {
         nextBtn.disabled = !currentAnswer;
+        const lastLayerQs = wmaData[WMA_LAYERS[WMA_LAYERS.length - 1].key].questions;
         const isLastQ = currentLayerIdx === WMA_LAYERS.length - 1 &&
-                        currentQuestionIdx === WMA_LAYERS[WMA_LAYERS.length - 1].totalQuestions - 1;
+                        currentQuestionIdx === lastLayerQs.length - 1;
         nextBtn.textContent = isLastQ ? '提交报告 ✓' : '下一题 →';
         nextBtn.style.opacity = currentAnswer ? '1' : '0.4';
     }
@@ -342,7 +408,8 @@ window.prevQuestion = function () {
         renderQuestion();
     } else if (currentLayerIdx > 0) {
         currentLayerIdx--;
-        currentQuestionIdx = WMA_LAYERS[currentLayerIdx].totalQuestions - 1;
+        const prevQs = getCurrentLayerQuestions();
+        currentQuestionIdx = prevQs.length - 1;
         renderQuestion();
     }
 };
@@ -354,8 +421,23 @@ window.prevQuestion = function () {
 function nextQuestion() {
     const layer     = WMA_LAYERS[currentLayerIdx];
     const questions = getCurrentLayerQuestions();
+    if (!questions.length) return;
+
     const q         = questions[currentQuestionIdx];
     const layerKey  = layer.key;
+
+    if (!q) {
+        if (currentQuestionIdx < questions.length - 1) {
+            currentQuestionIdx++;
+            renderQuestion();
+        } else if (currentLayerIdx < WMA_LAYERS.length - 1) {
+            showTransition(currentLayerIdx + 1);
+        } else if (!isSubmitting) {
+            isSubmitting = true;
+            startCalc();
+        }
+        return;
+    }
 
     // 未作答 → 不跳
     if (!answers[layerKey] || !answers[layerKey][q.id]) return;
@@ -363,7 +445,7 @@ function nextQuestion() {
     // 防止重复提交
     if (isSubmitting) return;
 
-    const isLastInLayer = currentQuestionIdx >= layer.totalQuestions - 1;
+    const isLastInLayer = currentQuestionIdx >= questions.length - 1;
     const isLastLayer   = currentLayerIdx >= WMA_LAYERS.length - 1;
 
     // ★ 情况1：最后一层最后一题 → 直接结算（不先 saveProgress，避免把选项字母写入后再被 startCalc 覆盖前用户已看到旧数据）
@@ -640,7 +722,8 @@ function restoreProgress() {
         const savedProgress = localStorage.getItem(WMA_PROGRESS_KEY);
         if (savedProgress) {
             const progress = JSON.parse(savedProgress);
-            currentLayerIdx = Math.max(0, Math.min(2, Number(progress.layer) || 0));
+            const maxLayer = WMA_LAYERS.length - 1;
+            currentLayerIdx = Math.max(0, Math.min(maxLayer, Number(progress.layer) || 0));
             currentQuestionIdx = Math.max(0, Number(progress.q) || 0);
             if (progress.answers && typeof progress.answers === 'object') {
                 answers.W = progress.answers.W || {};
@@ -650,7 +733,9 @@ function restoreProgress() {
             const savedAnswers = localStorage.getItem('talentai_wma_answers');
             if (savedAnswers) answers = JSON.parse(savedAnswers);
             const savedLayer = localStorage.getItem('talentai_wma_layer');
-            if (savedLayer !== null) currentLayerIdx = Math.max(0, Math.min(2, parseInt(savedLayer) || 0));
+            if (savedLayer !== null) {
+                currentLayerIdx = Math.max(0, Math.min(WMA_LAYERS.length - 1, parseInt(savedLayer) || 0));
+            }
             const savedQ = localStorage.getItem('talentai_wma_q');
             if (savedQ !== null) currentQuestionIdx = Math.max(0, parseInt(savedQ) || 0);
         }
@@ -690,7 +775,14 @@ function r10(val) {
 }
 
 function countAnswered() {
-    return Object.keys(answers.W).length +
-           Object.keys(answers.M).length;
+    let n = 0;
+    WMA_LAYERS.forEach(layer => {
+        const qs = wmaData[layer.key]?.questions || [];
+        const layerAnswers = answers[layer.key] || {};
+        qs.forEach(q => {
+            if (layerAnswers[q.id]) n++;
+        });
+    });
+    return n;
 }
 

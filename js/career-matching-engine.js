@@ -7,20 +7,20 @@
   "use strict";
 
   const CAREER_FAMILIES = [
-    "Creator", "Solver", "Organizer", "Influencer",
-    "Explorer", "Builder", "Helper", "Operator"
+    "Creator", "Explorer", "Solver", "Influencer",
+    "Organizer", "Guardian", "Helper", "Builder"
   ];
 
-  /** 8 大职业生态 - 展示名称 */
+  /** 8 大成长生态 - 展示名称 */
   const ECOSYSTEM_LABELS = {
     Creator: "创造生态",
-    Solver: "解决生态",
-    Organizer: "运营生态",
-    Influencer: "影响赋能生态",
     Explorer: "探索生态",
-    Builder: "守护生态",
-    Helper: "服务生态",
-    Operator: "执行生态"
+    Solver: "解决生态",
+    Influencer: "影响生态",
+    Organizer: "组织生态",
+    Guardian: "守护生态",
+    Helper: "助人生态",
+    Builder: "实践生态"
   };
 
   /** 职业方向（二级）：track_id → direction_id */
@@ -75,8 +75,9 @@
 
   const FAMILY_TO_SPEC = {
     creator: "Creator", solver: "Solver", organizer: "Organizer",
-    influencer: "Influencer", explorer: "Explorer", guardian: "Solver", builder: "Builder",
-    helper: "Helper", operator: "Operator"
+    influencer: "Influencer", explorer: "Explorer",
+    guardian: "Guardian", builder: "Builder", helper: "Helper",
+    operator: "Builder"
   };
 
   /** 按 Family 的 Career Score 权重：ability / motiv(W) / mind(M)，使 Creator 更吃 W、Solver 更吃 ability */
@@ -87,8 +88,8 @@
     Influencer: { ability: 0.50, motiv: 0.25, mind: 0.15 },
     Explorer: { ability: 0.55, motiv: 0.20, mind: 0.15 },
     Builder:   { ability: 0.55, motiv: 0.20, mind: 0.15 },
-    Helper:    { ability: 0.50, motiv: 0.25, mind: 0.15 },
-    Operator:  { ability: 0.50, motiv: 0.25, mind: 0.15 }
+    Guardian:  { ability: 0.50, motiv: 0.28, mind: 0.12 },
+    Helper:    { ability: 0.50, motiv: 0.25, mind: 0.15 }
   };
 
   // 职业库 career_track_id → tracks-database 中的 canonical track_id（仅 4 条）
@@ -407,9 +408,9 @@
     Organizer: { O: 0.1, C: 0.28, E: 0.12, A: 0.16, NINV: 0.18 },
     Influencer: { O: 0.18, C: 0.1, E: 0.28, A: 0.16, NINV: 0.08 },
     Explorer: { O: 0.3, C: 0.14, E: 0.1, A: 0.08, NINV: 0.12 },
-    Builder: { O: 0.1, C: 0.3, E: 0.08, A: 0.1, NINV: 0.24 },
-    Helper: { O: 0.1, C: 0.14, E: 0.18, A: 0.26, NINV: 0.12 },
-    Operator: { O: 0.08, C: 0.24, E: 0.1, A: 0.1, NINV: 0.24 }
+    Builder: { O: 0.1, C: 0.24, E: 0.12, A: 0.1, NINV: 0.22 },
+    Guardian: { O: 0.08, C: 0.32, E: 0.08, A: 0.18, NINV: 0.22 },
+    Helper: { O: 0.1, C: 0.14, E: 0.18, A: 0.26, NINV: 0.12 }
   };
   const FAMILY_W = {
     Creator: { ED: 0.28, CO: 0.28, VD: 0.18, RD: 0.14, SD: 0.06, TD: 0.06 },
@@ -417,19 +418,19 @@
     Organizer: { SD: 0.28, VD: 0.22, TD: 0.18, CO: 0.16, RD: 0.1, ED: 0.06 },
     Influencer: { ED: 0.24, TD: 0.22, RD: 0.18, VD: 0.16, CO: 0.12, SD: 0.08 },
     Explorer: { CO: 0.28, ED: 0.22, VD: 0.18, SD: 0.12, RD: 0.1, TD: 0.1 },
-    Builder: { SD: 0.28, VD: 0.24, CO: 0.16, RD: 0.12, TD: 0.1, ED: 0.1 },
-    Helper: { VD: 0.3, TD: 0.22, ED: 0.2, SD: 0.1, CO: 0.1, RD: 0.08 },
-    Operator: { SD: 0.26, RD: 0.22, VD: 0.18, CO: 0.16, ED: 0.1, TD: 0.08 }
+    Builder: { CO: 0.32, RD: 0.18, VD: 0.16, SD: 0.12, TD: 0.12, ED: 0.1 },
+    Guardian: { SD: 0.32, VD: 0.28, CO: 0.14, RD: 0.12, TD: 0.08, ED: 0.06 },
+    Helper: { VD: 0.3, TD: 0.22, ED: 0.2, SD: 0.1, CO: 0.1, RD: 0.08 }
   };
   const FAMILY_M = {
     Creator: { CR: 0.24, GM: 0.2, VR: 0.18, AC: 0.18, ST: 0.12, EB: 0.08 },
-    Solver: { ST: 0.26, GM: 0.18, VR: 0.18, AC: 0.14, CR: 0.14, EB: 0.1 },
+    Solver: { CR: 0.28, ST: 0.22, GM: 0.16, VR: 0.14, AC: 0.12, EB: 0.08 },
     Organizer: { VR: 0.24, ST: 0.2, GM: 0.16, AC: 0.16, CR: 0.1, EB: 0.14 },
     Influencer: { AC: 0.18, VR: 0.18, GM: 0.18, CR: 0.16, EB: 0.14, ST: 0.12 },
-    Explorer: { CR: 0.22, ST: 0.2, GM: 0.18, AC: 0.16, VR: 0.14, EB: 0.1 },
-    Builder: { EB: 0.26, ST: 0.2, VR: 0.16, GM: 0.14, AC: 0.12, CR: 0.08 },
-    Helper: { EB: 0.2, VR: 0.18, GM: 0.18, AC: 0.14, ST: 0.14, CR: 0.1 },
-    Operator: { VR: 0.24, ST: 0.18, GM: 0.16, AC: 0.16, EB: 0.14, CR: 0.08 }
+    Explorer: { ST: 0.32, CR: 0.22, GM: 0.18, AC: 0.14, VR: 0.08, EB: 0.06 },
+    Builder: { VR: 0.26, ST: 0.2, GM: 0.16, AC: 0.14, EB: 0.12, CR: 0.08 },
+    Guardian: { EB: 0.26, ST: 0.22, VR: 0.16, GM: 0.14, AC: 0.12, CR: 0.08 },
+    Helper: { EB: 0.2, VR: 0.18, GM: 0.18, AC: 0.14, ST: 0.14, CR: 0.1 }
   };
 
   function calcPScore(userP, family) {
@@ -512,10 +513,26 @@
   }
 
   /**
-   * Step 1: 计算各 Career Family 得分
-   * 五层综合: T 28% + P 15% + W 22% + M 17% + A 18%
+   * Step 1: 计算八大成长生态得分（T×55% + W×25% + P×10% + M×10%，不含 A）
    */
   function calculateCareerFamilyScore(userScores, careers) {
+    const ge = global.TalentAI && global.TalentAI.GrowthEcosystem;
+    if (ge && ge.rankGrowthEcosystems) {
+      return ge.rankGrowthEcosystems(userScores).map((item) => ({
+        family: item.family,
+        score: item.score,
+        nameZh: item.nameZh,
+        nameEn: item.nameEn,
+        tagline: item.tagline,
+        representative: item.representative,
+        careers: item.careers,
+        tMatch: item.tMatch,
+        wMatch: item.wMatch,
+        pMatch: item.pMatch,
+        mMatch: item.mMatch
+      }));
+    }
+
     const list = normalizeCareers(careers);
     const userT = {};
     ["T1_language","T2_logic","T3_spatial","T4_music","T5_bodily","T6_interpersonal","T7_intrapersonal","T8_naturalist"].forEach((k) => {
@@ -524,7 +541,6 @@
     const userP = userScores.pScores || {};
     const userW = userScores.normalized?.W || {};
     const userM = userScores.normalized?.M || {};
-    const aScore = calcAIScore(userScores.aiIndex, userScores.normalized?.A, userScores.composite);
 
     const familyScores = {};
     CAREER_FAMILIES.forEach((f) => (familyScores[f] = 0));
@@ -535,8 +551,7 @@
       const p = calcPScore(userP, family);
       const w = calcWScore(userW, family);
       const m = calcMScore(userM, family);
-      const score = 0.28 * t + 0.15 * p + 0.22 * w + 0.17 * m + 0.18 * aScore;
-      if (!familyScores[family]) familyScores[family] = 0;
+      const score = 0.55 * t + 0.25 * w + 0.10 * p + 0.10 * m;
       familyScores[family] = Math.max(familyScores[family], score);
     });
 
@@ -925,7 +940,7 @@
 
     const careerResults = [...topCareers, ...extendedPool].map((x) => ({
       ...x,
-      family: x.family.toLowerCase().replace(/builder/i, "guardian")
+      family: x.family
     }));
 
     const directionScores = {};
@@ -943,11 +958,24 @@
       .sort((a, b) => b.score - a.score)
       .slice(0, 5);
 
-    const ecosystemScores = Object.entries(ecosystemByCareerScore)
-      .map(([family, score]) => ({ family, ecosystemLabel: ECOSYSTEM_LABELS[family] || family, score: Math.round(clamp(score, 0, 100)) }))
-      .filter((e) => e.score >= ECO_MIN)
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 5);
+    const ecosystemScores = familyRanked.map((item) => ({
+      family: item.family,
+      ecosystemLabel: item.nameZh || ECOSYSTEM_LABELS[item.family] || item.family,
+      score: Math.round(clamp(item.score, 0, 100)),
+      nameEn: item.nameEn,
+      tagline: item.tagline,
+      representative: item.representative,
+      careers: item.careers,
+      tMatch: item.tMatch,
+      wMatch: item.wMatch,
+      pMatch: item.pMatch,
+      mMatch: item.mMatch
+    }));
+
+    const growthEcosystemTop3 = ecosystemScores.slice(0, 3);
+    const aiGrowthAccelerator = global.TalentAI?.GrowthEcosystem?.buildAIGrowthAccelerator
+      ? global.TalentAI.GrowthEcosystem.buildAIGrowthAccelerator(userScores)
+      : null;
 
     const debugPayload = {
       userScores: {
@@ -979,7 +1007,7 @@
       console.log("Career Family Scores", debugPayload.careerFamilyScores);
       console.log("Career Track Scores", debugPayload.careerTrackScores);
       console.log("Career Score for each recommended career", debugPayload.topCareersDetail);
-      console.log("Formula: Career Score = FAMILY_WEIGHTS[family].ability*abilityScore + .motiv*wScore + .mind*mScore; sorted by careerScore then refineScore.");
+      console.log("Formula: Growth Ecosystem = T×55% + W×25% + P×10% + M×10% (A excluded); Career Score uses fit weights separately.");
       console.log("推荐职业 Top3:", topCareers.map(c => c.name));
       topCareers.forEach((c, i) => {
         console.log(`[Top3-${i + 1}]`, {
@@ -1002,6 +1030,8 @@
       extendedPool,
       highMatchCount: highMatch.length,
       ecosystemScores,
+      growthEcosystemTop3,
+      aiGrowthAccelerator,
       topDirections: directionRanked.slice(0, 3),
       directionScores: directionRanked,
       debug: debugPayload

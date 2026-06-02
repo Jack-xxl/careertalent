@@ -290,7 +290,7 @@ function isPathfinderPaid() {
   );
 }
 
-/* ── 解锁流程入口（¥49 寻路者套餐：跳转微信支付页，付成功后由 payment 页进入 P 层测评） ── */
+/* ── 解锁流程入口（¥29 寻路者套餐：跳转微信支付页，付成功后由 payment 页进入 P 层测评） ── */
 function buyPackage(type) {
   if (type !== 'pathfinder') {
     window.location.href = 'wma_payment.html';
@@ -698,7 +698,7 @@ function renderParentRoadmap(result) {
         <li>⚠️ 需要关注：W层驱动力尚未测评（决定孩子能否长期投入）</li>
         <li>💡 关键期：12-18岁是驱动力形成期</li>
       </ul>
-      <p style="margin-top:8px;">解锁完整测评，获取：📄《家长针对性培养方案》🎯基于5层综合分析的教育建议📈3-5年成长路线图</p>
+      <p style="margin-top:8px;">解锁完整测评，获取：📄《家长针对性培养方案》🎯基于4层综合分析的教育建议📈3-5年成长路线图</p>
     </div>
   `;
 }
@@ -713,7 +713,7 @@ function renderCasesDemo() {
       <p><strong>案例说明：</strong>两个逻辑能力都是8.5的人</p>
       <p style="opacity:.9;">A同学：压力敏感 + 完美主义 → 不适合创业，更适合大公司产品经理</p>
       <p style="opacity:.9;">B同学：稳定 + 行动导向 → 更适合创业，试错快、恢复快</p>
-      <p style="margin-top:8px;"><strong>总结：</strong>天赋只是基础，真正的路径需要5层综合分析。</p>
+      <p style="margin-top:8px;"><strong>总结：</strong>天赋只是基础，真正的路径需要4层综合分析。</p>
     </div>
   `;
 }
