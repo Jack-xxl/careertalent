@@ -80,11 +80,28 @@ body{
 <script>
   window.location.replace('pwm-assessment.html');
 </script>
+<script src="js/t-careers-store.js"></script>
 <script>
 
-// 防止未支付直接访问
-if (!localStorage.getItem('talentai_premium')) {
-  window.location.href = 'payment.html?package=pathfinder';
+// 已合并至 pwm-assessment.html；若脚本未跳转则沿用旧逻辑
+// 每次测试须先付费：支付成功写入 talentai_p_entitlement，完成或中断后须再次购买
+function isPAttemptActive() {
+  return localStorage.getItem('talentai_p_attempt_active') === '1';
+}
+
+function setPAttemptActive(v) {
+  if (v) {
+    localStorage.setItem('talentai_p_attempt_active', '1');
+  } else {
+    localStorage.removeItem('talentai_p_attempt_active');
+  }
+}
+
+if (!isPAttemptActive()) {
+  const entitled = localStorage.getItem('talentai_p_entitlement') === '1';
+  if (!entitled) {
+    window.location.href = 'payment.html?package=pathfinder';
+  }
 }
 
 let questions = [];
@@ -93,6 +110,12 @@ let answers = [];
 
 // 加载题目
 async function loadQuestions(){
+  // 正式开始本次测评时消耗一次付费权益（刷新页面不重复扣减）
+  if (!isPAttemptActive()) {
+    localStorage.removeItem('talentai_p_entitlement');
+    setPAttemptActive(true);
+  }
+
   const res = await fetch("data/p-layer-questions.json");
   const data = await res.json();
   questions = data.questions;
@@ -244,11 +267,19 @@ function calculateResult(){
   );
 
   localStorage.setItem("talentai_p_completed","1");
+  setPAttemptActive(false);
+  localStorage.removeItem('talentai_p_entitlement');
+
+  if (window.TCareersStore) {
+    TCareersStore.migrateFromLegacy();
+  }
 
   window.location.href = "talentai_v3.html";
 }
 
-loadQuestions();
+if (document.getElementById('testSection')) {
+  loadQuestions();
+}
 
 </script>
 </body>

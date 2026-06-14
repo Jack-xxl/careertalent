@@ -477,15 +477,15 @@ body {
           <div class="price-val"><span>¥</span>99</div>
         </div>
         <div class="price-right">
-          <div class="price-orig">原价 ¥59</div>
-          <div class="price-save">省 ¥30</div>
+          <div class="price-orig">原价 ¥199</div>
+          <div class="price-save">限时优惠 ¥99</div>
         </div>
       </div>
 
       <!-- Step 1: Show QR button -->
       <button class="btn-pay" id="btnShowQR" type="button" disabled>
         <span style="font-size:22px">💚</span>
-        正在生成微信支付二维码…
+        正在准备解锁…
       </button>
 
       <!-- Step 2: QR Code section -->
@@ -1112,6 +1112,7 @@ function goBack() {
 
     const PATHFINDER_DESC = 'TalentAI 完整成长导航报告';
     const NAVIGATOR_DESC = 'TalentAI Navigator · 四层成长路径报告';
+    const PATHFINDER_UI_PRICE = 99;
     const PATHFINDER_UI_ORIG = 199;
     const PATHFINDER_UNLOCK_LIST =
       '<div class="get-item"><div class="get-dot">✓</div>完整天赋发现报告</div>' +
@@ -1125,13 +1126,13 @@ function goBack() {
     if (rawPkg === 'pathfinder' || rawPkg === '49' || rawPkg === '29') {
       createOrderPackageType = 'pathfinder';
       checkoutPackageType = 'pathfinder';
-      displayYuan = 99;
+      displayYuan = PATHFINDER_UI_PRICE;
       description = PATHFINDER_DESC;
       clearNavigatorWmaSession();
     } else if (rawPkg === 'navigator' || rawPkg === '150' || rawPkg === '99') {
       createOrderPackageType = 'navigator';
       checkoutPackageType = 'navigator';
-      displayYuan = 99;
+      displayYuan = PATHFINDER_UI_PRICE;
       description = NAVIGATOR_DESC;
     }
 
@@ -1147,6 +1148,7 @@ function goBack() {
     const getListEl = document.getElementById('getList') || document.querySelector('.get-list');
     const priceOrigEl = document.querySelector('.price-orig');
     const priceSaveEl = document.querySelector('.price-save');
+    const uiPriceYuan = displayYuan;
 
     if (createOrderPackageType === 'pathfinder') {
       if (badgeEl) {
@@ -1163,28 +1165,26 @@ function goBack() {
         badgeEl.innerHTML =
           '<div style="width:5px;height:5px;border-radius:50%;background:var(--neon-cyan)"></div> TALENTAI · 成长导航 · ¥99';
       }
-      if (titleEl) titleEl.textContent = '导航者套餐 · 四层成长路径报告';
-      if (subEl) subEl.textContent = description;
-      if (getListEl) {
-        getListEl.innerHTML =
-          '<div class="get-item"><div class="get-dot">✓</div>T层完整报告（天赋DNA）</div>' +
-          '<div class="get-item"><div class="get-dot">✓</div>P/W/M 四层完整报告 + AI成长加速指数</div>' +
-          '<div class="get-item"><div class="get-dot">✓</div>Top 5 职业完整解读与 AI 风险分析</div>' +
-          '<div class="get-item"><div class="get-dot">✓</div>职业路径规划 · 实付 ¥29</div>';
-      }
-      if (priceOrigEl) priceOrigEl.textContent = '原价 ¥199';
+      if (titleEl) titleEl.textContent = 'TalentAI 完整成长导航报告';
+      if (subEl) subEl.textContent = '支付成功后解锁四层完整成长导航报告';
+      if (getListEl) getListEl.innerHTML = PATHFINDER_UNLOCK_LIST;
+      if (priceOrigEl) priceOrigEl.textContent = '原价 ¥' + PATHFINDER_UI_ORIG;
       if (priceSaveEl) priceSaveEl.textContent = '限时优惠 ¥99';
     }
 
-    // 更新页面显示价格（与 create-order amount 一致）
+    // 页面展示价格与 create-order amount 一致（¥99）
     const priceVal = document.querySelector('.price-val');
-    if (priceVal) priceVal.innerHTML = '<span>¥</span>' + displayYuan;
+    if (priceVal) priceVal.innerHTML = '<span>¥</span>' + uiPriceYuan;
     const qrHintStrong = document.querySelector('.qr-hint strong');
-    if (qrHintStrong) qrHintStrong.textContent = '¥' + displayYuan;
+    if (qrHintStrong) qrHintStrong.textContent = '¥' + uiPriceYuan;
     const btnShowQR = document.getElementById('btnShowQR');
     if (btnShowQR) {
-      btnShowQR.innerHTML =
-        '<span style="font-size:22px">💚</span>微信扫码支付 ¥' + displayYuan;
+      if (createOrderPackageType === 'pathfinder') {
+        btnShowQR.innerHTML = '立即解锁完整成长导航报告 ¥' + uiPriceYuan;
+      } else {
+        btnShowQR.innerHTML =
+          '<span style="font-size:22px">💚</span>微信扫码支付 ¥' + uiPriceYuan;
+      }
       btnShowQR.disabled = true;
     }
 
@@ -1230,7 +1230,9 @@ function goBack() {
     if (btnShowQR) {
       btnShowQR.disabled = false;
       btnShowQR.textContent = '';
-      btnShowQR.innerHTML = '<span style="font-size:22px">💚</span>重试生成二维码';
+      btnShowQR.innerHTML = checkoutPackageType === 'pathfinder'
+        ? '重试 · 立即解锁完整成长导航报告'
+        : '<span style="font-size:22px">💚</span>重试生成二维码';
       btnShowQR.onclick = function () {
         location.reload();
       };

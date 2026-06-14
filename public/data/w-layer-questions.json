@@ -1,0 +1,289 @@
+{
+  "layer": "W",
+  "title": "内在驱动力测评",
+  "instruction": "把你认为最像自己的拖到下方插槽中",
+  "slot1_label": "① 最像我",
+  "slot2_label": "② 第二像我",
+  "slot1_hint": "把最像你的拖到这里",
+  "slot2_hint": "把第二像你的拖到这里",
+  "next_button_inactive": "请先完成两个选择",
+  "next_button_active": "下一题 →",
+  "progress_text": "第{current}题，共{total}题",
+  "scoring": {
+    "slot1_weight": 2,
+    "slot2_weight": 1,
+    "max_score_per_dimension": 16
+  },
+  "dimensions": {
+    "exploration": "好奇驱动",
+    "autonomy": "自主驱动",
+    "meaning": "意义驱动",
+    "competence": "胜任驱动",
+    "belonging": "归属驱动"
+  },
+  "cross_validation": {
+    "early_questions": ["W01", "W02", "W03", "W04"],
+    "late_questions": ["W05", "W06", "W07", "W08"],
+    "variance_threshold": 3,
+    "flag_label": "置信度：中",
+    "pass_label": "置信度：高"
+  },
+  "questions": [
+    {
+      "id": "W01",
+      "scene": "周末自由场景",
+      "question": "周末完全没有人安排你，整天都是你的，以下哪种状态最让你觉得充实？",
+      "options": [
+        {
+          "code": "A",
+          "text": "一整天都在网上或街上盲目而兴奋地漫游，寻找从没接触过的新东西，越发现越停不下来",
+          "dimension": "exploration"
+        },
+        {
+          "code": "B",
+          "text": "把手机调成免打扰，完全按自己的节奏安排，想几点做什么就几点做什么，不受任何人干预",
+          "dimension": "autonomy"
+        },
+        {
+          "code": "C",
+          "text": "把一直想做的「帮身边某人解决某个烦恼」的想法翻出来，开始查资料、想方案，觉得这件事值得花时间",
+          "dimension": "meaning"
+        },
+        {
+          "code": "D",
+          "text": "把自己关起来，挑战一个一直想攻克的难关，反复卡住反复尝试，享受彻底搞定它的爽感",
+          "dimension": "competence"
+        },
+        {
+          "code": "E",
+          "text": "和志同道合的朋友聚在一起，大家高频互动热烈讨论，那种思维碰撞彼此激发的感觉让你充满能量",
+          "dimension": "belonging"
+        }
+      ]
+    },
+    {
+      "id": "W02",
+      "scene": "兴趣推进场景",
+      "question": "有一个你很感兴趣的事情要推进，最让你有动力的方式是：",
+      "options": [
+        {
+          "code": "A",
+          "text": "自己一个人深入研究，把所有细节都搞清楚",
+          "dimension": "exploration"
+        },
+        {
+          "code": "B",
+          "text": "把这件事的框架想清楚，然后组织大家一起来实现",
+          "dimension": "autonomy"
+        },
+        {
+          "code": "C",
+          "text": "找到这件事能帮到谁，为了那个人把它做好",
+          "dimension": "meaning"
+        },
+        {
+          "code": "D",
+          "text": "挑战最难的部分，把自己逼到极限",
+          "dimension": "competence"
+        },
+        {
+          "code": "E",
+          "text": "找一群志同道合的人一起边做边玩",
+          "dimension": "belonging"
+        }
+      ]
+    },
+    {
+      "id": "W03",
+      "scene": "遇到困难场景",
+      "question": "你在做一件非常在意的事，突然卡住了不知道怎么继续，以下哪种情况最能让你重新燃起斗志？",
+      "options": [
+        {
+          "code": "A",
+          "text": "突然灵光一闪，决定丢掉所有参考，用一种从没人试过的奇怪新方法绕过这个卡点",
+          "dimension": "exploration"
+        },
+        {
+          "code": "B",
+          "text": "周围人完全不指手画脚，给我充分的时间和空间，相信我能按自己的直觉独立解决它",
+          "dimension": "autonomy"
+        },
+        {
+          "code": "C",
+          "text": "重新想到这件事做成后能真正改变某些人的处境，为了这个长远价值也要挺过去",
+          "dimension": "meaning"
+        },
+        {
+          "code": "D",
+          "text": "被这个卡点激起好胜心，我的能力边界不能被这个问题卡死，一定要翻过这道墙",
+          "dimension": "competence"
+        },
+        {
+          "code": "E",
+          "text": "伙伴拍拍我的肩膀，大家决定留下来陪我一起排查问题，同甘共苦绝不让我落单",
+          "dimension": "belonging"
+        }
+      ]
+    },
+    {
+      "id": "W04",
+      "scene": "完成反馈场景",
+      "question": "你认真完成了一件花了很长时间的事，以下哪种感受让你内心最满足？",
+      "options": [
+        {
+          "code": "A",
+          "text": "「我在过程中发现了一套前所未有的方法，虽然别人可能还没发现，但我知道我完成了一次真正的探索」",
+          "dimension": "exploration"
+        },
+        {
+          "code": "B",
+          "text": "「从头到尾每个决定都是我自己做的，完全流淌着我自己的想法和意志」",
+          "dimension": "autonomy"
+        },
+        {
+          "code": "C",
+          "text": "「有人真诚地告诉我这件事切实改变了他的生活，觉得做这件事真的值了」",
+          "dimension": "meaning"
+        },
+        {
+          "code": "D",
+          "text": "「我在这个过程中从完全不会到独当一面，能力边界被真实地拓宽了」",
+          "dimension": "competence"
+        },
+        {
+          "code": "E",
+          "text": "「因为这件事我融入了一个频率相同的圈子，找到了真正互相激赏的伙伴」",
+          "dimension": "belonging"
+        }
+      ]
+    },
+    {
+      "id": "W05",
+      "scene": "日常学习场景",
+      "question": "如果可以自主选择一门新技能来学，你选择它的最核心标准是：",
+      "options": [
+        {
+          "code": "A",
+          "text": "这个领域充满未知，连老师都在摸索，没有标准答案，边界广阔让我兴奋",
+          "dimension": "exploration"
+        },
+        {
+          "code": "B",
+          "text": "完全项目制，我自己定题目、找工具、定节奏，没有死板的统一要求",
+          "dimension": "autonomy"
+        },
+        {
+          "code": "C",
+          "text": "学完能直接进入真实世界解决问题，不是象牙塔里的理论，而是能改变现实的本领",
+          "dimension": "meaning"
+        },
+        {
+          "code": "D",
+          "text": "难度极高通过率不高，但学完能真正掌握一项别人搞不懂的硬核底层能力",
+          "dimension": "competence"
+        },
+        {
+          "code": "E",
+          "text": "一起学的都是想法不凡的人，在高频互动的圈子里共同成长互相激发",
+          "dimension": "belonging"
+        }
+      ]
+    },
+    {
+      "id": "W06",
+      "scene": "选择取舍场景",
+      "question": "你只有一个周末，只能做一件事，以下哪个最难放弃？",
+      "options": [
+        {
+          "code": "A",
+          "text": "去深入研究一个好奇很久的东西，完全不知道会发现什么，越挖越兴奋",
+          "dimension": "exploration"
+        },
+        {
+          "code": "B",
+          "text": "启动一个完全自己设计的计划，没有人参与或干涉，纯粹按自己的逻辑来",
+          "dimension": "autonomy"
+        },
+        {
+          "code": "C",
+          "text": "推进一件能切实帮到某群人的事，知道这件事有长远真实的价值",
+          "dimension": "meaning"
+        },
+        {
+          "code": "D",
+          "text": "集中攻克一个技能，直到看到可以被衡量的明显进步",
+          "dimension": "competence"
+        },
+        {
+          "code": "E",
+          "text": "和一群志同道合的人一起并肩做一件事，那种集体作战的感觉让你充满动力",
+          "dimension": "belonging"
+        }
+      ]
+    },
+    {
+      "id": "W07",
+      "scene": "长期坚持场景",
+      "question": "有一件事需要坚持很长时间才有结果，过程极其枯燥，以下哪种动力最能让你不放弃？",
+      "options": [
+        {
+          "code": "A",
+          "text": "在枯燥的重复中总能发现新的小花样，像玩游戏一样让练习永远保持新鲜感",
+          "dimension": "exploration"
+        },
+        {
+          "code": "B",
+          "text": "没人规定我怎么练几点练，完全融入自己的节奏，用自己的方式来做",
+          "dimension": "autonomy"
+        },
+        {
+          "code": "C",
+          "text": "内心极其认同这件事背后的长远价值，只要愿景和对别人的改变成立，过程再无聊也耐得住",
+          "dimension": "meaning"
+        },
+        {
+          "code": "D",
+          "text": "每隔一段时间通过客观数据看到自己的指标又涨了一点，这种持续进化的掌控爽感",
+          "dimension": "competence"
+        },
+        {
+          "code": "E",
+          "text": "有一群人和我一起互相打卡激励，在集体的陪伴下一起对抗枯燥，不孤单就能撑",
+          "dimension": "belonging"
+        }
+      ]
+    },
+    {
+      "id": "W08",
+      "scene": "失去感受场景",
+      "question": "如果必须退出一个你正在参与的活动，以下哪种损失让你最难受？",
+      "options": [
+        {
+          "code": "A",
+          "text": "再也无法第一时间接触最新奇的事物，失去了持续探索未知前沿的视野和机会",
+          "dimension": "exploration"
+        },
+        {
+          "code": "B",
+          "text": "失去了那个完全自定规则、不受任何人干预的自由空间",
+          "dimension": "autonomy"
+        },
+        {
+          "code": "C",
+          "text": "无法继续推进那件能切实改变某些人处境的长期有价值的事",
+          "dimension": "meaning"
+        },
+        {
+          "code": "D",
+          "text": "失去了那个每天逼着自己攻克难题、不断拓宽能力天花板的硬核进化环境",
+          "dimension": "competence"
+        },
+        {
+          "code": "E",
+          "text": "再也不能和那群志同道合、互相信任、每天并肩作战的伙伴朝夕相处了",
+          "dimension": "belonging"
+        }
+      ]
+    }
+  ]
+}

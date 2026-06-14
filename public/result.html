@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>天赋发现（Talent）- TalentAI</title>
+
+  <!-- 结果页样式（你已有） -->
+  <link rel="stylesheet" href="css/result.css" />
+  <style>
+    .radar-container { animation: none !important; }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+
+<body>
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <!-- 加载动画 -->
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div id="loading" class="loading-screen">
+    <div class="spinner"></div>
+    <p>正在生成您的天赋发现报告...</p>
+    <p id="loading-hint" style="opacity:.7;font-size:14px;margin-top:8px;">请稍候…</p>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <!-- 主内容 -->
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div id="main-content" class="container report-page" style="display:none;">
+
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <!-- 页面顶部 - 欢迎区域 -->
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <section class="welcome-section report-block t-talent-hero">
+      <p class="t-talent-eyebrow">Talent · 天赋发现</p>
+      <h1>天赋发现（Talent）</h1>
+      <p class="subtitle t-talent-intro">
+        天赋反映孩子更自然、更容易发挥优势的能力倾向。TalentAI 关注的不是短期表现，而是孩子长期相对稳定的能力结构、行为特点和成长方向。这些底层特质往往比一时的成绩、兴趣或阶段性表现，更能影响未来的发展与选择。
+      </p>
+
+      <div class="metadata">
+        <span>⏱️ 完成时间：<strong id="completion-time">-</strong> 分钟</span>
+        <span>📊 答题完成度：<strong id="completion-count">32/32</strong> 题</span>
+        <span>🎯 报告生成时间：<strong id="report-time">-</strong></span>
+      </div>
+    </section>
+
+    <!-- ① 天赋分布图 -->
+    <section class="radar-section report-block report-block-radar" id="t-talent-radar">
+      <h2>① 天赋分布图</h2>
+      <p class="section-desc">
+        下图展示 T1～T8 八个天赋维度的相对水平（满分 100 分）。图形越向外延伸，表示在该维度上越自然、越容易发挥。
+      </p>
+
+      <div class="radar-panel">
+        <ul id="radar-score-list" class="radar-score-list" aria-label="天赋维度得分"></ul>
+        <div class="radar-container">
+          <canvas id="radar-chart"></canvas>
+        </div>
+      </div>
+
+      <div class="radar-tips">
+        <p>💡 <strong>如何阅读</strong></p>
+        <ul>
+          <li>没有“完美”的雷达图，每个人都有独特的天赋组合</li>
+          <li>相对突出的区域，更值得作为长期发展的参考方向</li>
+          <li>中等区域可通过练习提升，低分区域可寻求互补支持</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ② 当前优势天赋 -->
+    <section class="t-advantage-section report-block">
+      <h2 id="advantage-section-heading">② 当前优势天赋</h2>
+      <ul id="advantage-talent-list" class="advantage-talent-list"></ul>
+      <p id="advantage-talent-note" class="advantage-talent-note" style="display:none;"></p>
+    </section>
+
+    <!-- ③ 优势天赋解读 -->
+    <section class="t-interpret-section report-block">
+      <h2>③ 优势天赋解读</h2>
+      <div id="talent-interpretations" class="talent-interpret-grid"></div>
+    </section>
+
+    <!-- ④ 影响一生的四项关键能力 -->
+    <section class="t-lifelong-section report-block">
+      <h2>④ 影响一生的四项关键能力</h2>
+      <p class="section-desc">
+        四项能力与核心天赋维度相对应，帮助理解这些优势如何影响长期发展。
+      </p>
+      <div id="lifelong-abilities" class="lifelong-abilities-grid"></div>
+    </section>
+
+    <!-- ⑤ 成长提醒 -->
+    <section class="t-growth-reminder-section report-block">
+      <h2>成长提醒</h2>
+      <div id="growth-reminder" class="growth-reminder"></div>
+    </section>
+
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <!-- 第6部分：付费墙（优化版） -->
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <section class="paywall-section report-block" id="paywall">
+      <h2>🔓 解锁完整成长导航报告</h2>
+      <p class="paywall-subtitle">完成 P + W + M 综合测评，获得更完整的成长参考</p>
+      <p class="paywall-step-hint">解锁后可一次完成 P、W、M 三层测评（共57题 · 预计10-20分钟），生成完整成长导航报告。</p>
+
+      <div class="pricing-grid pricing-grid--single">
+        <div class="pricing-card">
+          <div class="card-header">
+            <h3>寻路者套餐</h3>
+            <div class="price">
+              <span class="currency">¥</span>
+              <span class="amount">99</span>
+            </div>
+          </div>
+
+          <div class="card-content">
+            <p class="pkg-tagline" style="margin:0 0 12px;color:var(--muted);font-size:0.95rem;">
+              TalentAI Pathfinder · 成长导航基础解锁
+            </p>
+            <h4>【解锁内容】</h4>
+            <ul class="features">
+              <li>✓ 完整天赋发现报告</li>
+              <li>✓ P层性格特征分析（25题）</li>
+              <li>✓ W层内在驱动力分析（8题）</li>
+              <li>✓ M层思维模式分析（24题）</li>
+              <li>✓ 成长生态组合分析</li>
+              <li>✓ AI时代发展方向分析</li>
+              <li>✓ 完整成长导航报告</li>
+            </ul>
+
+            <h4>【适合人群】</h4>
+            <ul class="features" style="margin-top:0;">
+              <li>希望更深入了解孩子成长特点</li>
+              <li>希望发现孩子未来优势发展方向</li>
+              <li>希望获得更完整成长参考的家庭</li>
+            </ul>
+
+            <button class="buy-btn" onclick="buyPackage('pathfinder')">立即购买</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 对比表格容器（你后续可放原表格，这里给容器不丢结构） -->
+      <div id="pricing-compare" style="margin-top:24px;"></div>
+
+      <div class="guarantee-box">
+        <p>⏰ <strong>现在购买，立即解锁</strong> - 无需等待，支付后立即查看完整报告</p>
+        <p>🔒 <strong>隐私保证</strong> - 所有数据加密存储，仅你可见，绝不向第三方泄露</p>
+      </div>
+    </section>
+
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <!-- 第7部分：4层说明 -->
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <section class="layers-section report-block">
+      <h2>🎯 完整测评：4层人才DNA解析</h2>
+      <p class="section-desc">
+        真正了解一个人的成长特点与发展潜力，需要 4 个层面的综合分析。就像盖房子，每一层都不可或缺。
+      </p>
+
+      <div class="layers-grid layers-grid--four">
+        <div class="layer-card completed">
+          <h3>T层 - 天赋基因层 ✅</h3>
+          <p class="layer-question">核心问题：你能做什么？</p>
+          <p>天赋决定了你“能”做什么，以及做起来是否轻松。</p>
+        </div>
+
+        <div class="layer-card">
+          <h3>P层 - 性格特质层</h3>
+          <p class="layer-question">什么样的成长方式会让你感到充实？</p>
+          <p>性格决定了你“愿意”做什么，以及做起来是否舒适。</p>
+        </div>
+
+        <div class="layer-card">
+          <h3>W层 - 价值驱动层</h3>
+          <p class="layer-question">什么能真正激励你？</p>
+          <p>驱动力决定了你能坚持做什么，以及做起来是否有意义。</p>
+        </div>
+
+        <div class="layer-card">
+          <h3>M层 - 思维方式层</h3>
+          <p class="layer-question">当AI每月更新一个版本时，你是被甩下车还是能稳坐副驾驶？</p>
+          <p>思维方式决定了你如何成长，以及能否持续进阶。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 针对家长用户特别板块 -->
+    <section class="parent-section report-block">
+      <h2>📚 为什么家长需要了解孩子的天赋？</h2>
+      <p>了解孩子的天赋，不只是发现优势。更重要的是：在最关键的成长窗口期，帮孩子认清「我是谁」，找到真正适合自己的发展方向，尽早开始有针对性的实践积累。同时发现需要提前补强的关键短板，避免在错误方向上浪费宝贵时间。天赋测评，是孩子人生规划最重要的第一步。</p>
+      <div id="parent-roadmap"></div>
+    </section>
+
+    <section class="result-disclaimer report-block" aria-label="关于本测评结果的说明">
+      <h2 class="result-disclaimer__title">关于本测评结果的说明</h2>
+      <div class="result-disclaimer__body">
+        <p>TalentAI 四层模型（T/P/W/M）分析的是孩子更底层的人才结构——天赋优势、性格特征、内在驱动力与成长潜力。AI 成长路径单独作为加速器模块输出，不参与生态归类。这些底层特质具有较高的稳定性与长期参考价值，测的不是短期兴趣，而是更深层的成长方向。</p>
+        <p>随着 AI 发展与孩子自身成长经历的变化，具体方向会持续迭代。测评结果更适合作为成长参考，而非固定答案。</p>
+        <p>TalentAI 真正关注的，是帮助孩子找到适合长期发展的成长生态与未来方向。</p>
+        <p>为获得更精准的落地路径，建议结合专业 AI 时代成长路径导师，根据孩子实际情况持续动态优化。微信号：<strong>shfeducation</strong></p>
+      </div>
+    </section>
+
+    <!-- 页面底部 - 行动号召 -->
+    <footer class="footer">
+      <div class="footer-cta">
+        <h2>🎯 不要让迷茫再浪费你的时间</h2>
+        <p>你已经完成了第一步——了解你的天赋。</p>
+        <p>现在，只需 ¥99 即可解锁完整成长导航报告，继续 P、W、M 层测评。</p>
+        <button class="cta-button" onclick="buyPackage('pathfinder')">立即解锁成长导航报告 ¥99</button>
+
+      </div>
+
+      <div class="footer-info">
+        <p>© 2026 TalentAI | <a href="#">隐私政策</a> | <a href="#">用户协议</a> | <a href="#">联系我们</a></p>
+        <p>客服时间：9:00-21:00</p>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <!-- ✅ 脚本加载顺序（非常关键） -->
+  <!-- 1) engine.js：结果计算引擎 -->
+  <!-- 2) result-generator.js：渲染拼装层 -->
+  <!-- 3) result.js：加载数据 + 调用 + 渲染 -->
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <script src="js/site-config.js"></script>
+  <script src="js/format-labels.js"></script>
+  <script src="js/report-share-restore.js"></script>
+  <script src="js/engine.js"></script>
+  <script src="js/t-careers-store.js"></script>
+  <!-- T 层职业写入 t_career_top1 / t_career_top3 / t_career_snapshot；支付成功在 payment.html 写入并跳转 pathfinder-unlock.html -->
+  <script src="js/result-generator.js"></script>
+  <script src="js/result.js"></script>
+  <script src="js/report-share.js"></script>
+</body>
+</html>

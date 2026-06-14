@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>微信支付 · 解锁终极报告</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+    background:#0b0f1c;
+    color:#fff;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+.container{
+    width:100%;
+    max-width:420px;
+    text-align:center;
+    padding:30px;
+}
+.price{
+    font-size:36px;
+    font-weight:700;
+    color:#22c55e;
+}
+.status{
+    margin:15px 0;
+    font-size:14px;
+    color:#9ca3af;
+}
+.qr-box{
+    background:#111827;
+    padding:20px;
+    border-radius:16px;
+    margin:25px 0;
+}
+.qr-placeholder{
+    width:200px;
+    height:200px;
+    background:#fff;
+    margin:0 auto;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#000;
+    font-weight:bold;
+}
+.btn{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:12px;
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+}
+.btn-green{
+    background:linear-gradient(90deg,#22c55e,#16a34a);
+    color:white;
+}
+.hidden{
+    display:none;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+    <h2>微信支付</h2>
+    <div class="price">¥99</div>
+    <div style="font-size:13px;color:#9ca3af;margin-top:6px;">原价 <span style="text-decoration:line-through;">¥199</span> · 限时优惠</div>
+
+    <div class="status" id="payStatus">
+        请使用微信扫码支付
+    </div>
+
+    <div class="qr-box">
+        <div class="qr-placeholder" id="qrPlaceholder">
+            <div id="qrLoading">正在获取二维码...</div>
+        </div>
+        <img id="qrImg" style="display:none;width:200px;height:200px;border-radius:12px;" alt="微信支付二维码" />
+    </div>
+
+    <button class="btn btn-green" id="btnPaidHint" style="display:none;">
+        已付款，正在跳转...
+    </button>
+
+</div>
+
+<script>
+// =============================
+// Render 全自动微信支付（Native 扫码支付）
+// =============================
+const API_BASE = 'https://careertalent-1.onrender.com';
+const WMA_ASSESS_HREF = new URL('wma-assessment.html', window.location.href).href;
+
+function renderQrToImg(codeUrl) {
+  const qrImg = document.getElementById('qrImg');
+  const qrPlaceholder = document.getElementById('qrPlaceholder');
+  const qrLoading = document.getElementById('qrLoading');
+  if (!qrImg) return;
+
+  const qrService =
+    'https://api.qrserver.com/v1/create-qr-code/?size=' +
+    encodeURIComponent('200x200') +
+    '&data=' +
+    encodeURIComponent(codeUrl);
+
+  if (qrLoading) qrLoading.textContent = '等待扫码...';
+  if (qrPlaceholder) qrPlaceholder.style.display = 'none';
+  qrImg.src = qrService;
+  qrImg.style.display = 'block';
+}
+
+function applyNavigator150PaidToStorage() {
+  const oid = (typeof localStorage !== 'undefined' && localStorage.getItem('talentai_order_id')) || '';
+  localStorage.setItem('talentai_navigator_paid', 'true');
+  localStorage.setItem('talentai_navigator_paid_at', new Date().toISOString());
+  if (oid) localStorage.setItem('talentai_navigator_order_id', oid);
+  localStorage.setItem('talentai_wma_paid', 'true');
+  localStorage.setItem('talentai_wma_paid_at', new Date().toISOString());
+  if (oid) localStorage.setItem('talentai_wma_order_id', oid);
+  localStorage.setItem('talentai_wma_unlocked', 'true');
+  try {
+    localStorage.removeItem('talentai_pending_checkout_package');
+    localStorage.removeItem('talentai_wma_remaining');
+  } catch (e) {}
+
+  localStorage.removeItem('talentai_wma_completed_at');
+  localStorage.removeItem('talentai_wma_answers');
+  localStorage.removeItem('talentai_wma_layer');
+  localStorage.removeItem('talentai_wma_q');
+  localStorage.removeItem('talentai_wma_timer');
+}
+
+function redirectToWmaAssessment() {
+  console.log('[NAVIGATOR PAYMENT SUCCESS AUTO REDIRECT]', {
+    paid: true,
+    redirectTo: 'wma-assessment.html',
+    time: new Date().toISOString()
+  });
+  window.location.href = WMA_ASSESS_HREF;
+}
+
+function handlePaidSuccess() {
+  document.getElementById("payStatus").innerText = "已付款，正在跳转...";
+  stopOrderStatusPolling();
+  const btnPaidHint = document.getElementById("btnPaidHint");
+  if (btnPaidHint) btnPaidHint.style.display = "block";
+
+  applyNavigator150PaidToStorage();
+
+  setTimeout(() => {
+    redirectToWmaAssessment();
+  }, 300);
+}
+
+// ── 订单状态轮询机制（按 orderId + sessionToken 自动解锁）──
+let orderStatusTimer = null;
+function stopOrderStatusPolling() {
+  if (orderStatusTimer) clearInterval(orderStatusTimer);
+  orderStatusTimer = null;
+}
+
+function startOrderStatusPolling(orderIdValue, sessionTokenValue) {
+  stopOrderStatusPolling();
+  if (!orderIdValue || !sessionTokenValue) return;
+
+  orderStatusTimer = setInterval(async () => {
+    try {
+      console.log('[WMA PAY] polling status...', orderIdValue);
+      const r = await fetch(
+        `${API_BASE}/api/order-status?orderId=${encodeURIComponent(orderIdValue)}&sessionToken=${encodeURIComponent(
+          sessionTokenValue
+        )}`
+      );
+      const data = await r.json();
+      if (data && data.success === true && data.status === 'paid') {
+        console.log('[WMA PAY] paid detected');
+        stopOrderStatusPolling();
+        handlePaidSuccess();
+      }
+    } catch (e) {
+      // ignore
+    }
+  }, 3000);
+}
+
+(async function initWmaPayment() {
+  const packageType = 'navigator';
+  const amount = 99;
+  const description = 'TalentAI Navigator · 四层成长路径报告';
+
+  try {
+    console.log('[WMA PAY] create order start');
+    document.getElementById("payStatus").innerText = "正在创建微信订单...";
+    const resp = await fetch(`${API_BASE}/api/pay/create-order`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ packageType, amount, description }),
+    });
+    const data = await resp.json();
+    if (!data || data.success !== true) {
+      throw new Error(data?.error || '创建订单失败');
+    }
+
+    const orderId = data.orderId;
+    const sessionToken = data.sessionToken || '';
+    const codeUrl = data.code_url || data.codeUrl;
+    if (!codeUrl) throw new Error('二维码生成失败');
+
+    console.log('[WMA PAY] orderId', orderId);
+    console.log('[WMA PAY] sessionToken exists', !!sessionToken);
+
+    document.getElementById("payStatus").innerText = "请打开微信扫码支付";
+    renderQrToImg(codeUrl);
+
+    // 待支付：只记 pending，切勿提前写 talentai_paid_package_type（否则报告页会误判已解锁）
+    try {
+      localStorage.removeItem('talentai_paid_package_type');
+      localStorage.setItem('talentai_pending_checkout_package', packageType);
+      localStorage.setItem('talentai_order_id', orderId || '');
+      if (sessionToken) localStorage.setItem('talentai_session_token', sessionToken);
+    } catch (e) {}
+
+    // 用 orderId + sessionToken 轮询后端订单状态
+    startOrderStatusPolling(orderId, sessionToken);
+  } catch (e) {
+    console.error(e);
+    document.getElementById("payStatus").innerText =
+      "创建订单失败：" + (e?.message || String(e));
+  }
+})();
+
+</script>
+
+</body>
+</html>

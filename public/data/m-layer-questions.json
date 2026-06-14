@@ -1,0 +1,289 @@
+{
+  "layer": "M",
+  "title": "思维模式测评",
+  "description": "以下每题请选出最像你真实状态的那个",
+  "progress_text": "第{current}题，共{total}题",
+  "next_button_inactive": "请先选择一个选项",
+  "next_button_active": "下一题 →",
+  "scoring": {
+    "A_score": 3,
+    "B_score": 2,
+    "C_score": 1,
+    "D_score": 0,
+    "max_per_dimension": 12
+  },
+  "dimensions": {
+    "growth": "成长思维",
+    "reconstruction": "认知重构",
+    "systems": "系统思维",
+    "independence": "独立思考",
+    "validation": "实践验证",
+    "longterm": "长期主义"
+  },
+  "questions": [
+    {
+      "id": "M01",
+      "dimension": "growth",
+      "question": "你在一个很在意的比赛或项目上彻底搞砸了，你通常是哪种状态？",
+      "options": [
+        {"code": "A", "text": "马上想分析哪里出了问题，调整完忍不住想再试一次", "score": 3},
+        {"code": "B", "text": "难受一会儿，但过段时间会回头想想哪里可以做得更好", "score": 2},
+        {"code": "C", "text": "需要有人开导或给建议，才能重新找回状态", "score": 1},
+        {"code": "D", "text": "感到很受挫，很难再对这件事提起劲来", "score": 0}
+      ]
+    },
+    {
+      "id": "M02",
+      "dimension": "growth",
+      "question": "你必须在大家面前展示一项你完全不擅长的技能，你会：",
+      "options": [
+        {"code": "A", "text": "大方承认不会，顺便请教会的人，把它当成学习的机会", "score": 3},
+        {"code": "B", "text": "虽然尴尬，但觉得暴露了也没关系，迟早能练好", "score": 2},
+        {"code": "C", "text": "只有在大家都表示不介意、氛围很安全的时候，才愿意展示", "score": 1},
+        {"code": "D", "text": "感到强烈的不舒服，会想办法避开这个场合", "score": 0}
+      ]
+    },
+    {
+      "id": "M03",
+      "dimension": "growth",
+      "question": "有两个任务让你选，你内心真实的倾向是：",
+      "options": [
+        {"code": "A", "text": "极度想选那个从没接触过、难度极高但能学到很多新东西的任务", "score": 3},
+        {"code": "B", "text": "倾向于选有点挑战但努力能搞定的任务，借此提升自己", "score": 2},
+        {"code": "C", "text": "更想选比较稳妥、有把握做出好结果的任务", "score": 1},
+        {"code": "D", "text": "只想选最熟悉、绝对不会搞砸的任务", "score": 0}
+      ]
+    },
+    {
+      "id": "M04",
+      "dimension": "growth",
+      "question": "你非常用心做的东西被人提出很尖锐的否定意见，你第一时间的反应是：",
+      "options": [
+        {"code": "A", "text": "先把情绪放一边，只看对方说的有没有可以改进的点", "score": 3},
+        {"code": "B", "text": "第一反应有点难受，但冷静下来会认真评估对方说得对不对", "score": 2},
+        {"code": "C", "text": "如果对方语气还好、是为了我好，才愿意听取并修改", "score": 1},
+        {"code": "D", "text": "本能地想解释和反驳，觉得对方不理解自己", "score": 0}
+      ]
+    },
+    {
+      "id": "M05",
+      "dimension": "reconstruction",
+      "question": "你死磕了很久的方法突然完全走不通了，你的第一反应是：",
+      "options": [
+        {"code": "A", "text": "立刻后退一步，寻找完全不需要走这条路的全新解法", "score": 3},
+        {"code": "B", "text": "停下来想一两天，找找有没有可以替代的方案", "score": 2},
+        {"code": "C", "text": "继续在原来的思路上想办法，希望能找到突破口", "score": 1},
+        {"code": "D", "text": "感到很迷茫，觉得这件事可能真的做不成了", "score": 0}
+      ]
+    },
+    {
+      "id": "M06",
+      "dimension": "reconstruction",
+      "question": "面对一个有很多规定、改变不了的场合，比如学校的某项规则，你更倾向于：",
+      "options": [
+        {"code": "A", "text": "在规则允许的范围内找到完全不一样的创新方法", "score": 3},
+        {"code": "B", "text": "先熟悉规则，然后在允许的范围内做一些改良", "score": 2},
+        {"code": "C", "text": "顺应规则，按部就班地在现有体系里做好", "score": 1},
+        {"code": "D", "text": "如果觉得不舒服，就选择不参与", "score": 0}
+      ]
+    },
+    {
+      "id": "M07",
+      "dimension": "reconstruction",
+      "question": "当你一直相信的某个道理被一个新事实彻底推翻时，你通常会：",
+      "options": [
+        {"code": "A", "text": "觉得很刺激，立刻重新理解这件事，拼接新的认知框架", "score": 3},
+        {"code": "B", "text": "虽然有点意外，但会接受并开始修正自己的想法", "score": 2},
+        {"code": "C", "text": "会试图找理由解释，尽可能保留原来的理解", "score": 1},
+        {"code": "D", "text": "感到焦虑和排斥，倾向于觉得新事实可能不可靠", "score": 0}
+      ]
+    },
+    {
+      "id": "M08",
+      "dimension": "reconstruction",
+      "question": "外部突然发生了很大的变化，比如考试规则改了或者活动临时取消，你内心通常是：",
+      "options": [
+        {"code": "A", "text": "快速想到这个变化带来了什么新的可能性", "score": 3},
+        {"code": "B", "text": "虽然有点慌，但会主动去适应和探索新的应对方式", "score": 2},
+        {"code": "C", "text": "感到很不安，倾向于先退守观望等情况稳定", "score": 1},
+        {"code": "D", "text": "觉得一切计划都乱了，内心感到无力", "score": 0}
+      ]
+    },
+    {
+      "id": "M09",
+      "dimension": "systems",
+      "question": "你负责的小组项目突然出现了问题，你习惯第一步排查什么？",
+      "options": [
+        {"code": "A", "text": "整个项目流程的哪个环节出现了断裂，以及为什么会断", "score": 3},
+        {"code": "B", "text": "看看外部情况有没有发生变化，影响了项目进展", "score": 2},
+        {"code": "C", "text": "最近做的哪个具体步骤出了问题", "score": 1},
+        {"code": "D", "text": "是哪个组员没有完成自己的任务", "score": 0}
+      ]
+    },
+    {
+      "id": "M10",
+      "dimension": "systems",
+      "question": "开始一个新的长期计划时，你花精力最多的地方通常是：",
+      "options": [
+        {"code": "A", "text": "把各个部分之间的关系和可能产生的连锁影响全部想清楚", "score": 3},
+        {"code": "B", "text": "明确最终目标，倒推出几个重要的阶段节点", "score": 2},
+        {"code": "C", "text": "把接下来两周具体要做的事情安排好", "score": 1},
+        {"code": "D", "text": "先把能展示出来的部分比如名称、封面做好", "score": 0}
+      ]
+    },
+    {
+      "id": "M11",
+      "dimension": "systems",
+      "question": "看到身边某个同学突然成绩大幅提升，你内心的解释是：",
+      "options": [
+        {"code": "A", "text": "他一定找到了一套适合自己的可持续学习系统", "score": 3},
+        {"code": "B", "text": "他在某个关键方法上做出了正确的改变", "score": 2},
+        {"code": "C", "text": "运气好，刚好考到了自己复习过的内容", "score": 1},
+        {"code": "D", "text": "他肯定提前知道了考试范围", "score": 0}
+      ]
+    },
+    {
+      "id": "M12",
+      "dimension": "systems",
+      "question": "有一个短期方法能让你这次考试拿高分，但可能让你对这门课失去真正的理解，你会：",
+      "options": [
+        {"code": "A", "text": "坚决不用，宁可这次分低也不破坏长期的理解", "score": 3},
+        {"code": "B", "text": "倾向于不用，去找一个既能拿分又真正理解的方法", "score": 2},
+        {"code": "C", "text": "先用这个方法拿到分，以后有时间再补回理解", "score": 1},
+        {"code": "D", "text": "直接用，拿到分最重要，理不理解以后再说", "score": 0}
+      ]
+    },
+    {
+      "id": "M13",
+      "dimension": "independence",
+      "question": "老师或长辈斩钉截铁地说你的某个想法不可行，你通常会：",
+      "options": [
+        {"code": "A", "text": "只看他说的逻辑是否真的成立，不管他的身份", "score": 3},
+        {"code": "B", "text": "客观参考他的具体建议，但保留自己的基本判断", "score": 2},
+        {"code": "C", "text": "内心开始动摇，反思自己是不是想错了", "score": 1},
+        {"code": "D", "text": "觉得权威这么说应该是对的，基本放弃原来的想法", "score": 0}
+      ]
+    },
+    {
+      "id": "M14",
+      "dimension": "independence",
+      "question": "全班同学都在追捧一个新的学习方法或游戏，你的第一反应是：",
+      "options": [
+        {"code": "A", "text": "先搞清楚它到底好在哪里，有没有隐藏的问题", "score": 3},
+        {"code": "B", "text": "保持观望，不急着跟风，想等看清楚再说", "score": 2},
+        {"code": "C", "text": "感到有点焦虑，觉得大家都在用自己不用会落后", "score": 1},
+        {"code": "D", "text": "觉得大家都说好那应该没问题，立刻跟进", "score": 0}
+      ]
+    },
+    {
+      "id": "M15",
+      "dimension": "independence",
+      "question": "小组讨论时所有人都同意某个方案，但你发现了一个漏洞，你会：",
+      "options": [
+        {"code": "A", "text": "哪怕会被冷落，也要清晰说出这个漏洞", "score": 3},
+        {"code": "B", "text": "开会时委婉带过，会后私下找负责人说明", "score": 2},
+        {"code": "C", "text": "保留自己的不同意见，觉得少数服从多数", "score": 1},
+        {"code": "D", "text": "觉得可能是自己想错了，放弃自己的判断", "score": 0}
+      ]
+    },
+    {
+      "id": "M16",
+      "dimension": "independence",
+      "question": "看到一篇写得很有道理、很多人转发的文章，你通常会：",
+      "options": [
+        {"code": "A", "text": "习惯性去想这篇文章有没有故意忽略的信息", "score": 3},
+        {"code": "B", "text": "觉得有道理，但会去找找有没有不同观点", "score": 2},
+        {"code": "C", "text": "觉得写得很好，会转发给朋友看", "score": 1},
+        {"code": "D", "text": "完全认同，并且用这篇文章去说服持不同意见的人", "score": 0}
+      ]
+    },
+    {
+      "id": "M17",
+      "dimension": "validation",
+      "question": "脑子里突然有了一个觉得很不错的想法，你的下一步是：",
+      "options": [
+        {"code": "A", "text": "用最快的方式做一个粗糙的版本，马上看看有没有人认可", "score": 3},
+        {"code": "B", "text": "先调研几天，确认可行之后再动手做", "score": 2},
+        {"code": "C", "text": "把所有细节在脑子里或纸上想清楚了再开始", "score": 1},
+        {"code": "D", "text": "先和朋友说说，大部分停留在讨论阶段", "score": 0}
+      ]
+    },
+    {
+      "id": "M18",
+      "dimension": "validation",
+      "question": "面对一个完全没接触过的新工具，大家都说很好用，你习惯：",
+      "options": [
+        {"code": "A", "text": "立刻找一个真实的任务直接上手试试", "score": 3},
+        {"code": "B", "text": "先看几个别人使用的视频，大概了解怎么用", "score": 2},
+        {"code": "C", "text": "先把教程从头到尾看完，理解透彻了再用", "score": 1},
+        {"code": "D", "text": "等大家都普及了再被动接触", "score": 0}
+      ]
+    },
+    {
+      "id": "M19",
+      "dimension": "validation",
+      "question": "小组对两个方案争执不下，各有各的道理，你赞同：",
+      "options": [
+        {"code": "A", "text": "停止争论，两个方案各花少量资源实际测试一下，用结果说话", "score": 3},
+        {"code": "B", "text": "先做一个最简单的版本，去问问真实用户的反馈", "score": 2},
+        {"code": "C", "text": "继续开会讨论，或请更有经验的人来判断", "score": 1},
+        {"code": "D", "text": "谁负责这个部分就用谁的方案", "score": 0}
+      ]
+    },
+    {
+      "id": "M20",
+      "dimension": "validation",
+      "question": "你认为真正学会了一个新技能的标志是：",
+      "options": [
+        {"code": "A", "text": "用这个技能解决了一个真实存在的问题", "score": 3},
+        {"code": "B", "text": "能从零独立完成一个完整的作品", "score": 2},
+        {"code": "C", "text": "把底层原理全部搞清楚了", "score": 1},
+        {"code": "D", "text": "能把这个概念跟别人说得头头是道", "score": 0}
+      ]
+    },
+    {
+      "id": "M21",
+      "dimension": "longterm",
+      "question": "启动一个个人项目，以下哪种回报节奏最能让你保持投入？",
+      "options": [
+        {"code": "A", "text": "前期几乎没有反馈，但底层在积累，长期会有很大回报", "score": 3},
+        {"code": "B", "text": "每隔一两个月能稳步看到一些实质进展", "score": 2},
+        {"code": "C", "text": "两三周内就能看到明显效果", "score": 1},
+        {"code": "D", "text": "需要当天就能看到反馈，否则很难坚持", "score": 0}
+      ]
+    },
+    {
+      "id": "M22",
+      "dimension": "longterm",
+      "question": "每天重复练习一项很重要的技能，过程极其枯燥，你更接近：",
+      "options": [
+        {"code": "A", "text": "只要相信这件事长期有价值，就能一直坚持下去", "score": 3},
+        {"code": "B", "text": "会在枯燥的练习里加入一些小变化，让自己更容易坚持", "score": 2},
+        {"code": "C", "text": "需要有人一起打卡，或者有明确的奖励，才能坚持下去", "score": 1},
+        {"code": "D", "text": "多做几天就觉得没意思，会去找更有趣的事情", "score": 0}
+      ]
+    },
+    {
+      "id": "M23",
+      "dimension": "longterm",
+      "question": "规划未来两三年的成长时，你内心最在乎的是：",
+      "options": [
+        {"code": "A", "text": "建立一套任何人都剥夺不走的底层能力系统", "score": 3},
+        {"code": "B", "text": "掌握几门真正有竞争力的硬核技能", "score": 2},
+        {"code": "C", "text": "拿到几个让别人看得到的成绩或证书", "score": 1},
+        {"code": "D", "text": "走一步算一步，跟着感觉来，不想为未来承担眼前的痛苦", "score": 0}
+      ]
+    },
+    {
+      "id": "M24",
+      "dimension": "longterm",
+      "question": "你的长期计划推进到一半，突然出现一个能快速得到好处的机会但对长期目标没有帮助，你会：",
+      "options": [
+        {"code": "A", "text": "完全不为所动，坚决不让主线被它分散", "score": 3},
+        {"code": "B", "text": "非常纠结，严格评估影响，只有不影响主线才考虑", "score": 2},
+        {"code": "C", "text": "先把这个机会拿了，反正花不了多少时间", "score": 1},
+        {"code": "D", "text": "立刻切过去，甚至觉得长期计划太慢了", "score": 0}
+      ]
+    }
+  ]
+}
