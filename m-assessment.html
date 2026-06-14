@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>M层思维模式测评 · TalentAI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/main.css" />
+  <style>
+    body { min-height: 100vh; }
+    .gradient-text {
+      background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .screen { display: none; }
+    .screen.active { display: block; }
+    .progress-fill { transition: width 0.35s ease; }
+    .m-desc { font-size: 14px; color: #9ca3af; margin-bottom: 20px; line-height: 1.6; }
+    .m-option {
+      display: flex; gap: 12px; align-items: flex-start;
+      padding: 16px 18px; border-radius: 12px; cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.03);
+      transition: all 0.25s;
+    }
+    .m-option:hover {
+      border-color: rgba(102,126,234,0.4);
+      transform: translateY(-1px);
+    }
+    .m-option.selected {
+      border-color: #667eea;
+      background: rgba(102,126,234,0.18);
+      box-shadow: 0 0 20px rgba(102,126,234,0.3);
+    }
+    .m-option-code {
+      flex-shrink: 0; width: 28px; height: 28px; border-radius: 8px;
+      background: rgba(102,126,234,0.2); color: #a78bfa;
+      font-weight: 700; font-size: 13px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .m-option.selected .m-option-code {
+      background: rgba(102,126,234,0.5); color: #fff;
+    }
+    .m-option-text { flex: 1; font-size: 15px; line-height: 1.65; color: #e5e7eb; }
+    #nextBtn.m-next-ready {
+      background: linear-gradient(135deg, #22c55e, #10b981) !important;
+      box-shadow: 0 8px 24px rgba(34,197,94,0.35);
+    }
+    #nextBtn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .dominant-tag {
+      display: inline-block; padding: 4px 12px; border-radius: 999px;
+      background: rgba(167,139,250,0.15); border: 1px solid rgba(167,139,250,0.35);
+      color: #c4b5fd; font-size: 13px; margin: 4px 6px 4px 0;
+    }
+    .radar-wrap { max-width: 320px; margin: 0 auto 24px; }
+    .dim-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 8px 0; border-bottom: 1px solid rgba(148,163,184,0.1);
+      font-size: 14px;
+    }
+    .dim-pct { color: #a78bfa; font-weight: 700; }
+  </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+
+  <header class="glass-card border-b border-gray-800 sticky top-0 z-50">
+    <div class="max-w-5xl mx-auto px-4 py-4">
+      <div class="flex items-center justify-between flex-wrap gap-3">
+        <div class="flex items-center gap-3 min-w-0">
+          <span class="text-2xl font-black gradient-text shrink-0">TalentAI</span>
+          <span class="text-gray-400 text-sm truncate">🧠 M层 · 思维模式</span>
+        </div>
+        <div class="text-right shrink-0">
+          <div class="text-sm text-gray-400">测评进度</div>
+          <div class="text-lg font-bold" id="prog-text">第1题，共24题</div>
+        </div>
+      </div>
+      <div class="mt-3 bg-gray-800 rounded-full h-2 overflow-hidden">
+        <div id="prog-fill" class="h-full bg-gradient-to-r from-purple-600 to-pink-500 progress-fill" style="width:0%"></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto px-4 py-8 min-h-[calc(100vh-120px)]">
+
+    <div id="assess-screen" class="screen active">
+      <div class="glass-card neon-border p-6 md:p-8 rounded-2xl mb-6">
+        <p class="m-desc" id="m-description"></p>
+        <h2 id="question-text" class="text-xl md:text-2xl font-bold leading-relaxed mb-6">正在加载…</h2>
+        <div id="options-container" class="space-y-3"></div>
+      </div>
+      <div class="flex items-center justify-start flex-wrap gap-3">
+        <button type="button" id="prevBtn" class="glass-card px-6 py-3 rounded-lg font-semibold hover:bg-white/10 transition" disabled>
+          <i class="fas fa-arrow-left mr-2"></i>上一题
+        </button>
+      </div>
+    </div>
+
+    <div id="result-screen" class="screen">
+      <div class="glass-card neon-border p-8 rounded-2xl">
+        <h2 class="text-2xl font-bold mb-2">M层思维模式参数</h2>
+        <p class="text-gray-400 text-sm mb-6" id="dominant-label"></p>
+        <div class="radar-wrap" id="radar-chart"></div>
+        <div id="dim-list" class="mb-6"></div>
+        <p class="text-gray-500 text-sm leading-relaxed">
+          以上为当前测评呈现的核心思维模式参数，仅作为成长参考依据，不直接等同于性格判断或职业建议。
+        </p>
+        <button type="button" id="btnContinue" class="neon-btn w-full mt-8 py-4 rounded-xl font-bold text-lg">
+          完成，查看完整成长导航报告 →
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <script src="js/shuffled-choice.js"></script>
+  <script src="js/m-layer-scoring.js"></script>
+  <script src="js/m-assessment.js"></script>
+</body>
+</html>

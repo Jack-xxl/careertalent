@@ -1,17 +1,219 @@
 console.log('✅ result-generator.js loaded');
 
+/** T 层展示用维度名称（雷达图与列表） */
+const T_DIM_DISPLAY = {
+  T1_language: { short: "T1", name: "语言智能", color: "#60a5fa" },
+  T2_logic: { short: "T2", name: "逻辑智能", color: "#34d399" },
+  T3_spatial: { short: "T3", name: "空间智能", color: "#f59e0b" },
+  T4_music: { short: "T4", name: "音乐智能", color: "#f472b6" },
+  T5_bodily: { short: "T5", name: "身体智能", color: "#f97316" },
+  T6_interpersonal: { short: "T6", name: "人际智能", color: "#10b981" },
+  T7_intrapersonal: { short: "T7", name: "内省智能", color: "#a78bfa" },
+  T8_naturalist: { short: "T8", name: "自然智能", color: "#84cc16" }
+};
+
+const T_DIM_ORDER = [
+  "T1_language", "T2_logic", "T3_spatial", "T4_music",
+  "T5_bodily", "T6_interpersonal", "T7_intrapersonal", "T8_naturalist"
+];
+
+/** 优势天赋解读（仅天赋，无职业） */
+const T_TALENT_INTERPRETATIONS = {
+  T2_logic: {
+    title: "逻辑智能",
+    body: `
+      <p>逻辑智能帮助孩子分析问题、理解规律并形成判断。</p>
+      <p><strong>长期会影响：</strong></p>
+      <ul>
+        <li>判断力</li>
+        <li>决策能力</li>
+        <li>独立思考能力</li>
+      </ul>
+      <p>在 AI 时代，逻辑智能越强，越不容易被错误信息误导，也更容易识别风险与机会。</p>
+    `
+  },
+  T1_language: {
+    title: "语言智能",
+    body: `
+      <p>语言智能帮助孩子表达想法、沟通观点并建立影响力。</p>
+      <p><strong>长期会影响：</strong></p>
+      <ul>
+        <li>表达能力</li>
+        <li>沟通能力</li>
+        <li>影响力</li>
+        <li>领导力</li>
+      </ul>
+      <p>很多机会来自于：让别人理解自己的价值。</p>
+    `
+  },
+  T6_interpersonal: {
+    title: "人际智能",
+    body: `
+      <p>人际智能帮助孩子理解他人、建立信任并形成合作关系。</p>
+      <p><strong>长期会影响：</strong></p>
+      <ul>
+        <li>亲子关系</li>
+        <li>友情关系</li>
+        <li>爱情与婚姻关系</li>
+        <li>团队合作能力</li>
+      </ul>
+      <p>良好的人际关系是影响人生幸福感的重要因素之一。</p>
+    `
+  },
+  T7_intrapersonal: {
+    title: "内省智能",
+    body: `
+      <p>内省智能帮助孩子认识自己、发现优势并持续调整成长方向。</p>
+      <p><strong>长期会影响：</strong></p>
+      <ul>
+        <li>自我认知能力</li>
+        <li>情绪管理能力</li>
+        <li>长期成长能力</li>
+      </ul>
+      <p>很多人努力多年却走错方向，本质上是不够了解自己。</p>
+    `
+  },
+  T3_spatial: {
+    title: "空间智能",
+    body: `
+      <p>空间智能帮助孩子理解形状、结构、位置关系与视觉信息。</p>
+      <p><strong>长期会影响：</strong></p>
+      <ul>
+        <li>空间想象与构图能力</li>
+        <li>对复杂结构的把握</li>
+        <li>动手与设计的协调感</li>
+      </ul>
+    `
+  },
+  T4_music: {
+    title: "音乐智能",
+    body: `
+      <p>音乐智能帮助孩子感知节奏、旋律与声音之美。</p>
+      <p><strong>长期会影响：</strong></p>
+      <ul>
+        <li>节奏感与听觉敏感度</li>
+        <li>对旋律与情绪的觉察</li>
+        <li>表达中的韵律与感染力</li>
+      </ul>
+    `
+  },
+  T5_bodily: {
+    title: "身体智能",
+    body: `
+      <p>身体智能帮助孩子协调动作、运用身体完成具体任务。</p>
+      <p><strong>长期会影响：</strong></p>
+      <ul>
+        <li>身体协调与运动表现</li>
+        <li>动手实践中的稳定性</li>
+        <li>通过身体学习理解世界的方式</li>
+      </ul>
+    `
+  },
+  T8_naturalist: {
+    title: "自然智能",
+    body: `
+      <p>自然智能帮助孩子观察自然现象、识别模式并理解系统变化。</p>
+      <p><strong>长期会影响：</strong></p>
+      <ul>
+        <li>观察与归纳能力</li>
+        <li>对环境与系统的敏感度</li>
+        <li>持续探索与好奇心</li>
+      </ul>
+    `
+  }
+};
+
+const LIFELONG_ABILITIES = [
+  {
+    key: "judgment",
+    title: "判断力",
+    dimKey: "T2_logic",
+    dimLabel: "逻辑智能（T2）",
+    color: "#34d399",
+    body: `
+      <p>帮助孩子独立思考、分析问题、判断信息真伪、做出理性决策。</p>
+      <p>在信息爆炸和 AI 时代，判断力越强，越不容易被误导。</p>
+    `
+  },
+  {
+    key: "expression",
+    title: "表达力",
+    dimKey: "T1_language",
+    dimLabel: "语言智能（T1）",
+    color: "#60a5fa",
+    body: `
+      <p>帮助孩子表达想法、展示价值、沟通合作、获得机会。</p>
+      <p>很多机会不仅来自能力，更来自于能否清晰表达自己。</p>
+    `
+  },
+  {
+    key: "happiness",
+    title: "幸福力",
+    dimKey: "T6_interpersonal",
+    dimLabel: "人际智能（T6）",
+    color: "#10b981",
+    body: `
+      <p>人际智能是建立良好人际关系的重要基础。帮助孩子建立亲情、友情、爱情与团队关系。</p>
+      <p>大量研究发现：良好的人际关系，是影响人生幸福感和生活满意度的重要因素之一。</p>
+    `
+  },
+  {
+    key: "cognition",
+    title: "认知力",
+    dimKey: "T7_intrapersonal",
+    dimLabel: "内省智能（T7）",
+    color: "#a78bfa",
+    body: `
+      <p>帮助孩子认识自己、调整方向、持续成长。</p>
+      <p>认知力越强，越容易找到适合自己的成长道路。</p>
+    `
+  }
+];
+
+const KEY_GROWTH_DIMS = ["T2_logic", "T1_language", "T6_interpersonal", "T7_intrapersonal"];
+const ADVANTAGE_MIN_PCT = 75;
+
+/** 0–10 制转 0–100 整数展示 */
+function toDisplayPct(raw) {
+  const n = Number(raw) || 0;
+  if (n <= 10) return Math.round(n * 10);
+  return Math.round(n);
+}
+
+const GROWTH_REMINDER_LOW_COPY = {
+  T2_logic: {
+    title: "逻辑智能",
+    affects: ["判断力", "分析能力", "决策能力"],
+    suggest: "建议在成长过程中有意识地培养孩子的逻辑思维与独立思考能力。"
+  },
+  T1_language: {
+    title: "语言智能",
+    affects: ["表达能力", "沟通能力", "影响力"],
+    suggest: "建议增加阅读、表达和沟通训练。"
+  },
+  T6_interpersonal: {
+    title: "人际智能",
+    affects: ["亲情关系", "友情关系", "团队合作能力"],
+    suggest: "建议增加真实社交、合作与沟通体验。"
+  },
+  T7_intrapersonal: {
+    title: "内省智能",
+    affects: ["自我认知", "情绪管理", "人生方向选择"],
+    suggest: "建议培养反思、总结和自我观察习惯。"
+  }
+};
+
 function renderAll(result, userData) {
   renderHeader(result, userData);
-  renderTalentBars(result.scores);
   if (result.radarData) renderRadar(result.radarData);
-  renderTop3(result.top3Talents);
-  renderCombination(result.combinationAnalysis);
-  renderConflicts(result.conflictWarnings);
-  renderCareers(result.careerRecommendations, result.scores);
+  renderRadarScoreList(result.scores);
+  const advantageKeys = renderAdvantageTalents(result.scores);
+  renderTalentInterpretations(advantageKeys, result.scores);
+  renderLifelongAbilities(result.scores);
+  renderGrowthReminder(result.scores);
   renderParentRoadmap(result);
-  renderCasesDemo();
 
-  // ✅ 保存T层8维天赋分数 → 供 talent_p_layer.html 读取，实现真实T+P动态联动
+  // 后台仍保存 T 分与职业数据，供 P 层与寻路者解锁流程使用（本页不展示职业）
   try {
     if (result.scores) {
       localStorage.setItem('talentai_t_scores', JSON.stringify(result.scores));
@@ -32,16 +234,12 @@ function renderHeader(result, userData) {
   const reportTime = document.getElementById('report-time');
   if (reportTime) reportTime.textContent = now.toLocaleString('zh-CN');
 
-  // completion time（从timings粗略推算）
   const minutes = estimateMinutes(userData.timings);
   const ct = document.getElementById('completion-time');
   if (ct) ct.textContent = minutes;
 
-  const label = document.getElementById('talent-label');
-  if (label) label.textContent = result.metadata.talentLabel || '-';
-
-  const nick = document.getElementById('talent-nickname');
-  if (nick) nick.textContent = `“${result.metadata.talentNickname || '多元发展型'}”`;
+  const countEl = document.getElementById('completion-count');
+  if (countEl) countEl.textContent = '32/32';
 }
 
 function estimateMinutes(timings) {
@@ -51,20 +249,8 @@ function estimateMinutes(timings) {
   return Math.max(1, Math.round(seconds/60));
 }
 
-const T_DIM_META = {
-  T1_language: { name: "语言智能", color: "#60a5fa", desc: "表达、理解、叙事能力" },
-  T2_logic: { name: "逻辑数学智能", color: "#34d399", desc: "分析、推理、建模能力" },
-  T3_spatial: { name: "空间智能", color: "#f59e0b", desc: "视觉结构、空间构建能力" },
-  T4_music: { name: "音乐智能", color: "#f472b6", desc: "节奏、旋律、声音感知能力" },
-  T5_bodily: { name: "身体动觉智能", color: "#f97316", desc: "动作控制、身体执行能力" },
-  T6_interpersonal: { name: "人际智能", color: "#10b981", desc: "理解他人、建立连接能力" },
-  T7_intrapersonal: { name: "内省智能", color: "#a78bfa", desc: "自我觉察、独立反思能力" },
-  T8_naturalist: { name: "自然观察智能", color: "#84cc16", desc: "自然模式、系统观察能力" }
-};
-
 function talentDimBar(name, val, color, desc) {
-  const score = Number(val) || 0;
-  const pct = Math.max(0, Math.min(100, Math.round(score * 10)));
+  const pct = toDisplayPct(val);
   return `
     <div class="dim-bar-wrap">
       <div class="dim-bar-label">
@@ -72,7 +258,7 @@ function talentDimBar(name, val, color, desc) {
           <span>${name}</span>
           <small>${desc || ""}</small>
         </div>
-        <strong style="color:${color}">${score.toFixed(1)}</strong>
+        <strong style="color:${color}">${pct}</strong>
       </div>
       <div class="dim-bar-track">
         <div class="dim-bar-fill" data-pct="${pct}" style="background:${color}"></div>
@@ -94,10 +280,10 @@ function renderTalentBars(scores) {
   const barsEl = document.getElementById("talent-bars");
   if (!barsEl || !scores) return;
 
-  const entries = Object.keys(T_DIM_META).map(k => ({
+  const entries = T_DIM_ORDER.map((k) => ({
     key: k,
     score: Number(scores[k]?.displayScore ?? 0) || 0,
-    ...T_DIM_META[k]
+    ...T_DIM_DISPLAY[k]
   }));
 
   barsEl.innerHTML = entries.map(e =>
@@ -109,7 +295,7 @@ function renderTalentBars(scores) {
   const chipsEl = document.getElementById("talent-top3-chips");
   if (chipsEl) {
     chipsEl.innerHTML = top3.map(e =>
-      `<span class="chip">${e.name} ${e.score.toFixed(1)}</span>`
+      `<span class="chip">${e.name} ${toDisplayPct(e.score)}</span>`
     ).join("");
   }
 
@@ -130,6 +316,159 @@ function renderTalentBars(scores) {
 /* ---------------- Radar（固定尺寸，不随悬停/窗口变化） ---------------- */
 var _radarChartInstance = null;
 
+function getScoreEntries(scores) {
+  if (!scores) return [];
+  return T_DIM_ORDER.map((key) => {
+    const score = Number(scores[key]?.displayScore ?? 0) || 0;
+    return {
+      key,
+      score,
+      displayPct: toDisplayPct(score),
+      ...T_DIM_DISPLAY[key]
+    };
+  }).sort((a, b) => b.displayPct - a.displayPct || a.key.localeCompare(b.key));
+}
+
+/**
+ * 优势天赋选取：
+ * 1) 全部 ≥75 分；
+ * 2) 若不足 3 项，按分数从高到低按档补足至至少 3 项（某一档同分则整档并入）；
+ * 3) ≥75 已达 3 项及以上时不再补足。
+ */
+function pickAdvantageEntries(entries) {
+  if (!entries.length) return { items: [], balanced: false };
+
+  const sorted = [...entries];
+  const high = sorted.filter((e) => e.displayPct >= ADVANTAGE_MIN_PCT);
+
+  if (high.length >= 3) {
+    return { items: high, balanced: false };
+  }
+
+  const seen = new Set();
+  const items = [];
+
+  const addTier = (tier) => {
+    tier.forEach((e) => {
+      if (!seen.has(e.key)) {
+        seen.add(e.key);
+        items.push(e);
+      }
+    });
+  };
+
+  addTier(high);
+
+  let i = 0;
+  while (i < sorted.length && items.length < 3) {
+    const pct = sorted[i].displayPct;
+    const tier = [];
+    while (i < sorted.length && sorted[i].displayPct === pct) {
+      tier.push(sorted[i]);
+      i++;
+    }
+    addTier(tier);
+  }
+
+  return { items, balanced: high.length === 0 };
+}
+
+function renderAdvantageTalents(scores) {
+  const listEl = document.getElementById('advantage-talent-list');
+  const noteEl = document.getElementById('advantage-talent-note');
+  const headingEl = document.getElementById('advantage-section-heading');
+  if (!listEl) return [];
+
+  const entries = getScoreEntries(scores);
+  const { items, balanced } = pickAdvantageEntries(entries);
+
+  if (headingEl) {
+    headingEl.textContent = balanced ? '② 当前相对优势天赋' : '② 当前优势天赋';
+  }
+
+  listEl.innerHTML = items.length
+    ? items
+        .map(
+          (e) =>
+            `<li class="advantage-talent-item"><span class="advantage-name">${e.name}</span><span class="advantage-score">（${e.displayPct}）</span></li>`
+        )
+        .join('')
+    : '<li class="advantage-talent-item"><span class="advantage-name">—</span></li>';
+
+  if (noteEl) {
+    if (balanced) {
+      noteEl.style.display = 'block';
+      noteEl.innerHTML =
+        '孩子目前没有出现特别突出的单一天赋，整体能力分布较为均衡。未来的发展方向，需要结合性格特征、驱动力、思维模式以及成长经历综合判断。';
+    } else {
+      noteEl.style.display = 'none';
+      noteEl.innerHTML = '';
+    }
+  }
+
+  return items.map((e) => e.key);
+}
+
+function renderTalentInterpretations(advantageKeys, scores) {
+  const box = document.getElementById('talent-interpretations');
+  if (!box) return;
+
+  const orderedKeys = advantageKeys && advantageKeys.length
+    ? [...advantageKeys]
+    : getScoreEntries(scores).map((e) => e.key);
+
+  const blocks = orderedKeys
+    .filter((k) => T_TALENT_INTERPRETATIONS[k])
+    .map((k) => {
+      const copy = T_TALENT_INTERPRETATIONS[k];
+      return `
+        <article class="talent-interpret-card">
+          <h3>【${copy.title}】</h3>
+          <div class="talent-interpret-body">${copy.body}</div>
+        </article>
+      `;
+    });
+
+  box.innerHTML = blocks.length
+    ? blocks.join('')
+    : '<p class="section-desc">暂无优势天赋解读数据。</p>';
+}
+
+function renderLifelongAbilities(scores) {
+  const box = document.getElementById('lifelong-abilities');
+  if (!box) return;
+
+  const entries = getScoreEntries(scores);
+  const byKey = Object.fromEntries(entries.map((e) => [e.key, e]));
+
+  box.innerHTML = LIFELONG_ABILITIES.map((item) => {
+    const linked = byKey[item.dimKey];
+    const scoreNote = linked
+      ? `<span class="lifelong-score">当前 ${linked.name}：${linked.displayPct}</span>`
+      : '';
+    return `
+      <article class="lifelong-card">
+        <h3 class="lifelong-title" style="border-color:${item.color}">${item.title}</h3>
+        <p class="lifelong-dim">对应：${item.dimLabel}</p>
+        ${scoreNote}
+        <div class="lifelong-body">${item.body}</div>
+      </article>
+    `;
+  }).join('');
+}
+
+function renderRadarScoreList(scores) {
+  const el = document.getElementById('radar-score-list');
+  if (!el || !scores) return;
+
+  const byKey = Object.fromEntries(getScoreEntries(scores).map((e) => [e.key, e]));
+  el.innerHTML = T_DIM_ORDER.map((key) => {
+    const e = byKey[key];
+    if (!e) return '';
+    return `<li class="radar-score-item"><span class="radar-score-name">${e.name}</span><span class="radar-score-val">${e.displayPct}</span></li>`;
+  }).join('');
+}
+
 function renderRadar(radarData) {
   const canvas = document.getElementById('radar-chart');
   if (!canvas) return;
@@ -139,8 +478,26 @@ function renderRadar(radarData) {
     container.classList.add('radar-container');
   }
 
-  const labels = radarData.map(x => x.dimension);
-  const data = radarData.map(x => x.displayScore);
+  const engineNameToKey = {
+    "语言智能": "T1_language",
+    "逻辑数学智能": "T2_logic",
+    "逻辑智能": "T2_logic",
+    "空间智能": "T3_spatial",
+    "音乐智能": "T4_music",
+    "身体动觉智能": "T5_bodily",
+    "身体智能": "T5_bodily",
+    "人际智能": "T6_interpersonal",
+    "内省智能": "T7_intrapersonal",
+    "自然观察智能": "T8_naturalist",
+    "自然智能": "T8_naturalist"
+  };
+
+  const labels = radarData.map((x) => {
+    const key = x.dimensionKey || engineNameToKey[x.dimension];
+    const meta = T_DIM_DISPLAY[key];
+    return meta ? `${meta.short} ${meta.name}` : x.dimension;
+  });
+  const data = radarData.map((x) => toDisplayPct(x.displayScore));
 
   // 固定宽高，避免 hover 或 resize 导致图表反复缩小
   const size = Math.min(500, (container && container.clientWidth) || 500);
@@ -174,15 +531,28 @@ function renderRadar(radarData) {
       scales: {
         r: {
           min: 0,
-          max: 10,
-          ticks: { stepSize: 2 },
+          max: 100,
+          ticks: {
+            stepSize: 20,
+            callback: (v) => (Number(v) % 20 === 0 ? v : '')
+          },
           pointLabels: {
             font: { size: 12 },
             padding: 10
           }
         }
       },
-      plugins: { legend: { display: false } }
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => {
+              const pct = toDisplayPct(ctx.raw);
+              return `${ctx.label}: ${pct}`;
+            }
+          }
+        }
+      }
     }
   });
 }
@@ -681,24 +1051,66 @@ function buildAISim(c) {
 }
 
 /* ---------------- Parent ---------------- */
+function renderGrowthReminder(scores) {
+  const box = document.getElementById('growth-reminder');
+  if (!box) return;
+
+  const entries = getScoreEntries(scores);
+  const keyEntries = KEY_GROWTH_DIMS.map((k) => entries.find((e) => e.key === k)).filter(Boolean);
+  const pcts = keyEntries.map((e) => e.displayPct);
+  const maxPct = Math.max(...pcts, 0);
+  const minPct = Math.min(...pcts, 0);
+  const avgPct = pcts.length ? pcts.reduce((a, b) => a + b, 0) / pcts.length : 0;
+
+  const intro = `
+    <div class="growth-reminder-intro">
+      <p>TalentAI 不只关注已经突出的优势天赋，也关注孩子未来成长中值得重点培养的关键能力。</p>
+      <p>如果某些关键能力当前相对较弱，家长可以从现在开始有意识地训练和提升，帮助孩子形成更完整的能力结构，拥有更好的未来竞争力。</p>
+    </div>
+  `;
+
+  const fourBalanced = pcts.length === 4 && maxPct - minPct <= 5;
+  const lowKeys = keyEntries
+    .filter((e) => e.displayPct < maxPct - 5 && e.displayPct < avgPct - 2)
+    .map((e) => e.key);
+
+  let focusHtml = '<h3 class="growth-reminder-subtitle">当前值得重点关注的能力</h3>';
+
+  if (fourBalanced || !lowKeys.length) {
+    focusHtml += `
+      <div class="growth-reminder-balanced insight-box">
+        <p>孩子目前关键成长能力发展较为均衡。</p>
+        <p>建议继续保持优势发挥，同时通过长期实践不断提升综合能力。</p>
+      </div>
+    `;
+  } else {
+    focusHtml += '<div class="growth-reminder-alerts">';
+    lowKeys.forEach((k) => {
+      const copy = GROWTH_REMINDER_LOW_COPY[k];
+      const meta = T_DIM_DISPLAY[k];
+      if (!copy) return;
+      focusHtml += `
+        <article class="growth-reminder-card">
+          <h4>${copy.title}${meta ? `（${meta.short}）` : ''}</h4>
+          <p><strong>${copy.title}会影响：</strong></p>
+          <ul>${copy.affects.map((a) => `<li>${a}</li>`).join('')}</ul>
+          <p class="growth-reminder-suggest">${copy.suggest}</p>
+        </article>
+      `;
+    });
+    focusHtml += '</div>';
+  }
+
+  box.innerHTML = intro + focusHtml;
+}
+
 function renderParentRoadmap(result) {
   const box = document.getElementById('parent-roadmap');
   if (!box) return;
 
-  const top1 = result.top3Talents?.[0];
-  const score = top1?.score?.toFixed(1) ?? '-';
-  const name = top1?.dimensionName ?? '天赋';
-
   box.innerHTML = `
-    <div class="warning-box" style="margin-top:12px;">
-      <p><strong>🎯 家长专属：成长路线图（雏形）</strong></p>
-      <p>例如：您的孩子在T层表现出的 <strong>${name}</strong> 极佳（${score}分）</p>
-      <ul>
-        <li>✅ 培养方向：结合该天赋的优势路径做项目与作品</li>
-        <li>⚠️ 需要关注：W层驱动力尚未测评（决定孩子能否长期投入）</li>
-        <li>💡 关键期：12-18岁是驱动力形成期</li>
-      </ul>
-      <p style="margin-top:8px;">解锁完整测评，获取：📄《家长针对性培养方案》🎯基于4层综合分析的教育建议📈3-5年成长路线图</p>
+    <div class="insight-box" style="margin-top:12px;">
+      <p>12–18 岁是价值观与自我认知形成的关键期。完成 P、W、M 层测评后，可结合性格、驱动力与思维模式，更全面地理解孩子的成长特点。</p>
     </div>
   `;
 }

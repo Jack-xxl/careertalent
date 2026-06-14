@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>寻路者已解锁 · Top1 & Top3 · TalentAI</title>
+  <title>成长导航已解锁 · TalentAI</title>
   <style>
     :root {
       --bg: #050816;
@@ -11,7 +11,6 @@
       --text: #e5e7eb;
       --sub: #94a3b8;
       --accent: #34d399;
-      --gold: #fbbf24;
       --border: rgba(52, 211, 153, 0.35);
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -31,31 +30,25 @@
     .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
     h1 { font-size: 28px; font-weight: 800; margin-bottom: 10px; line-height: 1.3; }
     .sub { font-size: 15px; color: var(--sub); line-height: 1.65; margin-bottom: 28px; }
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin-bottom: 28px;
-    }
-    @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }
-    .card {
+    .unlock-card {
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 16px;
-      padding: 20px 18px;
+      padding: 24px 22px;
+      margin-bottom: 24px;
       box-shadow: 0 12px 32px rgba(0,0,0,0.25);
     }
-    .rank { font-size: 14px; font-weight: 700; color: var(--gold); margin-bottom: 8px; }
-    .match { font-size: 32px; font-weight: 800; color: var(--accent); float: right; margin-top: -32px; }
-    .name { font-size: 18px; font-weight: 700; margin-bottom: 10px; padding-right: 80px; line-height: 1.35; }
-    .desc { font-size: 13px; color: var(--sub); line-height: 1.6; min-height: 44px; }
-    .meta { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 14px; }
-    .meta-box {
-      text-align: center; padding: 8px 4px; border-radius: 10px;
-      background: rgba(255,255,255,0.04); border: 1px solid rgba(148,163,184,0.2);
+    .unlock-card h2 { font-size: 18px; margin-bottom: 14px; color: #a7f3d0; }
+    .unlock-list { list-style: none; padding: 0; }
+    .unlock-list li {
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(148,163,184,0.12);
+      font-size: 15px;
+      line-height: 1.5;
     }
-    .meta-label { font-size: 10px; color: var(--sub); margin-bottom: 4px; }
-    .meta-val { font-size: 12px; font-weight: 700; }
+    .unlock-list li:last-child { border-bottom: none; }
+    .audience { margin-top: 18px; font-size: 14px; color: var(--sub); line-height: 1.7; }
+    .audience strong { color: var(--text); display: block; margin-bottom: 8px; }
     .cta-box {
       background: linear-gradient(145deg, rgba(6,78,59,0.35), rgba(15,23,42,0.95));
       border: 1px solid var(--border);
@@ -64,7 +57,9 @@
       text-align: center;
     }
     .cta-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
-    .cta-sub { font-size: 13px; color: var(--sub); margin-bottom: 20px; line-height: 1.55; }
+    .cta-sub { font-size: 13px; color: var(--sub); margin-bottom: 12px; line-height: 1.55; }
+    .cta-detail { font-size: 14px; color: var(--sub); line-height: 1.75; margin-bottom: 16px; text-align: left; max-width: 420px; margin-left: auto; margin-right: auto; }
+    .cta-detail strong { color: #a7f3d0; font-weight: 600; }
     .btn-primary {
       display: block; width: 100%; max-width: 420px; margin: 0 auto 14px;
       padding: 17px 22px; border: none; border-radius: 999px;
@@ -87,17 +82,36 @@
 </head>
 <body>
   <div class="wrap">
-    <div class="badge"><span class="dot"></span> TALENTAI · 寻路者 ¥29 已解锁</div>
-    <h1>你的 Top1 与 Top3 高匹配职业</h1>
-    <p class="sub">付款已解锁 T 层第 1、3 名职业方向。请继续完成 P 层性格测评，生成 T×P 综合报告。</p>
+    <div class="badge"><span class="dot"></span> TALENTAI · 成长导航 ¥99 已解锁</div>
+    <h1>解锁完整成长导航报告</h1>
+    <p class="sub">支付已成功。请继续完成 P、W、M 层测评，生成更完整的成长导航报告。</p>
 
-    <div id="careersArea"></div>
+    <div class="unlock-card" id="unlockContent">
+      <h2>获得</h2>
+      <ul class="unlock-list">
+        <li>✓ P层性格特征分析（25题）</li>
+        <li>✓ W层内在驱动力分析（8题）</li>
+        <li>✓ M层思维模式分析（24题）</li>
+        <li>✓ 成长生态组合分析</li>
+        <li>✓ AI时代发展方向分析</li>
+        <li>✓ 完整成长导航报告</li>
+      </ul>
+      <div class="audience">
+        <strong>适合人群</strong>
+        希望更深入了解孩子成长特点；希望发现孩子未来优势发展方向；希望获得更完整成长参考的家庭。
+      </div>
+    </div>
 
-    <div class="cta-box" id="ctaBox" style="display:none;">
-      <div class="cta-title">下一步 · P 层性格深度测评</div>
-      <p class="cta-sub">约 30 题 · 15 分钟</p>
-      <button type="button" class="btn-primary" id="btnPStart">开始 P 层性格深度测评 →</button>
-      <button type="button" class="btn-secondary" id="btnPReport" style="display:none;">查看综合报告</button>
+    <div class="cta-box" id="ctaBox">
+      <div class="cta-title">下一步 · P + W + M 综合测评</div>
+      <div class="cta-detail">
+        P层性格特征（25题）<br>
+        W层内在驱动力（8题）<br>
+        M层思维模式（24题）<br>
+        <strong>共57题 · 预计10-20分钟完成</strong>
+      </div>
+      <p class="cta-sub">一次完成性格特征、内在驱动力与思维模式分析</p>
+      <button type="button" class="btn-primary" id="btnPStart">开始 P + W + M 综合测评 →</button>
     </div>
   </div>
 
@@ -106,7 +120,6 @@
   <script src="js/site-config.js"></script>
   <script src="js/format-labels.js"></script>
   <script src="js/report-share-restore.js"></script>
-  <script src="js/t-careers-store.js"></script>
   <script src="js/report-share.js"></script>
   <script>
     function isPathfinderPaid() {
@@ -117,75 +130,15 @@
       );
     }
 
-    function esc(s) {
-      return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-    }
-
-    function renderCard(c, rank, medal) {
-      if (!c) return '';
-      const aiR = c.aiImpact?.replacementRisk ?? '--';
-      const newbie = c.aiImpact?.newbieAdvantage ?? '--';
-      const salary = c.aiImpact?.salaryRange ?? '--';
-      const ms = c.matchScore ?? '--';
-      return `
-        <div class="card">
-          <div class="rank">${medal} 第 ${rank} 名</div>
-          <div class="match">${ms}%</div>
-          <div class="name">${esc(c.name)}</div>
-          <p class="desc">${esc(c.description || '基于你的 T 层天赋结构，该方向与核心能力匹配度较高。')}</p>
-          <div class="meta">
-            <div class="meta-box"><div class="meta-label">AI 替代风险</div><div class="meta-val">${aiR}${aiR !== '--' ? '%' : ''}</div></div>
-            <div class="meta-box"><div class="meta-label">新人优势</div><div class="meta-val">${newbie}${newbie !== '--' ? '%' : ''}</div></div>
-            <div class="meta-box"><div class="meta-label">${typeof FormatLabels !== 'undefined' ? FormatLabels.salaryMetaLabel() : '薪资范围（参考）'}</div><div class="meta-val">${esc(typeof FormatLabels !== 'undefined' ? FormatLabels.formatSalaryValue(salary) : salary)}</div></div>
-          </div>
-        </div>`;
-    }
-
-    function renderPage() {
-      const area = document.getElementById('careersArea');
-      const cta = document.getElementById('ctaBox');
-      const store = window.TCareersStore;
-
-      if (!store) {
-        area.innerHTML = '<p class="warn">职业数据模块未加载，请刷新页面。</p>';
-        return;
-      }
-
-      store.migrateFromLegacy();
-      const top1 = store.getTop1();
-      const top3 = store.getTop3();
-
-      if (!top1 || !top3) {
-        area.innerHTML =
-          '<p class="warn">未读取到 Top1/Top3 数据。请先完成 <a href="assessment.html">T 层测评</a> 与 <a href="result.html">结果页</a>，再完成 ¥29 支付。</p>';
-        cta.style.display = 'block';
-        return;
-      }
-
-      area.innerHTML =
-        '<div class="grid">' +
-        renderCard(top1, 1, '🥇') +
-        renderCard(top3, 3, '🥉') +
-        '</div>';
-      cta.style.display = 'block';
-
-      if (store.hasPLayerData()) {
-        document.getElementById('btnPReport').style.display = 'inline-block';
-      }
-    }
-
     document.getElementById('btnPStart').addEventListener('click', function () {
-      window.location.href = 'p_assessment.html';
-    });
-    document.getElementById('btnPReport').addEventListener('click', function () {
-      window.location.href = 'talentai_v3.html';
+      window.location.href = 'pwm-assessment.html';
     });
 
     (async function init() {
       if (window.ReportShareRestore) {
         const ok = await ReportShareRestore.bootstrap();
         if (ReportShareRestore.isShareMode() && !ok) {
-          document.getElementById('careersArea').innerHTML =
+          document.getElementById('unlockContent').innerHTML =
             '<p class="warn">' + (window.__TALENTAI_SHARE_ERROR__ || '专属链接无效') + '</p>';
           return;
         }
@@ -194,7 +147,6 @@
         window.location.href = 'payment.html?package=pathfinder';
         return;
       }
-      renderPage();
       mountReportShare();
     })();
 
@@ -202,7 +154,7 @@
       if (!window.ReportShare) return;
       ReportShare.mount({
         reportType: 'pathfinder',
-        reportTitle: '寻路者 Top1/Top3 解锁',
+        reportTitle: '成长导航报告已解锁',
         pagePath: 'pathfinder-unlock.html',
         captureSelector: '.wrap',
         mountTarget: '#report-share-mount',

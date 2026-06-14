@@ -1028,35 +1028,28 @@
    },
    {
     "id": "T4_004",
-    "type": "ability",
+    "type": "self_report",
     "difficulty": "easy",
-    "requires_audio": true,
-    "track_time": false,
     "question": {
-     "en": "Which of these three sounds has the highest pitch?\n\n🔊 Play audio:\n• Audio A: [Piano middle C (C4, 261.63 Hz)]\n• Audio B: [Piano high C (C5, 523.25 Hz)]\n• Audio C: [Piano low C (C3, 130.81 Hz)]",
-     "zh-CN": "以下三个音，哪个音最高？\n\n🔊 播放音频：\n• 音频A：[钢琴中音C（C4，261.63 Hz）]\n• 音频B：[钢琴高音C（C5，523.25 Hz）]\n• 音频C：[钢琴低音C（C3，130.81 Hz）]"
-    },
-    "audio_files": {
-     "A": "audio_C4.mp3",
-     "B": "audio_C5.mp3",
-     "C": "audio_C3.mp3"
+     "en": "When listening to familiar music that suddenly pauses, you usually:",
+     "zh-CN": "听一段熟悉的音乐时，如果音乐突然暂停，你通常会："
     },
     "options": [
      {
       "id": "A",
       "text": {
-       "en": "Audio A",
-       "zh-CN": "音频A"
+       "en": "Can roughly sense where the next beat will come in",
+       "zh-CN": "能大概知道下一拍会在哪里接上"
       },
       "scoring": {
-       "T4": 0.0
+       "T4": 3.0
       }
      },
      {
       "id": "B",
       "text": {
-       "en": "Audio B",
-       "zh-CN": "音频B"
+       "en": "Can remember part of the melody's direction",
+       "zh-CN": "能记得部分旋律走向"
       },
       "scoring": {
        "T4": 2.0
@@ -1065,62 +1058,8 @@
      {
       "id": "C",
       "text": {
-       "en": "Audio C",
-       "zh-CN": "音频C"
-      },
-      "scoring": {
-       "T4": 0.0
-      }
-     },
-     {
-      "id": "D",
-      "text": {
-       "en": "Cannot tell the difference",
-       "zh-CN": "听不出差别"
-      },
-      "scoring": {
-       "T4": 0.5
-      }
-     }
-    ]
-   },
-   {
-    "id": "T4_005",
-    "type": "ability",
-    "difficulty": "medium",
-    "question": {
-     "en": "You want to add background music to a 'sad farewell' scene, you would choose:",
-     "zh-CN": "你想为一段“悲伤的离别”场景配背景音乐，你会选："
-    },
-    "options": [
-     {
-      "id": "A",
-      "text": {
-       "en": "Slow tempo, minor key, mainly strings, lighter volume",
-       "zh-CN": "慢速度、小调、弦乐为主、音量较轻"
-      },
-      "scoring": {
-       "T4": 2.0
-      },
-      "family_bonus": {
-       "creator": 0.5
-      }
-     },
-     {
-      "id": "B",
-      "text": {
-       "en": "Fast tempo, major key, mainly percussion, louder volume",
-       "zh-CN": "快速度、大调、打击乐为主、音量较大"
-      },
-      "scoring": {
-       "T4": 0.0
-      }
-     },
-     {
-      "id": "C",
-      "text": {
-       "en": "Medium tempo, major key, piano solo",
-       "zh-CN": "中速度、大调、钢琴独奏"
+       "en": "Need to keep listening to know",
+       "zh-CN": "要继续听才知道"
       },
       "scoring": {
        "T4": 1.0
@@ -1129,8 +1068,59 @@
      {
       "id": "D",
       "text": {
-       "en": "Don't know, just pick any lyrical song",
-       "zh-CN": "不知道，随便选一首抒情歌曲"
+       "en": "Rarely notice these details",
+       "zh-CN": "很少注意这些"
+      },
+      "scoring": {
+       "T4": 0.0
+      }
+     }
+    ]
+   },
+   {
+    "id": "T4_005",
+    "type": "self_report",
+    "difficulty": "easy",
+    "question": {
+     "en": "Some music has no lyrics, yet many people feel different things after listening. Which is closer to your experience?",
+     "zh-CN": "有些音乐没有歌词，但很多人听完后会产生不同感受，你更接近哪种情况："
+    },
+    "options": [
+     {
+      "id": "A",
+      "text": {
+       "en": "Easily associate it with specific images or scenes",
+       "zh-CN": "很容易联想到具体画面或场景"
+      },
+      "scoring": {
+       "T4": 3.0
+      }
+     },
+     {
+      "id": "B",
+      "text": {
+       "en": "Can feel clear emotional shifts",
+       "zh-CN": "能感受到明显情绪变化"
+      },
+      "scoring": {
+       "T4": 2.0
+      }
+     },
+     {
+      "id": "C",
+      "text": {
+       "en": "Mainly focus on whether the melody sounds good",
+       "zh-CN": "主要关注旋律是否好听"
+      },
+      "scoring": {
+       "T4": 1.0
+      }
+     },
+     {
+      "id": "D",
+      "text": {
+       "en": "Usually don't have any particular feeling",
+       "zh-CN": "通常不会产生特别感受"
       },
       "scoring": {
        "T4": 0.0

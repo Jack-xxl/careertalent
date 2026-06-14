@@ -77,9 +77,13 @@ body{
 </div>
 </div>
 
+<script>
+  window.location.replace('pwm-assessment.html');
+</script>
 <script src="js/t-careers-store.js"></script>
 <script>
 
+// 已合并至 pwm-assessment.html；若脚本未跳转则沿用旧逻辑
 // 每次测试须先付费：支付成功写入 talentai_p_entitlement，完成或中断后须再次购买
 function isPAttemptActive() {
   return localStorage.getItem('talentai_p_attempt_active') === '1';

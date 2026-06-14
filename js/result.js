@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (window.ReportShare) {
       ReportShare.mount({
         reportType: 't-layer',
-        reportTitle: 'T层天赋测评结果',
+        reportTitle: '天赋发现（Talent）',
         pagePath: 'result.html',
         captureSelector: '#main-content',
         insertBefore: 'footer.footer',

@@ -83,23 +83,25 @@ function getBaseUrl() {
   return String(base).replace(/\/$/, '');
 }
 
+/** 套餐实付金额（分）：统一 ¥99 */
+const PACKAGE_PRICE_FEN = 9900;
+const PACKAGE_PRICE_YUAN = 99;
+
 const PACKAGE_MAP = {
-  pathfinder: 2900,
-  navigator: 2900,
-  '29': 2900, 29: 2900,
-  '49': 2900, 49: 2900,
-  '99': 2900, 99: 2900,
-  '150': 2900, 150: 2900,
+  pathfinder: PACKAGE_PRICE_FEN,
+  navigator: PACKAGE_PRICE_FEN,
+  '29': PACKAGE_PRICE_FEN,
+  29: PACKAGE_PRICE_FEN,
+  '49': PACKAGE_PRICE_FEN,
+  49: PACKAGE_PRICE_FEN,
+  '99': PACKAGE_PRICE_FEN,
+  99: PACKAGE_PRICE_FEN,
+  '150': PACKAGE_PRICE_FEN,
+  150: PACKAGE_PRICE_FEN,
 };
 
 function packageToTier(packageType) {
-  if (packageType === 29 || packageType === '29') return 29;
-  if (packageType === 49 || packageType === '49') return 29;
-  if (packageType === 99 || packageType === '99') return 29;
-  if (packageType === 150 || packageType === '150') return 29;
-  const k = String(packageType ?? '').trim().toLowerCase();
-  if (k === 'pathfinder') return 29;
-  if (k === 'navigator') return 29;
+  if (resolvePackageAmount(packageType) != null) return PACKAGE_PRICE_YUAN;
   return null;
 }
 
@@ -144,9 +146,9 @@ app.post('/api/create-order', async (req, res) => {
   if (!amount || !tier) return res.status(400).json({ ok: false, message: '套餐类型不正确' });
 
   const rawStr = String(packageType).trim().toLowerCase();
-  const description = (rawStr === 'pathfinder' || rawStr === '49' || tier === 29)
-    ? 'TalentAI寻路者套餐·T层完整解锁'
-    : 'TalentAI领航者套餐·四层成长路径报告';
+  const description = (rawStr === 'pathfinder' || rawStr === '49' || rawStr === '29')
+    ? 'TalentAI完整成长导航报告'
+    : 'TalentAI完整成长导航报告·四层测评';
 
   const out_trade_no = `TALENT${Date.now()}${ph.slice(-4)}`;
 

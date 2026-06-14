@@ -452,41 +452,45 @@ body {
 
       <div class="order-badge">
         <div style="width:5px;height:5px;border-radius:50%;background:var(--neon-cyan)"></div>
-        ORDER · PATHFINDER · ¥29
+        TALENTAI · 成长导航 · ¥99
       </div>
 
-      <div class="order-title">寻路者套餐 · T层完整解锁</div>
-      <div class="order-sub">支付后立即解锁 T层第1名和第3名职业，并开始P层性格深度测评</div>
+      <div class="order-title">TalentAI 完整成长导航报告</div>
+      <div class="order-sub">支付成功后解锁完整成长导航报告，并可继续完成 P、W、M 层测评</div>
 
       <!-- What you get -->
-      <div class="get-list">
-        <div class="get-item"><div class="get-dot">✓</div>T层 Top1 & Top3 职业完整详解（当前隐藏）</div>
-        <div class="get-item"><div class="get-dot">✓</div>P层性格深度测评（25题 · 约12分钟）</div>
-        <div class="get-item"><div class="get-dot">✓</div>T×P 综合职业匹配报告（6屏深度分析）</div>
-        <div class="get-item"><div class="get-dot">✓</div>个人化风险地图 + 家长行动指令手册</div>
+      <div class="get-list-heading" style="font-size:12px;font-weight:700;color:var(--sub);margin-bottom:8px;letter-spacing:0.5px;">【解锁内容】</div>
+      <div class="get-list" id="getList">
+        <div class="get-item"><div class="get-dot">✓</div>完整天赋发现报告</div>
+        <div class="get-item"><div class="get-dot">✓</div>P层性格特征分析（25题）</div>
+        <div class="get-item"><div class="get-dot">✓</div>W层内在驱动力分析（8题）</div>
+        <div class="get-item"><div class="get-dot">✓</div>M层思维模式分析（24题）</div>
+        <div class="get-item"><div class="get-dot">✓</div>成长生态组合分析</div>
+        <div class="get-item"><div class="get-dot">✓</div>AI时代发展方向分析</div>
+        <div class="get-item"><div class="get-dot">✓</div>完整成长导航报告</div>
       </div>
 
       <!-- Price -->
       <div class="price-block">
         <div class="price-left">
           <div class="price-label">// TOTAL_AMOUNT</div>
-          <div class="price-val"><span>¥</span>29</div>
+          <div class="price-val"><span>¥</span>99</div>
         </div>
         <div class="price-right">
-          <div class="price-orig">原价 ¥59</div>
-          <div class="price-save">省 ¥30</div>
+          <div class="price-orig">原价 ¥199</div>
+          <div class="price-save">限时优惠 ¥99</div>
         </div>
       </div>
 
       <!-- Step 1: Show QR button -->
       <button class="btn-pay" id="btnShowQR" type="button" disabled>
         <span style="font-size:22px">💚</span>
-        正在生成微信支付二维码…
+        正在准备解锁…
       </button>
 
       <!-- Step 2: QR Code section -->
       <div id="qr-section">
-        <div class="qr-hint">打开微信 → 扫一扫 → 确认支付 <strong>¥29</strong></div>
+        <div class="qr-hint">打开微信 → 扫一扫 → 确认支付 <strong>¥99</strong></div>
         <div class="qr-wrap">
           <div class="scan-ring"></div>
           <div class="scan-line"></div>
@@ -523,8 +527,18 @@ body {
     <div class="success-orb">🎉</div>
     <div class="success-title">支付成功！</div>
     <div class="success-sub">
-      T层第1名和第3名职业已解锁<br>
-      现在开始P层性格深度测评，获得你的专属路径图
+      完整成长导航报告已解锁<br>
+      请继续完成 P + W + M 综合测评，生成完整成长导航报告
+    </div>
+
+    <div class="get-list" id="successGetList" style="max-width:600px;margin:0 auto 24px;text-align:left;">
+      <div style="font-size:12px;font-weight:700;color:#8899bb;margin-bottom:8px;letter-spacing:0.5px;">获得：</div>
+      <div class="get-item"><div class="get-dot">✓</div>P层性格特征分析（25题）</div>
+      <div class="get-item"><div class="get-dot">✓</div>W层内在驱动力分析（8题）</div>
+      <div class="get-item"><div class="get-dot">✓</div>M层思维模式分析（24题）</div>
+      <div class="get-item"><div class="get-dot">✓</div>成长生态组合分析</div>
+      <div class="get-item"><div class="get-dot">✓</div>AI时代发展方向分析</div>
+      <div class="get-item"><div class="get-dot">✓</div>完整成长导航报告</div>
     </div>
 
     <!-- Mini unlock cards (used for animation only, hidden after reveal) -->
@@ -555,17 +569,18 @@ body {
     <!-- P-layer intro banner -->
     <div id="pLayerBanner" style="display:none;background:linear-gradient(135deg,rgba(0,229,255,0.1),rgba(240,192,96,0.08));border:1px solid rgba(0,229,255,0.25);border-radius:16px;padding:20px 24px;margin-bottom:20px;width:100%;max-width:600px;text-align:left;">
       <div style="font-size:13px;color:#4a5878;font-family:var(--mono);letter-spacing:1px;margin-bottom:8px;">// 下一步</div>
-      <div style="font-size:18px;font-weight:700;color:#1a2540;margin-bottom:10px;">P层性格深度测评</div>
-      <div style="display:flex;gap:20px;flex-wrap:wrap;margin-bottom:12px;">
-        <span style="font-size:13px;color:#4a5878;">📋 25题情境测评</span>
-        <span style="font-size:13px;color:#4a5878;">⏱ 约15分钟</span>
-        <span style="font-size:13px;color:#4a5878;">🎯 解锁T×P综合报告</span>
+      <div style="font-size:18px;font-weight:700;color:#1a2540;margin-bottom:10px;">P + W + M 综合测评</div>
+      <div style="font-size:13px;color:#4a5878;line-height:1.75;margin-bottom:8px;">
+        P层性格特征（25题）<br>
+        W层内在驱动力（8题）<br>
+        M层思维模式（24题）<br>
+        <span style="color:#3d5a80;font-weight:600;">共57题 · 预计10-20分钟完成</span>
       </div>
-      <div style="font-size:13px;color:#6a7898;line-height:1.6;">完成后将生成你的专属职业路径图，结合天赋与性格双维度分析，找到真正适合你的职业方向。</div>
+      <div style="font-size:13px;color:#6a7898;line-height:1.6;">一次完成性格特征、内在驱动力与思维模式分析</div>
     </div>
 
     <button class="btn-start" id="btnStart" onclick="goToAssess()">
-      开始 P层 性格深度测评 →
+      开始 P + W + M 综合测评 →
     </button>
     <div class="order-id" id="successOrderId"></div>
   </div>
@@ -998,7 +1013,7 @@ function goToAssess() {
   // 4️⃣ 延迟跳转（让UI更自然）
   // ─────────────────────────────
   setTimeout(() => {
-    window.location.href = 'p_assessment.html';
+    window.location.href = 'pwm-assessment.html';
   }, 600);
 }
 // Build full career detail cards after unlock animation completes
@@ -1095,19 +1110,29 @@ function goBack() {
     let displayYuan = null;
     let description = '';
 
-    const PATHFINDER_DESC = 'TalentAI Pathfinder · T层完整解锁';
+    const PATHFINDER_DESC = 'TalentAI 完整成长导航报告';
     const NAVIGATOR_DESC = 'TalentAI Navigator · 四层成长路径报告';
+    const PATHFINDER_UI_PRICE = 99;
+    const PATHFINDER_UI_ORIG = 199;
+    const PATHFINDER_UNLOCK_LIST =
+      '<div class="get-item"><div class="get-dot">✓</div>完整天赋发现报告</div>' +
+      '<div class="get-item"><div class="get-dot">✓</div>P层性格特征分析（25题）</div>' +
+      '<div class="get-item"><div class="get-dot">✓</div>W层内在驱动力分析（8题）</div>' +
+      '<div class="get-item"><div class="get-dot">✓</div>M层思维模式分析（24题）</div>' +
+      '<div class="get-item"><div class="get-dot">✓</div>成长生态组合分析</div>' +
+      '<div class="get-item"><div class="get-dot">✓</div>AI时代发展方向分析</div>' +
+      '<div class="get-item"><div class="get-dot">✓</div>完整成长导航报告</div>';
 
     if (rawPkg === 'pathfinder' || rawPkg === '49' || rawPkg === '29') {
       createOrderPackageType = 'pathfinder';
       checkoutPackageType = 'pathfinder';
-      displayYuan = 29;
+      displayYuan = PATHFINDER_UI_PRICE;
       description = PATHFINDER_DESC;
       clearNavigatorWmaSession();
     } else if (rawPkg === 'navigator' || rawPkg === '150' || rawPkg === '99') {
       createOrderPackageType = 'navigator';
       checkoutPackageType = 'navigator';
-      displayYuan = 29;
+      displayYuan = PATHFINDER_UI_PRICE;
       description = NAVIGATOR_DESC;
     }
 
@@ -1120,53 +1145,46 @@ function goBack() {
     const badgeEl = document.querySelector('.order-badge');
     const titleEl = document.querySelector('.order-title');
     const subEl = document.querySelector('.order-sub');
-    const getListEl = document.querySelector('.get-list');
+    const getListEl = document.getElementById('getList') || document.querySelector('.get-list');
     const priceOrigEl = document.querySelector('.price-orig');
     const priceSaveEl = document.querySelector('.price-save');
+    const uiPriceYuan = displayYuan;
 
     if (createOrderPackageType === 'pathfinder') {
       if (badgeEl) {
         badgeEl.innerHTML =
-          '<div style="width:5px;height:5px;border-radius:50%;background:var(--neon-cyan)"></div> ORDER · PATHFINDER · ¥29';
+          '<div style="width:5px;height:5px;border-radius:50%;background:var(--neon-cyan)"></div> TALENTAI · 成长导航 · ¥99';
       }
-      if (titleEl) titleEl.textContent = '寻路者套餐 · T层完整解锁';
-      if (subEl) subEl.textContent = description;
-      if (getListEl) {
-        getListEl.innerHTML =
-          '<div class="get-item"><div class="get-dot">✓</div>T层 Top1 & Top3 职业完整详解（当前隐藏）</div>' +
-          '<div class="get-item"><div class="get-dot">✓</div>P层性格深度测评（25题 · 约12分钟）</div>' +
-          '<div class="get-item"><div class="get-dot">✓</div>T×P 综合职业匹配报告（6屏深度分析）</div>' +
-          '<div class="get-item"><div class="get-dot">✓</div>个人化风险地图 + 家长行动指令手册</div>';
-      }
-      if (priceOrigEl) priceOrigEl.textContent = '原价 ¥59';
-      if (priceSaveEl) priceSaveEl.textContent = '省 ¥30';
+      if (titleEl) titleEl.textContent = 'TalentAI 完整成长导航报告';
+      if (subEl) subEl.textContent = '支付成功后解锁完整成长导航报告，并可继续完成 P、W、M 层测评';
+      if (getListEl) getListEl.innerHTML = PATHFINDER_UNLOCK_LIST;
+      if (priceOrigEl) priceOrigEl.textContent = '原价 ¥' + PATHFINDER_UI_ORIG;
+      if (priceSaveEl) priceSaveEl.textContent = '限时优惠 ¥99';
     } else {
       if (badgeEl) {
         badgeEl.innerHTML =
-          '<div style="width:5px;height:5px;border-radius:50%;background:var(--neon-cyan)"></div> ORDER · NAVIGATOR · ¥29';
+          '<div style="width:5px;height:5px;border-radius:50%;background:var(--neon-cyan)"></div> TALENTAI · 成长导航 · ¥99';
       }
-      if (titleEl) titleEl.textContent = '导航者套餐 · 四层成长路径报告';
-      if (subEl) subEl.textContent = description;
-      if (getListEl) {
-        getListEl.innerHTML =
-          '<div class="get-item"><div class="get-dot">✓</div>T层完整报告（天赋DNA）</div>' +
-          '<div class="get-item"><div class="get-dot">✓</div>P/W/M 四层完整报告 + AI成长加速指数</div>' +
-          '<div class="get-item"><div class="get-dot">✓</div>Top 5 职业完整解读与 AI 风险分析</div>' +
-          '<div class="get-item"><div class="get-dot">✓</div>职业路径规划 · 实付 ¥29</div>';
-      }
-      if (priceOrigEl) priceOrigEl.textContent = '原价 ¥59';
-      if (priceSaveEl) priceSaveEl.textContent = '省 ¥30';
+      if (titleEl) titleEl.textContent = 'TalentAI 完整成长导航报告';
+      if (subEl) subEl.textContent = '支付成功后解锁四层完整成长导航报告';
+      if (getListEl) getListEl.innerHTML = PATHFINDER_UNLOCK_LIST;
+      if (priceOrigEl) priceOrigEl.textContent = '原价 ¥' + PATHFINDER_UI_ORIG;
+      if (priceSaveEl) priceSaveEl.textContent = '限时优惠 ¥99';
     }
 
-    // 更新页面显示价格（与 create-order amount 一致）
+    // 页面展示价格与 create-order amount 一致（¥99）
     const priceVal = document.querySelector('.price-val');
-    if (priceVal) priceVal.innerHTML = '<span>¥</span>' + displayYuan;
+    if (priceVal) priceVal.innerHTML = '<span>¥</span>' + uiPriceYuan;
     const qrHintStrong = document.querySelector('.qr-hint strong');
-    if (qrHintStrong) qrHintStrong.textContent = '¥' + displayYuan;
+    if (qrHintStrong) qrHintStrong.textContent = '¥' + uiPriceYuan;
     const btnShowQR = document.getElementById('btnShowQR');
     if (btnShowQR) {
-      btnShowQR.innerHTML =
-        '<span style="font-size:22px">💚</span>微信扫码支付 ¥' + displayYuan;
+      if (createOrderPackageType === 'pathfinder') {
+        btnShowQR.innerHTML = '立即解锁完整成长导航报告 ¥' + uiPriceYuan;
+      } else {
+        btnShowQR.innerHTML =
+          '<span style="font-size:22px">💚</span>微信扫码支付 ¥' + uiPriceYuan;
+      }
       btnShowQR.disabled = true;
     }
 
@@ -1212,7 +1230,9 @@ function goBack() {
     if (btnShowQR) {
       btnShowQR.disabled = false;
       btnShowQR.textContent = '';
-      btnShowQR.innerHTML = '<span style="font-size:22px">💚</span>重试生成二维码';
+      btnShowQR.innerHTML = checkoutPackageType === 'pathfinder'
+        ? '重试 · 立即解锁完整成长导航报告'
+        : '<span style="font-size:22px">💚</span>重试生成二维码';
       btnShowQR.onclick = function () {
         location.reload();
       };
