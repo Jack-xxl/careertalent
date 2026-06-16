@@ -441,6 +441,16 @@ body {
   color: #a5b4fc;
 }
 
+.eco-conf {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+.eco-conf-green { color: #6ee7b7; background: rgba(16, 185, 129, 0.12); }
+.eco-conf-yellow { color: #fcd34d; background: rgba(251, 191, 36, 0.12); }
+.eco-conf-gray { color: #9ca3af; background: rgba(156, 163, 175, 0.12); }
+
 .eco-tagline { font-size: 13px; color: var(--muted); margin-bottom: 10px; }
 
 .eco-fields { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
@@ -829,6 +839,16 @@ body {
 
 .v11-rank-tier { color: #a78bfa; font-weight: 700; }
 .v11-rank-score { color: #f9a8d4; font-weight: 700; }
+
+.v11-rank-conf {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+.v11-conf-green { color: #6ee7b7; background: rgba(16, 185, 129, 0.12); }
+.v11-conf-yellow { color: #fcd34d; background: rgba(251, 191, 36, 0.12); }
+.v11-conf-gray { color: #9ca3af; background: rgba(156, 163, 175, 0.12); }
 
 .v11-note {
   margin-top: 16px;

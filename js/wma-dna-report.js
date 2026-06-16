@@ -558,6 +558,7 @@ function renderPart2EcoRanking(ctx) {
         <div class="v11-rank-meta">
           <span class="v11-rank-tier">${esc(e.tier || '')}</span>
           <span class="v11-rank-score">关联度 ${display}</span>
+          ${e.confidenceLabel ? `<span class="v11-rank-conf v11-conf-${esc(e.confidenceColor || 'gray')}">${esc(e.confidenceLabel)}</span>` : ''}
         </div>
       </div>`;
   }).join('');
@@ -1229,6 +1230,7 @@ function renderEcoCard(eco, medal) {
         <span class="eco-en">${esc(eco.nameEn)}</span>
         <span class="eco-tier">${esc(tier)}</span>
         <span class="eco-score">关联度 ${display}</span>
+        ${eco.confidenceLabel ? `<span class="eco-conf eco-conf-${esc(eco.confidenceColor || 'gray')}">${esc(eco.confidenceLabel)}</span>` : ''}
       </div>
       <p class="eco-tagline">${esc(eco.tagline)}</p>
       <div class="eco-fields">${fields}</div>
