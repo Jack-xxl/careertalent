@@ -3,10 +3,10 @@
  */
 'use strict';
 
-/** 利他助人型意义：选意义向且侧重帮助他人/改变他人处境（W01/W03/W04/W06） */
-const MEANING_ALTRUISTIC_QS = { W01: 'C', W03: 'C', W04: 'C', W06: 'C' };
-/** 规则守护型意义：选意义向且侧重长远价值/原则/稳定（W02/W05/W07/W08） */
-const MEANING_GUARDIAN_QS = { W02: 'C', W05: 'C', W07: 'C', W08: 'C' };
+/** 利他助人型意义：选意义向且侧重帮助他人/对他人产生价值（W01/W03/W05/W06） */
+const MEANING_ALTRUISTIC_QS = { W01: 'C', W03: 'C', W05: 'C', W06: 'C' };
+/** 规则守护型意义：选意义向且侧重内在认同/原则与长远目标（W02/W04/W07/W08） */
+const MEANING_GUARDIAN_QS = { W02: 'C', W04: 'C', W07: 'C', W08: 'C' };
 
 function scoreMeaningAnswerSignals(wBank, wAnswers) {
   let altruistic = 0;
