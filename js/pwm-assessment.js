@@ -35,6 +35,13 @@ const PWM_SECTIONS = [
 
 const PWM_RESULT_HREF = 'wma-result.html';
 const PWM_PROGRESS_KEY = 'talentai_pwm_progress';
+const PWM_W_BANK_VERSION = '2026-06-w-rank-v2';
+
+function isWAnswerComplete(ans) {
+  return window.WLayerScoring?.isWRankAnswerComplete
+    ? WLayerScoring.isWRankAnswerComplete(ans)
+    : !!(ans && ans.rank1 && ans.rank2 && ans.rank3 && ans.rank4 && ans.rank5);
+}
 
 let pwmData = { P: null, W: null, M: null };
 let flatQueue = [];
@@ -98,8 +105,8 @@ function countAnswered() {
     qs.forEach((q) => {
       const a = wmaAnswers[k][q.id];
       if (!a) return;
-      if (k === 'W' && typeof a === 'object') {
-        if (a.slot1 && a.slot2) n++;
+      if (k === 'W') {
+        if (isWAnswerComplete(a)) n++;
       } else if (k === 'M') {
         if (/^[A-D]$/i.test(a)) n++;
       }
@@ -191,8 +198,23 @@ function sanitizeMChoiceAnswers() {
 function sanitizeWDragAnswers() {
   const w = wmaAnswers.W || {};
   Object.keys(w).forEach((qid) => {
-    if (typeof w[qid] === 'string') delete wmaAnswers.W[qid];
+    if (!isWAnswerComplete(w[qid])) delete wmaAnswers.W[qid];
   });
+}
+
+function invalidateStalePwmWProgress() {
+  try {
+    if (localStorage.getItem('talentai_pwm_w_bank_v') === PWM_W_BANK_VERSION) return;
+    const raw = localStorage.getItem(PWM_PROGRESS_KEY);
+    if (raw) {
+      const p = JSON.parse(raw);
+      if (p.wmaAnswers) {
+        p.wmaAnswers.W = {};
+        localStorage.setItem(PWM_PROGRESS_KEY, JSON.stringify(p));
+      }
+    }
+    localStorage.setItem('talentai_pwm_w_bank_v', PWM_W_BANK_VERSION);
+  } catch (e) {}
 }
 
 function restoreProgress() {
@@ -362,7 +384,7 @@ function renderQuestion() {
     if (titleEl) titleEl.textContent = q.question || '';
 
     const saved = wmaAnswers.W[q.id] || null;
-    const isComplete = !!(saved && saved.slot1 && saved.slot2);
+    const isComplete = isWAnswerComplete(saved);
     setWNextButton(isComplete, bank);
 
     wDragUI = WDragUI.mountWDragQuestion(wDragMount, bank, q, saved, (ans, complete) => {
@@ -483,7 +505,7 @@ function setWNextButton(ready, bank) {
     nextBtn.textContent = bank?.next_button_active || '下一题 →';
     nextBtn.classList.add('w-next-ready');
   } else {
-    nextBtn.textContent = bank?.next_button_inactive || '请先完成两个选择';
+    nextBtn.textContent = bank?.next_button_inactive || '请完成五个名次的排序';
     nextBtn.classList.remove('w-next-ready');
   }
 }
@@ -680,6 +702,8 @@ if (pauseBtn) pauseBtn.addEventListener('click', saveProgress);
     localStorage.removeItem('talentai_p_entitlement');
     setPAttemptActive(true);
   }
+
+  invalidateStalePwmWProgress();
 
   try {
     await loadBanks();

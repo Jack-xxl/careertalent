@@ -10,7 +10,13 @@
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 let WMA_TOTAL_QUESTIONS = 32;
-const WMA_BANK_VERSION = '2026-06-w8-drag-m24';
+const WMA_BANK_VERSION = '2026-06-w-rank-v2';
+
+function isWAnswerComplete(ans) {
+  return window.WLayerScoring?.isWRankAnswerComplete
+    ? WLayerScoring.isWRankAnswerComplete(ans)
+    : !!(ans && ans.rank1 && ans.rank2 && ans.rank3 && ans.rank4 && ans.rank5);
+}
 
 const WMA_LAYERS = [
     {
@@ -308,7 +314,7 @@ function startTimer() {
 
 function isQuestionAnswered(layerKey, qId) {
     const ans = answers[layerKey]?.[qId];
-    if (layerKey === 'W') return !!(ans && ans.slot1 && ans.slot2);
+    if (layerKey === 'W') return isWAnswerComplete(ans);
     return !!ans;
 }
 
@@ -318,7 +324,7 @@ function setWNextButton(ready) {
     nextBtn.disabled = !ready;
     nextBtn.textContent = ready
         ? (wmaData.W.next_button_active || '下一题 →')
-        : (wmaData.W.next_button_inactive || '请先完成两个选择');
+        : (wmaData.W.next_button_inactive || '请完成五个名次的排序');
     nextBtn.style.opacity = ready ? '1' : '0.4';
 }
 
@@ -401,7 +407,7 @@ function renderQuestion() {
         if (titleEl) titleEl.textContent = q.question || '';
 
         const saved = answers.W[q.id] || null;
-        const isComplete = !!(saved && saved.slot1 && saved.slot2);
+        const isComplete = isWAnswerComplete(saved);
         setWNextButton(isComplete);
 
         if (wDragMount && window.WDragUI) {
@@ -836,7 +842,7 @@ function countAnswered() {
         qs.forEach(q => {
             if (layer.key === 'W') {
                 const ans = layerAnswers[q.id];
-                if (ans && ans.slot1 && ans.slot2) n++;
+                if (isWAnswerComplete(ans)) n++;
             } else if (layerAnswers[q.id]) {
                 n++;
             }

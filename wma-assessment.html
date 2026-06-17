@@ -7,6 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/w-drag-ui.css?v=20260618">
   <style>
     .screen { display: none; }
     .screen.active { display: block; }
@@ -70,23 +71,6 @@
     }
 
     .w-drag-instruction { font-size: 14px; color: #9ca3af; margin-bottom: 20px; line-height: 1.6; }
-    .w-drag-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
-    @media (max-width: 768px) { .w-drag-layout { grid-template-columns: 1fr; } }
-    .w-drag-col-title { font-size: 12px; color: #6b7280; margin-bottom: 10px; letter-spacing: 0.05em; }
-    .w-options-pool { min-height: 280px; padding: 12px; border-radius: 12px; border: 1px dashed rgba(148,163,184,0.25); background: rgba(255,255,255,0.02); display: flex; flex-direction: column; gap: 10px; }
-    .w-options-pool.w-pool--highlight { border-color: rgba(102,126,234,0.6); background: rgba(102,126,234,0.08); }
-    .w-option-card { display: flex; gap: 10px; align-items: flex-start; padding: 14px 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.04); cursor: grab; user-select: none; touch-action: none; }
-    .w-option-card--dragging { opacity: 0.45; }
-    .w-option-card--ghost { position: fixed; z-index: 9999; pointer-events: none; opacity: 0.92; box-shadow: 0 16px 40px rgba(0,0,0,0.45); }
-    .w-option-code { flex-shrink: 0; width: 24px; height: 24px; border-radius: 6px; background: rgba(102,126,234,0.25); color: #a78bfa; font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center; }
-    .w-option-text { flex: 1; font-size: 14px; line-height: 1.65; color: #e5e7eb; }
-    .w-slot-wrap { margin-bottom: 16px; }
-    .w-slot-label { font-size: 13px; font-weight: 700; color: #a78bfa; margin-bottom: 8px; }
-    .w-slot { min-height: 88px; padding: 10px; border-radius: 12px; border: 2px dashed rgba(148,163,184,0.35); background: rgba(255,255,255,0.02); display: flex; align-items: center; justify-content: center; }
-    .w-slot--highlight { border-color: rgba(52,211,153,0.7); background: rgba(52,211,153,0.1); }
-    .w-slot--filled { border-style: solid; border-color: rgba(102,126,234,0.45); justify-content: stretch; }
-    .w-slot-hint { font-size: 13px; color: #6b7280; text-align: center; padding: 8px; }
-    .w-slot .w-option-card { width: 100%; cursor: grab; }
   </style>
 </head>
 <body class="bg-gray-900 text-white min-h-screen">
@@ -116,7 +100,7 @@
     </div>
   </header>
 
-  <main class="max-w-4xl mx-auto px-4 py-12">
+  <main class="max-w-6xl mx-auto px-4 py-12">
 
     <!-- ── 付费页 ── -->
     <div id="payment-screen" class="screen active">
@@ -239,7 +223,7 @@
         <h2 id="question-text" class="text-2xl font-bold leading-relaxed mb-4">题目加载中...</h2>
         <div id="question-scenario" style="display:none"></div>
         <p id="w-drag-instruction" class="w-drag-instruction" style="display:none"></p>
-        <div id="w-drag-mount" style="display:none"></div>
+        <div id="w-drag-mount" style="display:none;width:100%"></div>
         <div id="options-container" class="space-y-4"></div>
       </div>
 
@@ -323,9 +307,9 @@
       if (badge) badge.textContent = `你好 ${nickname}，开始你的四层测评`;
     })();
   </script>
-  <script src="js/w-layer-scoring.js"></script>
+  <script src="js/w-layer-scoring.js?v=20260618"></script>
   <script src="js/m-layer-scoring.js"></script>
-  <script src="js/w-drag-ui.js"></script>
+  <script src="js/w-drag-ui.js?v=20260619"></script>
   <script src="js/wma-assessment.js"></script>
 </body>
 </html>

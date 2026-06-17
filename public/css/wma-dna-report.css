@@ -451,6 +451,26 @@ body {
 .eco-conf-yellow { color: #fcd34d; background: rgba(251, 191, 36, 0.12); }
 .eco-conf-gray { color: #9ca3af; background: rgba(156, 163, 175, 0.12); }
 
+.w-intensity-status {
+  font-size: 14px;
+  color: #cbd5e1;
+  line-height: 1.65;
+  margin-bottom: 10px;
+}
+.w-archetype-label { margin-bottom: 12px; }
+.w-archetype-badge {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 999px;
+  color: #fcd34d;
+  background: rgba(251, 191, 36, 0.12);
+  border: 1px solid rgba(251, 191, 36, 0.25);
+}
+.tag-support { color: #93c5fd; background: rgba(59, 130, 246, 0.12); }
+.tag-weak { color: #9ca3af; background: rgba(156, 163, 175, 0.12); }
+
 .eco-tagline { font-size: 13px; color: var(--muted); margin-bottom: 10px; }
 
 .eco-fields { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }

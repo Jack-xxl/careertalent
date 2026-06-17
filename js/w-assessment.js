@@ -81,7 +81,9 @@ function renderQuestion() {
 
   if (dragUI) dragUI.destroy();
   const saved = answers[q.id] || null;
-  const isComplete = !!(saved && saved.slot1 && saved.slot2);
+  const isComplete = window.WLayerScoring?.isWRankAnswerComplete
+    ? WLayerScoring.isWRankAnswerComplete(saved)
+    : !!(saved && saved.rank1 && saved.rank2 && saved.rank3 && saved.rank4 && saved.rank5);
   setNextButton(isComplete);
 
   dragUI = WDragUI.mountWDragQuestion(mount, wBank, q, saved, (ans, complete) => {
@@ -103,29 +105,30 @@ function renderDriveResults(wDrive) {
   const el = document.getElementById('drive-results');
   if (!el) return;
 
-  const primary = wDrive.primary_drive;
-  const secondary = wDrive.secondary_drive;
-  const confLabel = (c) => (c === '高' ? '置信度：高' : '置信度：中');
-
   let html = '';
-  if (primary) {
-    const bar = WLayerScoring.buildDriveBar(primary.percentage);
+  if (wDrive.intensityStatus) {
+    html += `<p class="w-intensity-status">${wDrive.intensityStatus}</p>`;
+  }
+  if (wDrive.archetypeLabel) {
+    html += `<p class="w-archetype-label"><span class="w-archetype-badge">${wDrive.archetypeLabel}</span></p>`;
+  }
+
+  const scoreEntries = Object.entries(wDrive.scores || {})
+    .filter(([key]) => key !== 'curiosity')
+    .sort((a, b) => b[1] - a[1]);
+
+  scoreEntries.slice(0, 3).forEach(([key, score], idx) => {
+    const label = WLayerScoring.resolveWDimLabel(key, wBank);
+    const bar = WLayerScoring.buildDriveBar(score);
+    const levelTag = wDrive.levels?.core?.includes(key) ? '核心'
+      : wDrive.levels?.important?.includes(key) ? '重要' : '';
     html += `
       <div class="drive-row">
-        <div class="drive-label">主驱动：${WLayerScoring.resolveWDimLabel(primary.key, wBank, primary.name)}</div>
+        <div class="drive-label">${idx === 0 ? '主驱动' : '副驱动'}：${label}${levelTag ? ` · ${levelTag}` : ''}</div>
         <div class="drive-bar">${bar}</div>
-        <div class="drive-meta">${primary.percentage}%　${confLabel(primary.confidence)}</div>
+        <div class="drive-meta">${score}/10</div>
       </div>`;
-  }
-  if (secondary) {
-    const bar = WLayerScoring.buildDriveBar(secondary.percentage);
-    html += `
-      <div class="drive-row">
-        <div class="drive-label">副驱动：${WLayerScoring.resolveWDimLabel(secondary.key, wBank, secondary.name)}</div>
-        <div class="drive-bar">${bar}</div>
-        <div class="drive-meta">${secondary.percentage}%　${confLabel(secondary.confidence)}</div>
-      </div>`;
-  }
+  });
   el.innerHTML = html;
 }
 

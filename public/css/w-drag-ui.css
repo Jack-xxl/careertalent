@@ -1,0 +1,163 @@
+/* W层拖拽：左选项池 + 右名次槽（左右双栏） */
+.w-drag-instruction {
+  font-size: 14px;
+  color: #9ca3af;
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+.w-drag-layout {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+  gap: 24px;
+  align-items: start;
+  width: 100%;
+}
+
+.w-drag-layout--rank5 {
+  min-height: 360px;
+}
+
+.w-drag-col--options {
+  min-width: 0;
+}
+
+.w-drag-col--slots {
+  min-width: 0;
+}
+
+.w-drag-col-title {
+  font-size: 12px;
+  color: #6b7280;
+  margin-bottom: 10px;
+  letter-spacing: 0.05em;
+}
+
+.w-options-pool {
+  min-height: 320px;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px dashed rgba(148, 163, 184, 0.25);
+  background: rgba(255, 255, 255, 0.02);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.w-options-pool.w-pool--highlight {
+  border-color: rgba(102, 126, 234, 0.6);
+  background: rgba(102, 126, 234, 0.08);
+}
+
+.w-option-card {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+  transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+.w-option-card:hover {
+  border-color: rgba(102, 126, 234, 0.4);
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.15);
+}
+
+.w-option-card--dragging { opacity: 0.45; }
+
+.w-option-card--ghost {
+  position: fixed;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.92;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+}
+
+.w-option-code {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: rgba(102, 126, 234, 0.25);
+  color: #a78bfa;
+  font-weight: 700;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.w-option-text {
+  flex: 1;
+  font-size: 14px;
+  line-height: 1.65;
+  color: #e5e7eb;
+}
+
+.w-slot-wrap { margin-bottom: 12px; }
+
+.w-slot-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #a78bfa;
+  margin-bottom: 8px;
+}
+
+.w-slot {
+  min-height: 72px;
+  padding: 10px;
+  border-radius: 12px;
+  border: 2px dashed rgba(148, 163, 184, 0.35);
+  background: rgba(255, 255, 255, 0.02);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.w-slot--rank { min-height: 72px; }
+
+.w-drag-rank-slots {
+  max-height: none;
+  overflow: visible;
+}
+
+.w-slot--highlight {
+  border-color: rgba(52, 211, 153, 0.7);
+  background: rgba(52, 211, 153, 0.1);
+}
+
+.w-slot--filled {
+  border-style: solid;
+  border-color: rgba(102, 126, 234, 0.45);
+  justify-content: stretch;
+}
+
+.w-slot-hint {
+  font-size: 13px;
+  color: #6b7280;
+  text-align: center;
+  padding: 8px;
+}
+
+.w-slot .w-option-card {
+  width: 100%;
+  cursor: grab;
+}
+
+#w-drag-mount {
+  width: 100%;
+}
+
+/* 仅极窄屏（手机竖屏）才改为上下排列 */
+@media (max-width: 520px) {
+  .w-drag-layout {
+    grid-template-columns: 1fr !important;
+  }
+}

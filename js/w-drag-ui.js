@@ -1,7 +1,19 @@
 /**
- * W层拖拽选题 UI（不渲染维度名称，仅选项描述）
+ * W层五选项全排序拖拽 UI（第1-5名）
  */
 'use strict';
+
+function ensureWDragStyles() {
+  if (typeof document === 'undefined') return;
+  if (document.getElementById('w-drag-ui-styles')) return;
+  var link = document.createElement('link');
+  link.id = 'w-drag-ui-styles';
+  link.rel = 'stylesheet';
+  link.href = 'css/w-drag-ui.css?v=20260619';
+  document.head.appendChild(link);
+}
+
+ensureWDragStyles();
 
 function escapeWHtml(s) {
   return String(s || '')
@@ -17,18 +29,33 @@ function vibrateLight() {
   } catch (e) {}
 }
 
+function defaultRankLabel(bank, n) {
+  const key = `rank${n}_label`;
+  if (bank?.[key]) return bank[key];
+  const hints = ['最像我', '第二像我', '第三像我', '第四像我', '最不像我'];
+  return `${n}. ${hints[n - 1] || '第' + n + '名'}`;
+}
+
+function defaultRankHint(bank, n) {
+  const key = `rank${n}_hint`;
+  if (bank?.[key]) return bank[key];
+  return `把第 ${n} 名的选项拖到这里`;
+}
+
 function WDragQuestionUI(rootEl, bank, question, savedAnswer, onChange) {
   this.root = rootEl;
   this.bank = bank;
   this.question = question;
   this.onChange = onChange || function () {};
-  this.slots = { 1: null, 2: null };
+  this.slots = { 1: null, 2: null, 3: null, 4: null, 5: null };
   this.dragState = null;
   this.longPressTimer = null;
 
   if (savedAnswer) {
-    if (savedAnswer.slot1) this.slots[1] = savedAnswer.slot1;
-    if (savedAnswer.slot2) this.slots[2] = savedAnswer.slot2;
+    for (let i = 1; i <= 5; i++) {
+      const code = savedAnswer[`rank${i}`];
+      if (code) this.slots[i] = code;
+    }
   }
 
   this.render();
@@ -36,25 +63,36 @@ function WDragQuestionUI(rootEl, bank, question, savedAnswer, onChange) {
 
 WDragQuestionUI.prototype.getPlacedCodes = function () {
   const codes = [];
-  if (this.slots[1]) codes.push(this.slots[1]);
-  if (this.slots[2]) codes.push(this.slots[2]);
+  for (let i = 1; i <= 5; i++) {
+    if (this.slots[i]) codes.push(this.slots[i]);
+  }
   return codes;
 };
 
 WDragQuestionUI.prototype.isComplete = function () {
-  return !!(this.slots[1] && this.slots[2]);
+  for (let i = 1; i <= 5; i++) {
+    if (!this.slots[i]) return false;
+  }
+  return true;
 };
 
 WDragQuestionUI.prototype.emitChange = function () {
   const answer = this.isComplete()
-    ? { slot1: this.slots[1], slot2: this.slots[2] }
+    ? {
+        rank1: this.slots[1],
+        rank2: this.slots[2],
+        rank3: this.slots[3],
+        rank4: this.slots[4],
+        rank5: this.slots[5]
+      }
     : null;
   this.onChange(answer, this.isComplete());
 };
 
 WDragQuestionUI.prototype.placeInSlot = function (slotNum, code) {
-  const other = slotNum === 1 ? 2 : 1;
-  if (this.slots[other] === code) this.slots[other] = null;
+  for (let i = 1; i <= 5; i++) {
+    if (i !== slotNum && this.slots[i] === code) this.slots[i] = null;
+  }
   this.slots[slotNum] = code;
   vibrateLight();
   this.render();
@@ -68,8 +106,9 @@ WDragQuestionUI.prototype.removeFromSlot = function (slotNum) {
 };
 
 WDragQuestionUI.prototype.returnToPool = function (code) {
-  if (this.slots[1] === code) this.slots[1] = null;
-  if (this.slots[2] === code) this.slots[2] = null;
+  for (let i = 1; i <= 5; i++) {
+    if (this.slots[i] === code) this.slots[i] = null;
+  }
   this.render();
   this.emitChange();
 };
@@ -81,28 +120,25 @@ WDragQuestionUI.prototype.render = function () {
 
   this.root.innerHTML = `
     <p class="w-drag-instruction">${escapeWHtml(b.instruction)}</p>
-    <div class="w-drag-layout">
+    <div class="w-drag-layout w-drag-layout--rank5" style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;align-items:start;width:100%">
       <div class="w-drag-col w-drag-col--options">
-        <div class="w-drag-col-title">选项</div>
+        <div class="w-drag-col-title">${escapeWHtml(b.options_label || '选项')}</div>
         <div class="w-options-pool" data-drop-pool="1"></div>
       </div>
-      <div class="w-drag-col w-drag-col--slots">
-        <div class="w-slot-wrap">
-          <div class="w-slot-label">${escapeWHtml(b.slot1_label)}</div>
-          <div class="w-slot" data-slot="1"></div>
-        </div>
-        <div class="w-slot-wrap">
-          <div class="w-slot-label">${escapeWHtml(b.slot2_label)}</div>
-          <div class="w-slot" data-slot="2"></div>
-        </div>
+      <div class="w-drag-col w-drag-col--slots w-drag-rank-slots">
+        ${[1, 2, 3, 4, 5].map((sn) => `
+          <div class="w-slot-wrap">
+            <div class="w-slot-label">${escapeWHtml(defaultRankLabel(b, sn))}</div>
+            <div class="w-slot w-slot--rank" data-slot="${sn}"></div>
+          </div>`).join('')}
       </div>
     </div>`;
 
   const pool = this.root.querySelector('.w-options-pool');
-  const slotEls = {
-    1: this.root.querySelector('[data-slot="1"]'),
-    2: this.root.querySelector('[data-slot="2"]')
-  };
+  const slotEls = {};
+  for (let i = 1; i <= 5; i++) {
+    slotEls[i] = this.root.querySelector(`[data-slot="${i}"]`);
+  }
 
   const makeCard = (opt, inSlot, slotNum) => {
     const card = document.createElement('div');
@@ -119,21 +155,22 @@ WDragQuestionUI.prototype.render = function () {
     pool.appendChild(makeCard(opt, false, null));
   });
 
-  [1, 2].forEach((sn) => {
+  for (let sn = 1; sn <= 5; sn++) {
     const code = this.slots[sn];
     const slotEl = slotEls[sn];
     if (code) {
       const opt = (q.options || []).find((o) => o.code === code);
       if (opt) {
         slotEl.classList.add('w-slot--filled');
+        slotEl.innerHTML = '';
         slotEl.appendChild(makeCard(opt, true, sn));
-        return;
+        continue;
       }
     }
     slotEl.classList.remove('w-slot--filled');
-    slotEl.innerHTML = `<span class="w-slot-hint">${escapeWHtml(sn === 1 ? b.slot1_hint : b.slot2_hint)}</span>`;
+    slotEl.innerHTML = `<span class="w-slot-hint">${escapeWHtml(defaultRankHint(b, sn))}</span>`;
     this.bindSlotDrop(slotEl, sn);
-  });
+  }
 
   this.bindPoolDrop(pool);
 };

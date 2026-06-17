@@ -570,13 +570,30 @@ function normalizeWScores(w, wDrive) {
   const canonKeys = ['exploration', 'autonomy', 'meaning', 'competence', 'belonging'];
   const out = {};
 
+  if (wDrive?.scores && typeof wDrive.scores === 'object') {
+    canonKeys.forEach((k) => {
+      const alias = W_FIELD_ALIASES[k] || k;
+      const val = wDrive.scores[k] ?? wDrive.scores[alias];
+      out[k] = round1(Number(val) || 0);
+    });
+    out.curiosity = out.exploration;
+    return out;
+  }
+
   const readDim = (key) => {
     const alias = W_FIELD_ALIASES[key] || key;
+    if (typeof w[key] === 'number') return w[key] > 10 ? round1(w[key] / 10) : round1(w[key]);
+    if (w[key]?.normalized != null) return round1(Number(w[key].normalized));
+    if (w[key]?.score != null && w[key]?.max === 10) return round1(Number(w[key].score));
     if (w[key]?.score != null && w[key]?.max) return toScore10(w[key].score, w[key].max);
+    if (w[alias]?.normalized != null) return round1(Number(w[alias].normalized));
+    if (w[alias]?.score != null && w[alias]?.max === 10) return round1(Number(w[alias].score));
     if (w[alias]?.score != null && w[alias]?.max) return toScore10(w[alias].score, w[alias].max);
-    if (dims[key]?.score != null) return toScore10(dims[key].score, 16);
-    if (dims[alias]?.score != null) return toScore10(dims[alias].score, 16);
-    if (typeof w[key] === 'number') return w[key] > 10 ? w[key] / 10 : w[key];
+    if (dims[key]?.normalized != null) return round1(Number(dims[key].normalized));
+    if (dims[key]?.score != null && dims[key]?.max === 10) return round1(Number(dims[key].score));
+    if (dims[key]?.score != null) return toScore10(dims[key].score, dims[key].max || 16);
+    if (dims[alias]?.normalized != null) return round1(Number(dims[alias].normalized));
+    if (dims[alias]?.score != null) return toScore10(dims[alias].score, dims[alias].max || 16);
     return 0;
   };
 

@@ -339,7 +339,11 @@ function renderFourLayerBlock(title, layerTag, chartHtml, items, barClass) {
 
 function renderFourLayerResultsSection(tItems, pItems, wData, mData) {
   const tSorted = [...tItems].sort((a, b) => b.score - a.score);
-  const wDisplay = mapItemsToDisplay10(wData.items || [], 16);
+  const wDisplay = (wData.items || []).map((i) => ({
+    ...i,
+    score: Number(i.score) || 0,
+    max: 10
+  }));
   const pSorted = [...pItems].sort((a, b) => b.score - a.score);
   const mDisplay = mapItemsToDisplay10(mData.items || [], 12);
   const tRadar = buildTRadarSvg(tItems, 300);
@@ -815,10 +819,25 @@ function loadWDriveFull() {
 }
 
 function normalizeWDrive(drive) {
-  if (!drive?.dimensions) return drive;
-  Object.keys(drive.dimensions).forEach((k) => {
-    drive.dimensions[k].name = resolveWDimLabel(k, drive.dimensions[k].name);
-  });
+  if (!drive) return drive;
+  if (drive.scores) {
+    Object.keys(drive.scores).forEach((k) => {
+      if (!drive.dimensions) drive.dimensions = {};
+      if (!drive.dimensions[k]) {
+        drive.dimensions[k] = {
+          name: resolveWDimLabel(k, drive.dimensions[k]?.name),
+          normalized: drive.scores[k],
+          score: drive.rawScores?.[k] ?? drive.scores[k],
+          percentage: Math.round((drive.scores[k] || 0) * 10)
+        };
+      }
+    });
+  }
+  if (drive?.dimensions) {
+    Object.keys(drive.dimensions).forEach((k) => {
+      drive.dimensions[k].name = resolveWDimLabel(k, drive.dimensions[k].name);
+    });
+  }
   if (drive.primary_drive?.key) {
     drive.primary_drive.name = resolveWDimLabel(drive.primary_drive.key, drive.primary_drive.name);
   }
@@ -902,23 +921,37 @@ async function loadMLayerBank() {
   return window.__M_LAYER_BANK__;
 }
 
+function wLevelTag(key, drive) {
+  const levels = drive?.levels;
+  if (levels?.core?.includes(key)) return { text: '核心', cls: 'tag-primary' };
+  if (levels?.important?.includes(key)) return { text: '重要', cls: 'tag-secondary' };
+  if (levels?.supporting?.includes(key)) return { text: '支撑', cls: 'tag-support' };
+  if (levels?.weak?.includes(key)) return { text: '弱', cls: 'tag-weak' };
+  if (key === drive?.primary_drive?.key) return { text: '主', cls: 'tag-primary' };
+  if (key === drive?.secondary_drive?.key) return { text: '副', cls: 'tag-secondary' };
+  return null;
+}
+
 function loadWScores(wDrive) {
   const drive = wDrive || loadWDriveFull();
-  if (!drive?.dimensions) return { items: [], drive: null };
-  const primaryKey = drive.primary_drive?.key;
-  const secondaryKey = drive.secondary_drive?.key;
-  const items = Object.entries(drive.dimensions)
-    .map(([key, d]) => {
-      let tag = null;
-      if (key === primaryKey) tag = { text: '主', cls: 'tag-primary' };
-      else if (key === secondaryKey) tag = { text: '副', cls: 'tag-secondary' };
+  if (!drive?.scores && !drive?.dimensions) return { items: [], drive: null };
+
+  const scoreMap = drive.scores || {};
+  const dimKeys = Object.keys(scoreMap).length
+    ? Object.keys(scoreMap).filter((k) => k !== 'curiosity')
+    : Object.keys(drive.dimensions || {}).filter((k) => k !== 'curiosity');
+
+  const items = dimKeys
+    .map((key) => {
+      const d = drive.dimensions?.[key] || {};
+      const normalized = scoreMap[key] != null ? Number(scoreMap[key]) : Number(d.normalized ?? d.score) || 0;
       return {
         key,
         label: resolveWDimLabel(key, d.name),
-        score: Number(d.score) || 0,
-        max: 16,
-        confidence: d.confidence || '高',
-        tag
+        score: normalized,
+        max: 10,
+        rawScore: drive.rawScores?.[key] ?? d.rawScore ?? null,
+        tag: wLevelTag(key, drive)
       };
     })
     .sort((a, b) => b.score - a.score);
@@ -1058,9 +1091,17 @@ function buildVectors(tItems, pItems, wDrive, mDrive) {
     p[i.key] = { score: i.score, max: 10, rawPct: i.rawPct != null ? i.rawPct : i.score * 10 };
   });
   const w = {};
-  if (wDrive?.dimensions) {
+  if (wDrive?.scores) {
+    Object.entries(wDrive.scores).forEach(([k, v]) => {
+      const key = k === 'curiosity' ? 'exploration' : k;
+      w[key] = { score: Number(v), max: 10, normalized: Number(v) };
+    });
+  } else if (wDrive?.dimensions) {
     Object.entries(wDrive.dimensions).forEach(([k, d]) => {
-      w[k] = { score: d.score, max: 16 };
+      const normalized = d.normalized != null
+        ? Number(d.normalized)
+        : (Number(d.score) || 0) / ((Number(d.max) || 16) / 10);
+      w[k] = { score: normalized, max: 10, normalized };
     });
   }
   const m = {};
@@ -1132,26 +1173,42 @@ function renderPSection(pItems) {
 function renderWSection(wData) {
   const { items, drive } = wData;
   let summary = '';
-  if (drive?.dimensions && Object.keys(drive.dimensions).length) {
+  const metaBits = [];
+  if (drive?.intensityStatus) {
+    metaBits.push(`<p class="w-intensity-status">${esc(drive.intensityStatus)}</p>`);
+  }
+  if (drive?.archetypeLabel) {
+    metaBits.push(`<p class="w-archetype-label"><span class="w-archetype-badge">${esc(drive.archetypeLabel)}</span></p>`);
+  }
+  if (drive?.scores && Object.keys(drive.scores).length) {
+    const wRanked = Object.entries(drive.scores)
+      .filter(([key]) => key !== 'curiosity')
+      .map(([key, score]) => ({
+        key,
+        label: resolveWDimLabel(key, drive.dimensions?.[key]?.name),
+        score: Number(score) || 0
+      }));
+    const topW = pickTopByScore(wRanked, 3);
+    summary = `${metaBits.join('')}<div class="layer-insight-list">${renderLayerInsights(topW, W_EXPLAIN_LIB, '最高驱动力')}</div>`;
+  } else if (drive?.dimensions && Object.keys(drive.dimensions).length) {
     const wRanked = Object.entries(drive.dimensions).map(([key, d]) => ({
       key,
       label: resolveWDimLabel(key, d.name),
-      score: Number(d.score) || 0
+      score: Number(d.normalized ?? d.score) || 0
     }));
     const topW = pickTopByScore(wRanked, 3);
-    summary = `<div class="layer-insight-list">${renderLayerInsights(topW, W_EXPLAIN_LIB, '最高驱动力')}</div>`;
+    summary = `${metaBits.join('')}<div class="layer-insight-list">${renderLayerInsights(topW, W_EXPLAIN_LIB, '最高驱动力')}</div>`;
   } else if (items.length) {
     const topW = pickTopByScore(items, 3);
-    summary = `<div class="layer-insight-list">${renderLayerInsights(topW, W_EXPLAIN_LIB, '最高驱动力')}</div>`;
+    summary = `${metaBits.join('')}<div class="layer-insight-list">${renderLayerInsights(topW, W_EXPLAIN_LIB, '最高驱动力')}</div>`;
   } else {
     summary = '<p class="layer-empty">暂无 W 层测评数据。</p>';
   }
 
   const wRows = items.length
     ? renderScoreRows(items, {
-        formatScore: (i) => `${i.score}/16`,
-        barClass: 'fill-w',
-        showConfidence: true
+        formatScore: (i) => `${i.score}/10`,
+        barClass: 'fill-w'
       })
     : '';
 
