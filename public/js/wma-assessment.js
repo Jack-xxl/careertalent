@@ -71,9 +71,32 @@ let wDragUI       = null;
 // 初始化
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+function isWmOnlyMode() {
+    const qs = new URLSearchParams(window.location.search);
+    return qs.get('mode') === 'wm-only' || localStorage.getItem('talentai_wm_only_mode') === '1';
+}
+
+/** P+W+M 综合测评（57题）在 pwm-assessment；本页仅 Navigator 补测 W+M（32题） */
+function shouldRedirectToPwm() {
+    if (isWmOnlyMode()) return false;
+    if (localStorage.getItem('talentai_p_entitlement') === '1') return true;
+    if (localStorage.getItem('talentai_p_paid') === '1') return true;
+    if (localStorage.getItem('talentai_p_attempt_active') === '1') return true;
+    const pkg = (localStorage.getItem('talentai_paid_package_type') || '').toLowerCase();
+    if (pkg === 'pathfinder' || pkg === '49') return true;
+    if (localStorage.getItem('talentai_p_completed') !== '1') return true;
+    return false;
+}
+
 window.addEventListener('DOMContentLoaded', async () => {
     const qs = new URLSearchParams(window.location.search);
     const forceRestart = qs.get('restart') === '1';
+
+    if (shouldRedirectToPwm()) {
+        const dest = 'pwm-assessment.html' + (forceRestart ? '?restart=1' : '');
+        window.location.replace(dest);
+        return;
+    }
 
     if (forceRestart) {
         try {
@@ -193,6 +216,7 @@ window.onPaySuccess = function () {
         localStorage.setItem('talentai_wma_paid', 'true');
         localStorage.setItem('talentai_wma_unlocked', 'true');
         localStorage.setItem('talentai_wma_paid_at', new Date().toISOString());
+        localStorage.setItem('talentai_wm_only_mode', '1');
     } catch (e) {}
     // 从W层第一题开始，显示欢迎过渡卡
     currentLayerIdx    = 0;

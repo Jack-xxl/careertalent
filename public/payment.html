@@ -794,6 +794,7 @@ function applyNavigatorPaid() {
     localStorage.removeItem('talentai_wma_result');
     localStorage.removeItem('talentai_pending_checkout_package');
     localStorage.removeItem('talentai_wma_remaining');
+    localStorage.setItem('talentai_wm_only_mode', '1');
   } catch (e) {}
 }
 
@@ -831,12 +832,13 @@ function handlePaidSuccess() {
 
   if (pkg === 'navigator' || pkg === '150' || pkg === '99') {
     applyNavigatorPaid();
+    try { localStorage.setItem('talentai_wm_only_mode', '1'); } catch (e) {}
     console.log('[NAVIGATOR PAYMENT SUCCESS AUTO REDIRECT]', {
       paid: true,
-      redirectTo: 'wma-assessment.html',
+      redirectTo: 'wma-assessment.html?mode=wm-only',
       time: new Date().toISOString()
     });
-    setTimeout(() => talentaiGo('wma-assessment.html'), 300);
+    setTimeout(() => talentaiGo('wma-assessment.html?mode=wm-only'), 300);
     return;
   }
 
