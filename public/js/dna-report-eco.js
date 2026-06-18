@@ -49,7 +49,8 @@ const ECO_DEFS = {
     tagline: '搭建秩序与流程，推动团队稳定高效交付。',
     representatives: ['Tim Cook', 'Indra Nooyi'],
     fields: ['项目管理', '运营协调', '组织建设'],
-    t: { T2: 0.25, T6: 0.25 }
+    // 核心：系统协作、秩序、资源整合（T2逻辑 + T6人际）
+    t: { T2: 0.30, T6: 0.30 }
   },
   Guardian: {
     id: 'Guardian', nameZh: '守护生态', nameEn: 'Guardian',
@@ -63,7 +64,8 @@ const ECO_DEFS = {
     tagline: '在陪伴与支持中，为他人创造真实价值。',
     representatives: ['Mother Teresa', 'Fred Rogers'],
     fields: ['教育辅导', '心理支持', '客户成功'],
-    t: { T6: 0.25, T7: 0.25 }
+    // 核心：帮助人本身变好（T6人际 + 利他意义，非系统运转）
+    t: { T6: 0.35, T7: 0.15 }
   },
   Builder: {
     id: 'Builder', nameZh: '实践生态', nameEn: 'Builder',
@@ -82,12 +84,12 @@ const ECO_ORDER = [
 const FAMILY_P = {
   Creator: { O: 0.30, E: 0.18, C: 0.14, A: 0.10, NINV: 0.12 },
   Solver: { O: 0.18, C: 0.24, E: 0.10, A: 0.08, NINV: 0.20 },
-  Organizer: { O: 0.10, C: 0.28, E: 0.12, A: 0.16, NINV: 0.18 },
+  Organizer: { O: 0.08, C: 0.35, E: 0.10, A: 0.12, NINV: 0.15 },
   Influencer: { O: 0.18, C: 0.10, E: 0.28, A: 0.16, NINV: 0.08 },
   Explorer: { O: 0.30, C: 0.14, E: 0.10, A: 0.08, NINV: 0.12 },
   Builder: { O: 0.10, C: 0.24, E: 0.12, A: 0.10, NINV: 0.22 },
   Guardian: { O: 0.08, C: 0.32, E: 0.08, A: 0.18, NINV: 0.22 },
-  Helper: { O: 0.10, C: 0.14, E: 0.18, A: 0.26, NINV: 0.12 }
+  Helper: { O: 0.06, C: 0.08, E: 0.14, A: 0.38, NINV: 0.10 }
 };
 
 const FAMILY_M = {
@@ -95,23 +97,23 @@ const FAMILY_M = {
   Solver: { growth: 0.15, cognitive: 0.15, system: 0.35, independent: 0.10, practical: 0.15, longterm: 0.10 },
   Creator: { growth: 0.15, cognitive: 0.15, system: 0.10, independent: 0.25, practical: 0.30, longterm: 0.05 },
   Influencer: { growth: 0.15, cognitive: 0.30, system: 0.10, independent: 0.15, practical: 0.10, longterm: 0.20 },
-  Organizer: { growth: 0.10, cognitive: 0.10, system: 0.25, independent: 0.10, practical: 0.10, longterm: 0.35 },
+  Organizer: { growth: 0.08, cognitive: 0.08, system: 0.30, independent: 0.07, practical: 0.10, longterm: 0.37 },
   Guardian: { growth: 0.10, cognitive: 0.10, system: 0.25, independent: 0.10, practical: 0.10, longterm: 0.35 },
-  Helper: { growth: 0.25, cognitive: 0.20, system: 0.10, independent: 0.10, practical: 0.20, longterm: 0.15 },
+  Helper: { growth: 0.28, cognitive: 0.22, system: 0.05, independent: 0.12, practical: 0.25, longterm: 0.08 },
   Builder: { growth: 0.15, cognitive: 0.10, system: 0.15, independent: 0.10, practical: 0.40, longterm: 0.10 }
 };
 
 /** 保留原有 W 层规则矩阵结构 */
 const ECOLOGY_W_RULES = {
   Helper: [
-    { field: 'belonging', op: '>=', val: HIGH, effect: 0.18 },
-    { field: 'meaning', op: '>=', val: HIGH, effect: 0.12 },
+    { field: 'belonging', op: '>=', val: HIGH, effect: 0.22 },
+    { field: 'meaning', op: '>=', val: HIGH, effect: 0.15 },
     { field: 'belonging', op: '<=', val: LOW, effect: -0.20 },
     { field: 'meaning', op: '<=', val: LOW, effect: -0.10 }
   ],
   Organizer: [
-    { field: 'competence', op: '>=', val: HIGH, effect: 0.15 },
-    { field: 'belonging', op: '>=', val: HIGH, effect: 0.08 },
+    { field: 'belonging', op: '>=', val: HIGH, effect: 0.12 },
+    { field: 'competence', op: '>=', val: HIGH, effect: 0.12 },
     { field: 'autonomy', op: '>=', val: HIGH, effect: 0.05 },
     { field: 'meaning', op: '>=', val: HIGH, effect: 0.05 }
   ],
@@ -182,6 +184,36 @@ const T_KEY_MAP = {
   T5: 'T5_bodily', T6: 'T6_interpersonal', T7: 'T7_intrapersonal', T8: 'T8_naturalist'
 };
 
+/** T 层字段别名；T.discovery 为 Explorer 生态 T2/T7/T8 加权合成，非独立字段 */
+const T_FIELD_ALIASES = {
+  T8_natural: 'T8_naturalist',
+  T7: 'T7_intrapersonal',
+  T8: 'T8_naturalist',
+  bodyKinesthetic: 'T5_bodily',
+  bodilyKinesthetic: 'T5_bodily',
+  T5_body: 'T5_bodily',
+  physical: 'T5_bodily',
+  body: 'T5_bodily'
+};
+
+/** P 层字段别名；N 原始分为不稳定性，情绪稳定性 = 10 - N（见 p-layer-questions scoring_note） */
+const P_FIELD_ALIASES = {
+  emotionalStability: 'emotional_stability',
+  emotional_stability: 'emotional_stability',
+  emotionStability: 'emotional_stability',
+  stability: 'emotional_stability'
+};
+
+/** M 层题库字段 → 生态规范字段（normalizeMScores 输出键） */
+const M_LAYER_FIELD_MAP = {
+  growth: { canon: 'growth', mBank: 'growth' },
+  cognitive: { canon: 'cognitive', mBank: 'reconstruction', aliases: ['reconstruction'] },
+  system: { canon: 'system', mBank: 'systems', aliases: ['systems'] },
+  independent: { canon: 'independent', mBank: 'independence', aliases: ['independence'] },
+  practical: { canon: 'practical', mBank: 'validation', aliases: ['validation'] },
+  longterm: { canon: 'longterm', mBank: 'longterm' }
+};
+
 const W_FIELD_ALIASES = {
   curiosity: 'exploration',
   exploration: 'exploration',
@@ -221,8 +253,9 @@ function toScore10(raw, max) {
 }
 
 function tVal10(tMap, code) {
-  const key = T_KEY_MAP[code] || code;
-  const raw = tMap[key] ?? tMap[code] ?? 0;
+  const mapped = T_KEY_MAP[code] || T_FIELD_ALIASES[code] || code;
+  const key = T_FIELD_ALIASES[mapped] || mapped;
+  const raw = tMap[key] ?? tMap[mapped] ?? tMap[code] ?? 0;
   const n = Number(raw);
   if (n > 10) return clampScore(n / 10);
   return clampScore(n);
@@ -362,7 +395,7 @@ function passesHardGate(ecologyId, ctx) {
     case 'Influencer':
       return t.T1 >= 7 && t.T6 >= 7 && (w.meaning >= 5 || w.belonging >= 5);
     case 'Organizer':
-      return t.T2 >= 7 && t.T6 >= 7 && w.autonomy >= 5;
+      return t.T2 >= 7 && t.T6 >= 7 && (w.autonomy >= 5 || w.belonging >= 7);
     case 'Guardian':
       return t.T2 >= 7 && p.conscientiousness >= 7 &&
         p.emotional_stability >= 6 && w.meaning >= 5;
@@ -427,7 +460,334 @@ function calculateEcologyScore(ecology, tScores, pScores, wScores, mScores, mean
   };
 }
 
-/** 第三层：互斥张力修正（基于快照，rawScore 为 0-100 综合得分） */
+/** 第三层 A：Helper / Organizer 区分软修正（rawScore 层） */
+function applyHelperOrganizerDistinction(rawScores, w, p, m, t) {
+  const mul = (id, factor) => {
+    if (rawScores[id] != null && rawScores[id] > 0) {
+      rawScores[id] = round1(Math.max(0, Math.min(100, rawScores[id] * factor)));
+    }
+  };
+
+  const belonging = w.belonging ?? 0;
+  const t2 = t.T2 ?? t.T2_logic ?? 0;
+  const c = p.conscientiousness ?? 0;
+  const mSystem = m.system ?? 0;
+  const mLongterm = m.longterm ?? 0;
+
+  // 优先 Helper：高归属 + 低系统/长期思维（关注人，非系统运转）
+  if (belonging >= 7 && mSystem < 7 && mLongterm < 7) {
+    mul('Helper', 1.08);
+    mul('Organizer', 0.92);
+    return;
+  }
+
+  // 纯归属驱动：其余 W 维度极低时，Helper 优先于 Organizer
+  if (belonging >= 7 &&
+      (w.autonomy ?? 0) <= 1 && (w.meaning ?? 0) <= 1 &&
+      (w.exploration ?? w.curiosity ?? 0) <= 1 && (w.competence ?? 0) <= 1) {
+    mul('Helper', 1.10);
+    mul('Organizer', 0.88);
+    return;
+  }
+
+  // 优先 Organizer：高归属 + 逻辑/尽责/系统/长期（协作与秩序本身）
+  if (belonging >= 7 && t2 >= 7 && c >= 7 && mSystem >= 7 && mLongterm >= 7) {
+    mul('Organizer', 1.08);
+    mul('Helper', 0.92);
+  }
+}
+
+/** T 创造能力综合（Creator 生态 T1/T3/T7 加权） */
+function computeTCreative(t) {
+  const t1 = tVal10(t, 'T1');
+  const t3 = tVal10(t, 'T3');
+  const t7 = tVal10(t, 'T7');
+  const wSum = 0.20 + 0.20 + 0.10;
+  return wSum > 0 ? (t1 * 0.20 + t3 * 0.20 + t7 * 0.10) / wSum : 0;
+}
+
+/** 创造意图指数：组织是工具（自主 + 探索 + 独立 + 创造能力） */
+function computeCreatorIntent(w, m, t) {
+  const curiosity = w.curiosity ?? w.exploration ?? 0;
+  const tCreative = computeTCreative(t);
+  return round1(
+    (w.autonomy ?? 0) * 0.35 +
+    curiosity * 0.15 +
+    (m.independent ?? 0) * 0.25 +
+    tCreative * 0.25
+  );
+}
+
+/** 组织意图指数：组织是目的（归属 + 胜任 + 尽责 + 系统 + 长期） */
+function computeOrganizerIntent(w, p, m) {
+  return round1(
+    (w.belonging ?? 0) * 0.15 +
+    (w.competence ?? 0) * 0.15 +
+    (p.conscientiousness ?? 0) * 0.25 +
+    (m.system ?? 0) * 0.25 +
+    (m.longterm ?? 0) * 0.20
+  );
+}
+
+/** 第三层 B：Creator / Organizer 意图边界修正（rawScore 层） */
+function applyCreatorOrganizerIntent(rawScores, w, p, m, t) {
+  const mul = (id, factor) => {
+    if (rawScores[id] != null && rawScores[id] > 0) {
+      rawScores[id] = round1(Math.max(0, Math.min(100, rawScores[id] * factor)));
+    }
+  };
+
+  const creatorIntent = computeCreatorIntent(w, m, t);
+  const organizerIntent = computeOrganizerIntent(w, p, m);
+
+  // 创造意图主触发（>= 8.0）
+  const pureAutonomyCreator =
+    (w.autonomy ?? 0) >= 9 &&
+    (w.belonging ?? 0) <= 1 &&
+    (w.exploration ?? w.curiosity ?? 0) <= 1 &&
+    (m.independent ?? 0) >= 8;
+
+  const founderUsesOrgAsTool =
+    creatorIntent >= 7.85 &&
+    (w.autonomy ?? 0) >= 8 &&
+    (w.belonging ?? 0) <= 5 &&
+    (m.independent ?? 0) >= 9;
+
+  if (creatorIntent >= 8.0 || pureAutonomyCreator || founderUsesOrgAsTool) {
+    mul('Creator', 1.08);
+    mul('Organizer', 0.94);
+  }
+  if (organizerIntent >= 8.0) {
+    mul('Organizer', 1.08);
+    mul('Creator', 0.94);
+  }
+
+  return { creatorIntent, organizerIntent, pureAutonomyCreator, founderUsesOrgAsTool };
+}
+
+/** @deprecated 保留别名，内部转发至意图指数 */
+function applyCreatorOrganizerSoftFix(rawScores, w, p, m, t) {
+  return applyCreatorOrganizerIntent(rawScores, w, p, m, t);
+}
+
+/** T 表达连接能力（Influencer 生态 T1/T6 加权） */
+function computeTInfluence(t) {
+  const t1 = tVal10(t, 'T1');
+  const t6 = tVal10(t, 'T6');
+  const wSum = 0.25 + 0.25;
+  return wSum > 0 ? (t1 * 0.25 + t6 * 0.25) / wSum : 0;
+}
+
+/** 影响意图指数：影响别人（归属 + 意义 + 外向 + 宜人性 + 表达连接 + 认知沟通） */
+function computeInfluencerIntent(w, p, m, t) {
+  return round1(
+    (w.belonging ?? 0) * 0.25 +
+    (w.meaning ?? 0) * 0.15 +
+    (p.extraversion ?? 0) * 0.20 +
+    (p.agreeableness ?? 0) * 0.15 +
+    computeTInfluence(t) * 0.15 +
+    (m.cognitive ?? 0) * 0.10
+  );
+}
+
+/** 创造意图是否激活（只读判定，不修改 Creator 参数） */
+function isCreatorIntentActive(w, m, t) {
+  const creatorIntent = computeCreatorIntent(w, m, t);
+  const pureAutonomyCreator =
+    (w.autonomy ?? 0) >= 9 &&
+    (w.belonging ?? 0) <= 1 &&
+    (w.exploration ?? w.curiosity ?? 0) <= 1 &&
+    (m.independent ?? 0) >= 8;
+  const founderUsesOrgAsTool =
+    creatorIntent >= 7.85 &&
+    (w.autonomy ?? 0) >= 8 &&
+    (w.belonging ?? 0) <= 5 &&
+    (m.independent ?? 0) >= 9;
+  return creatorIntent >= 8.0 || pureAutonomyCreator || founderUsesOrgAsTool;
+}
+
+/** 第三层 C：Creator / Influencer 意图边界修正（rawScore 层） */
+function applyCreatorInfluencerIntent(rawScores, w, p, m, t) {
+  const mul = (id, factor) => {
+    if (rawScores[id] != null && rawScores[id] > 0) {
+      rawScores[id] = round1(Math.max(0, Math.min(100, rawScores[id] * factor)));
+    }
+  };
+
+  const influencerIntent = computeInfluencerIntent(w, p, m, t);
+  const creatorActive = isCreatorIntentActive(w, m, t);
+
+  // 影响意图：改变人心、连接传播（非单纯产出作品）
+  if (influencerIntent >= 8.0) {
+    mul('Influencer', 1.08);
+    mul('Creator', 0.94);
+  }
+  // 创造意图：产出作品/方案（复用已验证 Creator 触发，不新增 Creator 参数）
+  if (creatorActive) {
+    mul('Creator', 1.08);
+    mul('Influencer', 0.94);
+  }
+
+  return { influencerIntent, creatorActive };
+}
+
+/** T 发现/探索能力（Explorer 生态 T2/T7/T8 加权；T.discovery 合成指标） */
+function computeTDiscovery(t) {
+  const t2 = tVal10(t, 'T2');
+  const t7 = tVal10(t, 'T7');
+  const t8 = tVal10(t, 'T8');
+  const wSum = 0.25 + 0.15 + 0.10;
+  return wSum > 0 ? (t2 * 0.25 + t7 * 0.15 + t8 * 0.10) / wSum : 0;
+}
+
+/** T 解题/构建能力（Solver 生态 T2/T3 加权） */
+function computeTSolver(t) {
+  const t2 = tVal10(t, 'T2');
+  const t3 = tVal10(t, 'T3');
+  const wSum = 0.25 + 0.25;
+  return wSum > 0 ? (t2 * 0.25 + t3 * 0.25) / wSum : 0;
+}
+
+/** 探索意图指数：好奇提问、边界发现（好奇 + 自主 + 发现能力 + 成长 + 独立） */
+function computeExplorerIntent(w, m, t) {
+  const curiosity = w.curiosity ?? w.exploration ?? 0;
+  return round1(
+    curiosity * 0.30 +
+    (w.autonomy ?? 0) * 0.15 +
+    computeTDiscovery(t) * 0.25 +
+    (m.growth ?? 0) * 0.15 +
+    (m.independent ?? 0) * 0.20
+  );
+}
+
+/** 解题意图指数：拆解问题、构建方案（胜任 + 逻辑空间 + 系统 + 实践 + 尽责） */
+function computeSolverIntent(w, p, m, t) {
+  return round1(
+    (w.competence ?? 0) * 0.30 +
+    computeTSolver(t) * 0.20 +
+    (m.system ?? 0) * 0.25 +
+    (m.practical ?? 0) * 0.15 +
+    (p.conscientiousness ?? 0) * 0.10
+  );
+}
+
+/** 第三层 E：Explorer / Solver 意图边界修正（rawScore 层） */
+function applyExplorerSolverIntent(rawScores, w, p, m, t) {
+  const mul = (id, factor) => {
+    if (rawScores[id] != null && rawScores[id] > 0) {
+      rawScores[id] = round1(Math.max(0, Math.min(100, rawScores[id] * factor)));
+    }
+  };
+
+  const explorerIntent = computeExplorerIntent(w, m, t);
+  const solverIntent = computeSolverIntent(w, p, m, t);
+  const curiosity = w.curiosity ?? w.exploration ?? 0;
+  const competence = w.competence ?? 0;
+
+  if (explorerIntent >= 8.0 && solverIntent >= 8.0) {
+    if (explorerIntent >= solverIntent) {
+      mul('Explorer', 1.08);
+      mul('Solver', 0.94);
+    } else {
+      mul('Solver', 1.08);
+      mul('Explorer', 0.94);
+    }
+  } else if (explorerIntent >= 8.0) {
+    mul('Explorer', 1.08);
+    mul('Solver', 0.94);
+  } else if (solverIntent >= 8.0) {
+    mul('Solver', 1.08);
+    mul('Explorer', 0.94);
+  } else if (Math.abs(explorerIntent - solverIntent) <= 1.5) {
+    if (curiosity > competence) {
+      mul('Explorer', 1.06);
+      mul('Solver', 0.96);
+    } else if (competence > curiosity) {
+      mul('Solver', 1.06);
+      mul('Explorer', 0.96);
+    }
+  }
+
+  return { explorerIntent, solverIntent, curiosityArbitration: curiosity !== competence };
+}
+
+/** T 身体动觉（Builder 生态 T5；T.bodyKinesthetic 映射至 T5_bodily） */
+function computeTBodyKinesthetic(t, override) {
+  if (override != null && !Number.isNaN(Number(override))) {
+    return clampScore(Number(override));
+  }
+  return tVal10(t, 'T5');
+}
+
+/** P 情绪稳定性（N 不稳定性取反；已归一化 0-10） */
+function computePEmotionalStability(p) {
+  if (p.emotionalStability != null && !Number.isNaN(p.emotionalStability)) {
+    return clampScore(p.emotionalStability);
+  }
+  if (p.emotional_stability != null && !Number.isNaN(p.emotional_stability)) {
+    return clampScore(p.emotional_stability);
+  }
+  if (p.stability != null && !Number.isNaN(p.stability)) {
+    return clampScore(p.stability);
+  }
+  const n = p.neuroticism ?? p.N ?? 5;
+  return clampScore(10 - n);
+}
+
+/** 实践意图指数：建造落地（胜任 + 实践 + 尽责 + 身体动觉） */
+function computeBuilderIntent(w, p, m, t, tBodyOverride) {
+  return round1(
+    (w.competence ?? 0) * 0.30 +
+    (m.practical ?? 0) * 0.30 +
+    (p.conscientiousness ?? 0) * 0.20 +
+    computeTBodyKinesthetic(t, tBodyOverride) * 0.20
+  );
+}
+
+/** 守护意图指数：规则稳定（尽责 + 情绪稳定 + 系统 + 长期） */
+function computeGuardianIntent(w, p, m) {
+  return round1(
+    (p.conscientiousness ?? 0) * 0.30 +
+    computePEmotionalStability(p) * 0.25 +
+    (m.system ?? 0) * 0.25 +
+    (m.longterm ?? 0) * 0.20
+  );
+}
+
+/** 第三层 F：Builder / Guardian 意图边界修正（rawScore 层，仅作用于 Builder/Guardian） */
+function applyBuilderGuardianIntent(rawScores, w, p, m, t) {
+  const mul = (id, factor) => {
+    if (rawScores[id] != null && rawScores[id] > 0) {
+      rawScores[id] = round1(Math.max(0, Math.min(100, rawScores[id] * factor)));
+    }
+  };
+
+  const builderIntent = computeBuilderIntent(w, p, m, t);
+  const guardianIntent = computeGuardianIntent(w, p, m);
+
+  if (builderIntent >= 8.0 && guardianIntent >= 8.0) {
+    if ((m.practical ?? 0) >= (m.system ?? 0)) {
+      mul('Builder', 1.05);
+      mul('Guardian', 0.96);
+    } else {
+      mul('Guardian', 1.05);
+      mul('Builder', 0.96);
+    }
+  } else {
+    if (builderIntent >= 8.0) {
+      mul('Builder', 1.08);
+      mul('Guardian', 0.94);
+    }
+    if (guardianIntent >= 8.0) {
+      mul('Guardian', 1.08);
+      mul('Builder', 0.94);
+    }
+  }
+
+  return { builderIntent, guardianIntent };
+}
+
+/** 第三层 D：互斥张力修正（基于快照，rawScore 为 0-100 综合得分） */
 function applyMutexPenalties(rawScores, w, p, meaningDerived) {
   const snapshot = { ...rawScores };
   const penalties = {};
@@ -554,6 +914,7 @@ function normalizePScores(p) {
     return 5;
   };
   const n = get('N');
+  const emotionalStability = clampScore(10 - n);
   return {
     O: get('O'), C: get('C'), E: get('E'), A: get('A'), N: n,
     openness: get('O'),
@@ -561,7 +922,8 @@ function normalizePScores(p) {
     extraversion: get('E'),
     agreeableness: get('A'),
     neuroticism: n,
-    emotional_stability: n
+    emotional_stability: emotionalStability,
+    emotionalStability: emotionalStability
   };
 }
 
@@ -608,6 +970,20 @@ function normalizeMScores(m, mDrive) {
   const canonKeys = ['growth', 'cognitive', 'system', 'independent', 'practical', 'longterm'];
   const out = {};
 
+  if (mDrive?.scores && typeof mDrive.scores === 'object') {
+    const src = mDrive.scores;
+    canonKeys.forEach((k) => {
+      const map = M_LAYER_FIELD_MAP[k];
+      const keys = map ? [k, map.mBank, ...(map.aliases || [])] : [k];
+      let val;
+      for (const key of keys) {
+        if (src[key] != null) { val = src[key]; break; }
+      }
+      out[k] = round1(Number(val) || 0);
+    });
+    return out;
+  }
+
   const readDim = (canonKey) => {
     if (m[canonKey]?.score != null) return toScore10(m[canonKey].score, m[canonKey].max || 12);
     if (dims[canonKey]?.score != null) return toScore10(dims[canonKey].score, dims[canonKey].max || 12);
@@ -648,6 +1024,11 @@ function computeEcosystemScores(vectors) {
     layerDetails[id] = { ...calc, gatePassed: true };
   });
 
+  applyHelperOrganizerDistinction(rawScores, wScores, pScores, mScores, tScores);
+  applyCreatorOrganizerIntent(rawScores, wScores, pScores, mScores, tScores);
+  applyCreatorInfluencerIntent(rawScores, wScores, pScores, mScores, tScores);
+  applyExplorerSolverIntent(rawScores, wScores, pScores, mScores, tScores);
+  applyBuilderGuardianIntent(rawScores, wScores, pScores, mScores, tScores);
   applyMutexPenalties(rawScores, wScores, pScores, meaningDerived);
 
   const results = ECO_ORDER.map((id) => {
@@ -871,6 +1252,29 @@ if (typeof window !== 'undefined') {
     deriveMeaningScores,
     buildWForRules,
     passesHardGate,
+    applyHelperOrganizerDistinction,
+    computeTCreative,
+    computeCreatorIntent,
+    computeOrganizerIntent,
+    applyCreatorOrganizerIntent,
+    applyCreatorOrganizerSoftFix,
+    computeTInfluence,
+    computeInfluencerIntent,
+    isCreatorIntentActive,
+    applyCreatorInfluencerIntent,
+    computeTDiscovery,
+    computeTSolver,
+    computeExplorerIntent,
+    computeSolverIntent,
+    applyExplorerSolverIntent,
+    computeTBodyKinesthetic,
+    computePEmotionalStability,
+    computeBuilderIntent,
+    computeGuardianIntent,
+    applyBuilderGuardianIntent,
+    M_LAYER_FIELD_MAP,
+    T_FIELD_ALIASES,
+    P_FIELD_ALIASES,
     applyMutexPenalties,
     calculateEcologyScore,
     mapToDisplayScore,
